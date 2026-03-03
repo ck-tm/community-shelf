@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import TypeIcon from "./TypeIcon";
-import { TYPE_COLORS } from "../data/mock";
+import { useData } from "../context/DataContext";
 
 export default function TitleCard({ title }) {
+  const { typeColors } = useData();
   const available = title.copies.filter((c) => c.status === "available").length;
-  const color = TYPE_COLORS[title.type] || "#0D7377";
+  const color = typeColors[title.type] || "#0D7377";
 
   return (
     <Link
@@ -41,7 +42,7 @@ export default function TitleCard({ title }) {
         <h3 className="truncate font-semibold text-teal-900 transition-colors duration-200 group-hover:text-teal-700 dark:text-cream dark:group-hover:text-teal-400">
           {title.title}
         </h3>
-        <p className="mt-1 truncate text-sm text-sand-400 dark:text-night-600">
+        <p className="mt-1 truncate text-sm text-sand-400 dark:text-night-400">
           {title.author}
         </p>
 
@@ -52,11 +53,11 @@ export default function TitleCard({ title }) {
               {available} available
             </span>
           ) : (
-            <span className="text-sm font-medium text-sand-300 dark:text-night-600">
+            <span className="text-sm font-medium text-sand-300 dark:text-night-400">
               Unavailable
             </span>
           )}
-          <span className="text-xs tabular-nums text-sand-300 dark:text-night-700">
+          <span className="text-xs tabular-nums text-sand-300 dark:text-night-500">
             {title.year}
           </span>
         </div>

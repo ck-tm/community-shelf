@@ -220,10 +220,100 @@ export const TYPE_COLORS = {
   Magazines: "#E69500",
 };
 
-export const MOCK_INQUIRIES = [
-  { id: 1, title: "The Midnight Library", type: "Books", organization: "Downtown Public Library", status: "Active", requestDate: "2026-02-15", dueDate: "2026-03-15", returnDate: null },
-  { id: 2, title: "Inception", type: "Movies", organization: "Community Arts Hub", status: "Pending", requestDate: "2026-03-01", dueDate: null, returnDate: null },
-  { id: 3, title: "Abbey Road", type: "Music", organization: "Downtown Public Library", status: "Approved", requestDate: "2026-02-20", dueDate: "2026-03-20", returnDate: null },
-  { id: 4, title: "National Geographic — March 2025", type: "Magazines", organization: "University Media Center", status: "Returned", requestDate: "2026-02-01", dueDate: "2026-03-01", returnDate: "2026-02-28" },
-  { id: 5, title: "Dune", type: "Books", organization: "University Media Center", status: "Overdue", requestDate: "2026-01-10", dueDate: "2026-02-10", returnDate: null },
+export const MOCK_CURATED_LISTS = [
+  {
+    id: 1,
+    title: "Essential Reads for a Rainy Afternoon",
+    description:
+      "A hand-picked selection of books perfect for curling up with when the weather turns grey.",
+    coverColor: "#0D7377",
+    createdAt: "2026-02-10",
+    sections: [
+      {
+        id: 1,
+        heading: "Cozy Literary Fiction",
+        body: "There is something about literary fiction that pairs perfectly with the sound of rain against a window. These titles transport you to thoughtful, quiet worlds.",
+        titleIds: [1, 7],
+      },
+      {
+        id: 2,
+        heading: "Psychological Thrillers to Keep You Gripped",
+        body: "If you prefer suspense with your tea, these page-turners will keep you reading well past the storm.",
+        titleIds: [10],
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: "Movie Night Essentials",
+    description:
+      "Our community's favorite films, from mind-bending sci-fi to award-winning international cinema.",
+    coverColor: "#6B4C9A",
+    createdAt: "2026-02-25",
+    sections: [
+      {
+        id: 1,
+        heading: "Mind-Bending Science Fiction",
+        body: "Films that challenge your perception of reality and leave you thinking long after the credits roll.",
+        titleIds: [3],
+      },
+      {
+        id: 2,
+        heading: "International Award Winners",
+        body: "Expand your horizons with these critically acclaimed films from around the world.",
+        titleIds: [8],
+      },
+      {
+        id: 3,
+        heading: "Nature Documentaries",
+        body: "For a quieter movie night, these breathtaking documentaries are perfect for the whole family.",
+        titleIds: [12],
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: "Vinyl & CD Collection Highlights",
+    description:
+      "Discover the best of our physical music collection, from classic rock to modern jazz.",
+    coverColor: "#C41E3A",
+    createdAt: "2026-03-01",
+    sections: [
+      {
+        id: 1,
+        heading: "Timeless Albums",
+        body: "Some albums transcend their era. These are the records that every music lover should experience on vinyl.",
+        titleIds: [4, 11],
+      },
+      {
+        id: 2,
+        heading: "Jazz for the Soul",
+        body: "Let these jazz collections transport you to smoky clubs and late-night improvisation sessions.",
+        titleIds: [9],
+      },
+    ],
+  },
 ];
+
+export const MOCK_INQUIRIES = [
+  { id: 1, title: "The Midnight Library", type: "Books", organization: "Downtown Public Library", status: "Active", requestDate: "2026-02-15", dueDate: "2026-03-15", returnDate: null, rentalPeriod: 30, notes: null },
+  { id: 2, title: "Inception", type: "Movies", organization: "Community Arts Hub", status: "Pending", requestDate: "2026-03-01", dueDate: null, returnDate: null, rentalPeriod: null, notes: null },
+  { id: 3, title: "Abbey Road", type: "Music", organization: "Downtown Public Library", status: "Approved", requestDate: "2026-02-20", dueDate: "2026-03-20", returnDate: null, rentalPeriod: 30, notes: "Will pick up Friday" },
+  { id: 4, title: "National Geographic — March 2025", type: "Magazines", organization: "University Media Center", status: "Returned", requestDate: "2026-02-01", dueDate: "2026-03-01", returnDate: "2026-02-28", rentalPeriod: 28, notes: null },
+  { id: 5, title: "Dune", type: "Books", organization: "University Media Center", status: "Overdue", requestDate: "2026-01-10", dueDate: "2026-02-10", returnDate: null, rentalPeriod: 30, notes: "Contacted borrower" },
+];
+
+export const MOCK_SITE_CONFIG = {
+  logo: "",
+  title: "CommunityShelf",
+  description: "A community library for things worth sharing.",
+  themeColors: {
+    "teal-600": "#0d9488",
+    "teal-700": "#0d7377",
+    "teal-800": "#0a5c5f",
+    "teal-900": "#074e52",
+    "cream": "#f8f4ed",
+    "warm": "#f3ede4",
+    "amber-500": "#f5a623",
+  },
+};

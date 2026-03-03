@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { Library, User, Sun, Moon } from "lucide-react";
+import { Library, Settings, Sun, Moon, User } from "lucide-react";
+import { useData } from "../context/DataContext";
 
 export default function Navbar() {
+  const { siteConfig } = useData();
   const [dark, setDark] = useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("theme") === "dark";
@@ -15,11 +17,15 @@ export default function Navbar() {
     localStorage.setItem("theme", dark ? "dark" : "light");
   }, [dark]);
 
+  useEffect(() => {
+    document.title = `${siteConfig.title} — Community Library`;
+  }, [siteConfig.title]);
+
   const linkClass = ({ isActive }) =>
     `relative text-sm font-medium transition-colors duration-200 ${
       isActive
         ? "text-teal-800 dark:text-teal-400"
-        : "text-sand-400 hover:text-teal-800 dark:text-night-600 dark:hover:text-teal-400"
+        : "text-sand-400 hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
     }`;
 
   return (
@@ -28,22 +34,32 @@ export default function Navbar() {
         {/* Logo */}
         <NavLink to="/" className="flex items-center gap-2.5 group">
           <div className="flex size-9 items-center justify-center rounded-xl bg-teal-800 text-white shadow-sm transition-all duration-200 group-hover:shadow-md group-hover:scale-[1.03] dark:bg-teal-700">
-            <Library className="size-[18px]" />
+            {siteConfig.logo ? (
+              <img
+                src={siteConfig.logo}
+                alt="Logo"
+                className="size-5 object-contain"
+              />
+            ) : (
+              <Library className="size-[18px]" />
+            )}
           </div>
           <span className="hidden font-heading text-xl text-teal-900 sm:inline dark:text-cream">
-            CityShelf
+            {siteConfig.title}
           </span>
         </NavLink>
 
         {/* Links */}
-        <div className="flex items-center gap-6 sm:gap-8">
+        <div className="flex items-center gap-5 sm:gap-7">
           <NavLink to="/" end className={linkClass}>
             Browse
           </NavLink>
-          <NavLink to="/dashboard" className={linkClass}>
-            Dashboard
+          <NavLink to="/lists" className={linkClass}>
+            Lists
           </NavLink>
-
+          <NavLink to="/about" className={linkClass}>
+            About
+          </NavLink>
           {/* Theme toggle */}
           <button
             onClick={() => setDark(!dark)}
@@ -57,9 +73,33 @@ export default function Navbar() {
             )}
           </button>
 
-          <button className="flex size-9 items-center justify-center rounded-full bg-sand-100 transition-colors duration-200 hover:bg-sand-200 dark:bg-night-800 dark:hover:bg-night-700">
-            <User className="size-4 text-sand-400 dark:text-night-600" />
-          </button>
+          <NavLink
+            to="/account"
+            className={({ isActive }) =>
+              `flex size-9 items-center justify-center rounded-full transition-colors duration-200 ${
+                isActive
+                  ? "bg-teal-800 text-white dark:bg-teal-700"
+                  : "bg-sand-100 text-sand-400 hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
+              }`
+            }
+            aria-label="My Account"
+          >
+            <User className="size-4" />
+          </NavLink>
+
+          <NavLink
+            to="/admin"
+            className={({ isActive }) =>
+              `flex size-9 items-center justify-center rounded-full transition-colors duration-200 ${
+                isActive
+                  ? "bg-teal-800 text-white dark:bg-teal-700"
+                  : "bg-sand-100 text-sand-400 hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
+              }`
+            }
+            aria-label="Admin"
+          >
+            <Settings className="size-4" />
+          </NavLink>
         </div>
       </div>
     </nav>
