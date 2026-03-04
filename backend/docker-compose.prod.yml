@@ -1,0 +1,30 @@
+# Production overrides — use with:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+services:
+  db:
+    restart: always
+    # No exposed ports in production
+
+  redis:
+    restart: always
+    # No exposed ports in production
+
+  web:
+    restart: always
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.production
+    volumes:
+      - media_data:/app/media
+    # No exposed ports — traffic comes through cloudflared tunnel
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: always
+    command: tunnel run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - web
+
+volumes:
+  media_data:

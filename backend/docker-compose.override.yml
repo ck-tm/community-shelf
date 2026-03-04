@@ -1,0 +1,21 @@
+# Development overrides — applied automatically with `docker compose up`
+services:
+  db:
+    ports:
+      - "5432:5432"
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  web:
+    build:
+      args:
+        REQUIREMENTS_FILE: requirements/development.txt
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.development

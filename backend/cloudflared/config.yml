@@ -1,0 +1,17 @@
+# Cloudflare Tunnel configuration
+# This file is only needed if using config-file mode instead of TUNNEL_TOKEN.
+# With TUNNEL_TOKEN (recommended), the tunnel config is managed via the
+# Cloudflare Zero Trust dashboard and this file is not required.
+#
+# To use config-file mode:
+# 1. cloudflared tunnel create communityshelf
+# 2. Copy credentials JSON to cloudflared/credentials.json
+# 3. cloudflared tunnel route dns communityshelf library-admin.costico.eu
+# 4. Uncomment and update the config below:
+
+# tunnel: <TUNNEL_ID>
+# credentials-file: /etc/cloudflared/credentials.json
+# ingress:
+#   - hostname: library-admin.costico.eu
+#     service: http://web:8000
+#   - service: http_status:404

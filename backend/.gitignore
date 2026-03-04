@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Django
+*.sqlite3
+staticfiles/
+media/
+*.log
+
+# Environment
+.env
+
+# Docker
+postgres_data/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Cloudflare Tunnel credentials (sensitive!)
+cloudflared/credentials.json
+cloudflared/*.json
+
+# Backups (large files)
+backups/
+
+# OS
+.DS_Store
+Thumbs.db
