@@ -135,9 +135,8 @@ export async function onRequest(context) {
   const { request, next } = context;
   const ua = request.headers.get("user-agent") || "";
 
-  // Only intercept HTML requests from crawlers
-  const accept = request.headers.get("accept") || "";
-  if (!isCrawler(ua) || !accept.includes("text/html")) {
+  // Only intercept requests from crawlers
+  if (!isCrawler(ua)) {
     return next();
   }
 

@@ -71,6 +71,7 @@ MIDDLEWARE = [
     "config.middleware.ApiCsrfExemptMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "apps.tenants.middleware.AdminTenantSwitcherMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -238,101 +239,24 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # --- Unfold Admin ---
 
+
+def _unfold_sidebar_navigation(request):
+    """Lazy wrapper for dynamic sidebar — avoids import at settings load time."""
+    from apps.tenants.admin_views import sidebar_navigation
+
+    return sidebar_navigation(request)
+
+
 UNFOLD = {
     "SITE_TITLE": "CommunityShelf",
     "SITE_HEADER": "CommunityShelf",
     "SITE_SUBHEADER": "Library Management",
     "SHOW_HISTORY": True,
     "SHOW_VIEW_ON_SITE": False,
+    "ENVIRONMENT": "apps.tenants.admin_views.environment_callback",
     "SIDEBAR": {
         "show_search": True,
         "show_all_applications": True,
-        "navigation": [
-            {
-                "title": "Authentication",
-                "items": [
-                    {
-                        "title": "Users",
-                        "icon": "person",
-                        "link": "/shared/customuser/",
-                    },
-                    {
-                        "title": "Groups",
-                        "icon": "group",
-                        "link": "/auth/group/",
-                    },
-                ],
-            },
-            {
-                "title": "Tenants",
-                "items": [
-                    {
-                        "title": "Tenants",
-                        "icon": "apartment",
-                        "link": "/tenants/tenant/",
-                    },
-                    {
-                        "title": "Domains",
-                        "icon": "language",
-                        "link": "/tenants/domain/",
-                    },
-                ],
-            },
-            {
-                "title": "Library",
-                "items": [
-                    {
-                        "title": "Titles",
-                        "icon": "menu_book",
-                        "link": "/library/title/",
-                    },
-                    {
-                        "title": "Copies",
-                        "icon": "content_copy",
-                        "link": "/library/copy/",
-                    },
-                    {
-                        "title": "Types",
-                        "icon": "category",
-                        "link": "/library/type/",
-                    },
-                    {
-                        "title": "Organizations",
-                        "icon": "corporate_fare",
-                        "link": "/library/organization/",
-                    },
-                ],
-            },
-            {
-                "title": "Content",
-                "items": [
-                    {
-                        "title": "Curated Lists",
-                        "icon": "format_list_bulleted",
-                        "link": "/library/curatedlist/",
-                    },
-                    {
-                        "title": "Inquiries",
-                        "icon": "mail",
-                        "link": "/library/inquiry/",
-                    },
-                ],
-            },
-            {
-                "title": "Settings",
-                "items": [
-                    {
-                        "title": "Site Config",
-                        "icon": "settings",
-                        "link": "/library/siteconfig/",
-                    },
-                    {
-                        "title": "Memberships",
-                        "icon": "badge",
-                        "link": "/library/tenantmembership/",
-                    },
-                ],
-            },
-        ],
+        "navigation": _unfold_sidebar_navigation,
     },
 }
