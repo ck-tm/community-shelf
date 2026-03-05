@@ -106,7 +106,7 @@ export default function ListForm() {
     <div>
       <button
         onClick={() => navigate("/admin/lists")}
-        className="mb-6 flex items-center gap-1.5 text-sm font-medium text-sand-400 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
+        className="mb-6 flex items-center gap-1.5 text-sm font-medium text-sand-500 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
       >
         <ArrowLeft className="size-4" /> Back to Lists
       </button>
@@ -125,7 +125,7 @@ export default function ListForm() {
           style={{ animation: "fade-up 0.6s ease-out 0.1s both" }}
         >
           <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
               Title *
             </label>
             <input
@@ -138,7 +138,7 @@ export default function ListForm() {
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
               Description
             </label>
             <textarea
@@ -149,7 +149,7 @@ export default function ListForm() {
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
               Cover Color
             </label>
             <div className="flex items-center gap-3">
@@ -159,7 +159,7 @@ export default function ListForm() {
                 onChange={set("coverColor")}
                 className="size-10 cursor-pointer rounded-lg border-0 bg-transparent"
               />
-              <span className="text-sm text-sand-400 dark:text-night-400">
+              <span className="text-sm text-sand-500 dark:text-night-400">
                 {form.coverColor}
               </span>
             </div>
@@ -196,7 +196,7 @@ export default function ListForm() {
                       type="button"
                       onClick={() => moveSection(idx, -1)}
                       disabled={idx === 0}
-                      className="rounded-lg p-1 text-sand-400 transition hover:bg-sand-100 disabled:opacity-30 dark:text-night-400 dark:hover:bg-night-800"
+                      className="rounded-lg p-1 text-sand-500 transition hover:bg-sand-100 disabled:opacity-30 dark:text-night-400 dark:hover:bg-night-800"
                     >
                       <ChevronUp className="size-4" />
                     </button>
@@ -204,14 +204,14 @@ export default function ListForm() {
                       type="button"
                       onClick={() => moveSection(idx, 1)}
                       disabled={idx === form.sections.length - 1}
-                      className="rounded-lg p-1 text-sand-400 transition hover:bg-sand-100 disabled:opacity-30 dark:text-night-400 dark:hover:bg-night-800"
+                      className="rounded-lg p-1 text-sand-500 transition hover:bg-sand-100 disabled:opacity-30 dark:text-night-400 dark:hover:bg-night-800"
                     >
                       <ChevronDown className="size-4" />
                     </button>
                     <button
                       type="button"
                       onClick={() => removeSection(idx)}
-                      className="rounded-lg p-1 text-sand-400 transition hover:bg-red-50 hover:text-red-600 dark:text-night-400 dark:hover:bg-red-900/20"
+                      className="rounded-lg p-1 text-sand-500 transition hover:bg-red-50 hover:text-red-600 dark:text-night-400 dark:hover:bg-red-900/20"
                     >
                       <Trash2 className="size-4" />
                     </button>
@@ -300,7 +300,7 @@ export default function ListForm() {
           <button
             type="button"
             onClick={() => navigate("/admin/lists")}
-            className="rounded-xl border border-sand-200 px-5 py-2.5 text-sm font-medium text-sand-400 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-800"
+            className="rounded-xl border border-sand-200 px-5 py-2.5 text-sm font-medium text-sand-500 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-800"
           >
             Cancel
           </button>

@@ -131,7 +131,7 @@ export default function Browse() {
         <h1 className="font-heading text-4xl tracking-tight text-teal-900 sm:text-5xl dark:text-cream">
           Browse the Collection
         </h1>
-        <p className="mt-3 font-heading text-lg italic text-sand-400 dark:text-night-400">
+        <p className="mt-3 font-heading text-lg italic text-sand-500 dark:text-night-400">
           {siteConfig.description}
         </p>
       </div>
@@ -142,13 +142,13 @@ export default function Browse() {
         style={{ animation: "fade-up 0.6s ease-out 0.1s both" }}
       >
         <div className="relative">
-          <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-sand-400 dark:text-night-400" />
+          <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-sand-500 dark:text-night-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="What are you looking for?"
-            className="w-full rounded-2xl border-0 bg-warm py-4 pl-12 pr-5 text-base ring-1 ring-sand-300/60 outline-none transition placeholder:text-sand-400 focus:bg-white focus:ring-2 focus:ring-teal-700/30 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-400 dark:focus:bg-night-800"
+            className="w-full rounded-2xl border-0 bg-warm py-4 pl-12 pr-5 text-base ring-1 ring-sand-300/60 outline-none transition placeholder:text-sand-500 focus:bg-white focus:ring-2 focus:ring-teal-700/30 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-400 dark:focus:bg-night-800"
           />
         </div>
         <AuthorSelect
@@ -172,7 +172,7 @@ export default function Browse() {
               className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
                 type === t
                   ? "bg-teal-800 text-white shadow-sm shadow-teal-900/20 dark:bg-teal-700"
-                  : "bg-warm text-sand-400 ring-1 ring-sand-200/60 hover:text-teal-800 hover:ring-sand-300 dark:bg-night-800 dark:text-night-400 dark:ring-night-700 dark:hover:text-teal-400"
+                  : "bg-warm text-sand-500 ring-1 ring-sand-200/60 hover:text-teal-800 hover:ring-sand-300 dark:bg-night-800 dark:text-night-400 dark:ring-night-700 dark:hover:text-teal-400"
               }`}
             >
               {t !== "All" && <TypeIcon type={t} className="size-3.5" />}
@@ -192,7 +192,7 @@ export default function Browse() {
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="appearance-none cursor-pointer rounded-xl border-0 bg-warm py-2 pl-3 pr-9 text-sm font-medium text-sand-400 ring-1 ring-sand-200/60 outline-none transition hover:text-teal-800 focus:ring-2 focus:ring-teal-700/30 dark:bg-night-800 dark:text-night-400 dark:ring-night-700 dark:hover:text-teal-400"
+              className="appearance-none cursor-pointer rounded-xl border-0 bg-warm py-2 pl-3 pr-9 text-sm font-medium text-sand-500 ring-1 ring-sand-200/60 outline-none transition hover:text-teal-800 focus:ring-2 focus:ring-teal-700/30 dark:bg-night-800 dark:text-night-400 dark:ring-night-700 dark:hover:text-teal-400"
             >
               <option value="newest">Newest</option>
               <option value="title-asc">A–Z</option>
@@ -208,7 +208,7 @@ export default function Browse() {
               className={`flex size-9 items-center justify-center rounded-xl transition ${
                 view === "grid"
                   ? "bg-teal-800 text-white dark:bg-teal-700"
-                  : "text-sand-400 hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
+                  : "text-sand-500 hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
               }`}
               aria-label="Grid view"
             >
@@ -219,7 +219,7 @@ export default function Browse() {
               className={`flex size-9 items-center justify-center rounded-xl transition ${
                 view === "table"
                   ? "bg-teal-800 text-white dark:bg-teal-700"
-                  : "text-sand-400 hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
+                  : "text-sand-500 hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
               }`}
               aria-label="Table view"
             >
@@ -230,7 +230,7 @@ export default function Browse() {
               className={`flex size-9 items-center justify-center rounded-xl transition ${
                 view === "shelf"
                   ? "bg-teal-800 text-white dark:bg-teal-700"
-                  : "text-sand-400 hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
+                  : "text-sand-500 hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
               }`}
               aria-label="Shelf view"
             >
@@ -274,7 +274,7 @@ export default function Browse() {
           <h3 className="font-heading text-xl text-teal-900 dark:text-cream">
             Nothing found
           </h3>
-          <p className="mt-2 text-sm text-sand-400 dark:text-night-400">
+          <p className="mt-2 text-sm text-sand-500 dark:text-night-400">
             Try a different search term or filter.
           </p>
         </div>
@@ -301,7 +301,7 @@ export default function Browse() {
           <h3 className="font-heading text-xl text-teal-900 dark:text-cream">
             Nothing found
           </h3>
-          <p className="mt-2 text-sm text-sand-400 dark:text-night-400">
+          <p className="mt-2 text-sm text-sand-500 dark:text-night-400">
             Try a different search term or filter.
           </p>
         </div>
@@ -384,7 +384,7 @@ export default function Browse() {
                               {t.title}
                             </Link>
                           </td>
-                          <td className="px-4 py-3 text-sand-400 dark:text-night-400">
+                          <td className="px-4 py-3 text-sand-500 dark:text-night-400">
                             {t.author || "—"}
                           </td>
                           <td className="px-4 py-3">
@@ -396,7 +396,7 @@ export default function Browse() {
                               {t.type}
                             </span>
                           </td>
-                          <td className="px-4 py-3 tabular-nums text-sand-400 dark:text-night-400">
+                          <td className="px-4 py-3 tabular-nums text-sand-500 dark:text-night-400">
                             {t.year ?? "—"}
                           </td>
                           <td className="px-4 py-3">
@@ -426,7 +426,7 @@ export default function Browse() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="flex size-9 items-center justify-center rounded-xl bg-warm text-sand-400 ring-1 ring-sand-200/60 transition hover:text-teal-800 disabled:opacity-30 dark:bg-night-800 dark:text-night-400 dark:ring-night-700 dark:hover:text-teal-400"
+                className="flex size-9 items-center justify-center rounded-xl bg-warm text-sand-500 ring-1 ring-sand-200/60 transition hover:text-teal-800 disabled:opacity-30 dark:bg-night-800 dark:text-night-400 dark:ring-night-700 dark:hover:text-teal-400"
               >
                 <ChevronLeft className="size-4" />
               </button>
@@ -450,7 +450,7 @@ export default function Browse() {
                       className={`flex size-9 items-center justify-center rounded-xl text-sm font-medium transition ${
                         p === currentPage
                           ? "bg-teal-800 text-white shadow-sm dark:bg-teal-700"
-                          : "bg-warm text-sand-400 ring-1 ring-sand-200/60 hover:text-teal-800 dark:bg-night-800 dark:text-night-400 dark:ring-night-700 dark:hover:text-teal-400"
+                          : "bg-warm text-sand-500 ring-1 ring-sand-200/60 hover:text-teal-800 dark:bg-night-800 dark:text-night-400 dark:ring-night-700 dark:hover:text-teal-400"
                       }`}
                     >
                       {p}
@@ -461,7 +461,7 @@ export default function Browse() {
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="flex size-9 items-center justify-center rounded-xl bg-warm text-sand-400 ring-1 ring-sand-200/60 transition hover:text-teal-800 disabled:opacity-30 dark:bg-night-800 dark:text-night-400 dark:ring-night-700 dark:hover:text-teal-400"
+                className="flex size-9 items-center justify-center rounded-xl bg-warm text-sand-500 ring-1 ring-sand-200/60 transition hover:text-teal-800 disabled:opacity-30 dark:bg-night-800 dark:text-night-400 dark:ring-night-700 dark:hover:text-teal-400"
               >
                 <ChevronRight className="size-4" />
               </button>
@@ -490,7 +490,7 @@ export default function Browse() {
               <h2 className="font-heading text-2xl tracking-tight text-teal-900 sm:text-3xl dark:text-cream">
                 Hand-picked Collections
               </h2>
-              <p className="mt-1 text-sm text-sand-400 dark:text-night-400">
+              <p className="mt-1 text-sm text-sand-500 dark:text-night-400">
                 Explore themed reading guides curated by our community.
               </p>
             </div>

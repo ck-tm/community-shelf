@@ -46,7 +46,7 @@ export default function PlatformNavbar() {
           {/* Theme toggle */}
           <button
             onClick={() => setDark(!dark)}
-            className="flex size-9 items-center justify-center rounded-full bg-sand-100 text-sand-400 transition hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
+            className="flex size-9 items-center justify-center rounded-full bg-sand-100 text-sand-500 transition hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
             aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
           >
             {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
@@ -62,7 +62,7 @@ export default function PlatformNavbar() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex size-9 items-center justify-center rounded-full text-sand-400 transition hover:bg-sand-100 dark:text-night-400 dark:hover:bg-night-800"
+                className="flex size-9 items-center justify-center rounded-full text-sand-500 transition hover:bg-sand-100 dark:text-night-400 dark:hover:bg-night-800"
                 aria-label="Sign out"
               >
                 <LogOut className="size-4" />
@@ -72,7 +72,7 @@ export default function PlatformNavbar() {
             <>
               <Link
                 to="/login"
-                className="rounded-xl px-4 py-2 text-sm font-medium text-sand-400 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-cream"
+                className="rounded-xl px-4 py-2 text-sm font-medium text-sand-500 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-cream"
               >
                 Log in
               </Link>
@@ -80,7 +80,7 @@ export default function PlatformNavbar() {
                 to="/register"
                 className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700"
               >
-                Get Started
+                Create Library
               </Link>
             </>
           )}

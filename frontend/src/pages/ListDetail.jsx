@@ -22,7 +22,7 @@ function EmbeddedTitle({ title }) {
         <p className="truncate text-sm font-semibold text-teal-900 group-hover:text-teal-700 dark:text-cream dark:group-hover:text-teal-400">
           {title.title}
         </p>
-        <p className="truncate text-xs text-sand-400 dark:text-night-400">
+        <p className="truncate text-xs text-sand-500 dark:text-night-400">
           {title.author}
         </p>
       </div>
@@ -89,7 +89,7 @@ export default function ListDetail() {
           <h1 className="font-heading text-3xl tracking-tight text-teal-900 sm:text-4xl dark:text-cream">
             {list.title}
           </h1>
-          <p className="mt-3 text-lg leading-relaxed text-sand-400 dark:text-night-400">
+          <p className="mt-3 text-lg leading-relaxed text-sand-500 dark:text-night-400">
             {list.description}
           </p>
         </div>
@@ -112,7 +112,7 @@ export default function ListDetail() {
                 <h2 className="mb-3 font-heading text-xl text-teal-900 dark:text-cream">
                   {section.heading}
                 </h2>
-                <p className="mb-5 leading-relaxed text-sand-400 dark:text-night-400">
+                <p className="mb-5 leading-relaxed text-sand-500 dark:text-night-400">
                   {section.body}
                 </p>
                 <div className="grid gap-3 sm:grid-cols-2">

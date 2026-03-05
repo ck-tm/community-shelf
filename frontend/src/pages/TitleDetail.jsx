@@ -74,7 +74,7 @@ export default function TitleDetail() {
             <h1 className="font-heading text-3xl leading-tight tracking-tight text-teal-900 dark:text-cream">
               {title.title}
             </h1>
-            <p className="mt-1 text-lg text-sand-400 dark:text-night-400">
+            <p className="mt-1 text-lg text-sand-500 dark:text-night-400">
               {title.author}
             </p>
 
@@ -87,7 +87,7 @@ export default function TitleDetail() {
               {title.type}
             </div>
 
-            <p className="mt-4 text-[15px] leading-relaxed text-sand-400 dark:text-night-400">
+            <p className="mt-4 text-[15px] leading-relaxed text-sand-500 dark:text-night-400">
               {title.description}
             </p>
 
@@ -131,7 +131,7 @@ export default function TitleDetail() {
         >
           <h2 className="font-heading text-xl text-teal-900 dark:text-cream">
             Available Copies
-            <span className="ml-2 text-sm font-normal text-sand-400 dark:text-night-400">
+            <span className="ml-2 text-sm font-normal text-sand-500 dark:text-night-400">
               ({available} of {title.copies.length} available)
             </span>
           </h2>
@@ -163,7 +163,7 @@ export default function TitleDetail() {
                         {isAvail ? "Available" : "Reserved"}
                       </span>
                     </div>
-                    <div className="mt-1 flex items-center gap-1 text-sm text-sand-400 dark:text-night-400">
+                    <div className="mt-1 flex items-center gap-1 text-sm text-sand-500 dark:text-night-400">
                       <MapPin className="size-3.5" /> {copy.location}
                     </div>
                   </div>

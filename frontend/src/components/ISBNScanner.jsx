@@ -86,7 +86,7 @@ export default function ISBNScanner({ onScan, onClose }) {
           </h3>
           <button
             onClick={onClose}
-            className="rounded-lg p-1 text-sand-400 transition hover:bg-sand-100 dark:text-night-400 dark:hover:bg-night-700"
+            className="rounded-lg p-1 text-sand-500 transition hover:bg-sand-100 dark:text-night-400 dark:hover:bg-night-700"
             aria-label="Close"
           >
             <X className="size-5" />
@@ -105,14 +105,14 @@ export default function ISBNScanner({ onScan, onClose }) {
         )}
 
         {!detected && (
-          <p className="mt-3 text-center text-xs text-sand-400 dark:text-night-400">
+          <p className="mt-3 text-center text-xs text-sand-500 dark:text-night-400">
             Point your camera at the barcode on the back of a book.
           </p>
         )}
 
         <button
           onClick={onClose}
-          className="mt-4 w-full rounded-xl border border-sand-200 px-4 py-2.5 text-sm font-medium text-sand-400 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-700"
+          className="mt-4 w-full rounded-xl border border-sand-200 px-4 py-2.5 text-sm font-medium text-sand-500 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-700"
         >
           Cancel
         </button>

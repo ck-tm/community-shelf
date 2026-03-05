@@ -28,7 +28,7 @@ export default function ManageTitles() {
           <h1 className="font-heading text-3xl text-teal-900 dark:text-cream">
             Titles
           </h1>
-          <p className="mt-1 text-sm text-sand-400 dark:text-night-400">
+          <p className="mt-1 text-sm text-sand-500 dark:text-night-400">
             {titles.length} titles in the collection.
           </p>
         </div>
@@ -45,7 +45,7 @@ export default function ManageTitles() {
         className="relative mb-5"
         style={{ animation: "fade-up 0.6s ease-out 0.1s both" }}
       >
-        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-sand-400 dark:text-night-400" />
+        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-sand-500 dark:text-night-400" />
         <input
           type="text"
           value={search}
@@ -85,7 +85,7 @@ export default function ManageTitles() {
                 <p className="truncate text-sm font-medium text-teal-900 dark:text-cream">
                   {t.title}
                 </p>
-                <p className="truncate text-xs text-sand-400 dark:text-night-400">
+                <p className="truncate text-xs text-sand-500 dark:text-night-400">
                   {t.author}
                 </p>
                 <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
@@ -131,13 +131,13 @@ export default function ManageTitles() {
               <div className="flex shrink-0 items-center gap-0.5">
                 <Link
                   to={`/admin/titles/${t.id}/edit`}
-                  className="rounded-lg p-2 text-sand-400 transition hover:bg-sand-100 hover:text-teal-800 dark:text-night-400 dark:hover:bg-night-800 dark:hover:text-teal-400"
+                  className="rounded-lg p-2 text-sand-500 transition hover:bg-sand-100 hover:text-teal-800 dark:text-night-400 dark:hover:bg-night-800 dark:hover:text-teal-400"
                 >
                   <Pencil className="size-4" />
                 </Link>
                 <button
                   onClick={() => setDeleting(t)}
-                  className="rounded-lg p-2 text-sand-400 transition hover:bg-red-50 hover:text-red-600 dark:text-night-400 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+                  className="rounded-lg p-2 text-sand-500 transition hover:bg-red-50 hover:text-red-600 dark:text-night-400 dark:hover:bg-red-900/20 dark:hover:text-red-400"
                 >
                   <Trash2 className="size-4" />
                 </button>

@@ -52,7 +52,7 @@ export default function TitleCard({ title }) {
           <h3 className="line-clamp-2 font-semibold leading-snug text-teal-900 transition-colors duration-200 group-hover:text-teal-700 dark:text-cream dark:group-hover:text-teal-400">
             {title.title}
           </h3>
-          <p className="mt-1 truncate text-sm text-sand-400 dark:text-night-400">
+          <p className="mt-1 truncate text-sm text-sand-500 dark:text-night-400">
             {title.author}
           </p>
         </div>

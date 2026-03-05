@@ -11,7 +11,7 @@ export default function AccountLayout() {
     `flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium transition-colors duration-150 ${
       isActive
         ? "bg-teal-700/10 text-teal-800 dark:bg-teal-400/10 dark:text-teal-400"
-        : "text-sand-400 hover:text-teal-800 hover:bg-warm dark:text-night-400 dark:hover:text-teal-400 dark:hover:bg-night-800"
+        : "text-sand-500 hover:text-teal-800 hover:bg-warm dark:text-night-400 dark:hover:text-teal-400 dark:hover:bg-night-800"
     }`;
 
   return (

@@ -262,13 +262,13 @@ export default function TitleForm() {
     "w-full rounded-xl border-0 bg-cream px-3 py-2.5 text-sm ring-1 ring-sand-200/70 outline-none transition focus:ring-2 focus:ring-teal-600/30 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-400";
 
   const labelClass =
-    "mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400";
+    "mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400";
 
   return (
     <div>
       <button
         onClick={() => navigate("/admin/titles")}
-        className="mb-6 flex items-center gap-1.5 text-sm font-medium text-sand-400 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
+        className="mb-6 flex items-center gap-1.5 text-sm font-medium text-sand-500 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
       >
         <ArrowLeft className="size-4" /> Back to Titles
       </button>
@@ -478,7 +478,7 @@ export default function TitleForm() {
                   onChange={set("cover")}
                   className="size-8 cursor-pointer rounded border-0 bg-transparent"
                 />
-                <span className="text-xs text-sand-400 dark:text-night-400">
+                <span className="text-xs text-sand-500 dark:text-night-400">
                   Fallback color
                 </span>
               </div>
@@ -501,7 +501,7 @@ export default function TitleForm() {
         {!existing && (
           <>
             <hr className="border-sand-200/60 dark:border-night-700/50" />
-            <p className="text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+            <p className="text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
               First Copy
             </p>
             <div className="grid gap-5 sm:grid-cols-2">
@@ -536,7 +536,7 @@ export default function TitleForm() {
           <button
             type="button"
             onClick={() => navigate("/admin/titles")}
-            className="rounded-xl border border-sand-200 px-5 py-2.5 text-sm font-medium text-sand-400 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-800"
+            className="rounded-xl border border-sand-200 px-5 py-2.5 text-sm font-medium text-sand-500 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-800"
           >
             Cancel
           </button>
@@ -563,7 +563,7 @@ export default function TitleForm() {
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-heading text-xl text-teal-900 dark:text-cream">
               Copies
-              <span className="ml-2 text-sm font-normal text-sand-400 dark:text-night-400">
+              <span className="ml-2 text-sm font-normal text-sand-500 dark:text-night-400">
                 ({existing.copies.length})
               </span>
             </h2>
@@ -580,7 +580,7 @@ export default function TitleForm() {
           {editingCopy && (
             <div className="mb-4 flex flex-col gap-3 rounded-xl bg-cream p-3 ring-2 ring-teal-600/30 sm:flex-row sm:flex-wrap sm:items-end dark:bg-night-800">
               <div className="sm:w-28">
-                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
                   Condition
                 </label>
                 <select
@@ -599,7 +599,7 @@ export default function TitleForm() {
                 </select>
               </div>
               <div className="flex-1">
-                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
                   Location
                 </label>
                 <input
@@ -617,7 +617,7 @@ export default function TitleForm() {
                 />
               </div>
               <div className="sm:w-32">
-                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
                   Status
                 </label>
                 <select
@@ -676,7 +676,7 @@ export default function TitleForm() {
                     <span className="text-sm font-medium text-teal-900 dark:text-cream">
                       {copy.condition}
                     </span>
-                    <span className="flex items-center gap-1 text-sm text-sand-400 dark:text-night-400">
+                    <span className="flex items-center gap-1 text-sm text-sand-500 dark:text-night-400">
                       <MapPin className="size-3" />
                       {copy.location}
                     </span>
@@ -685,14 +685,14 @@ export default function TitleForm() {
                     <button
                       type="button"
                       onClick={() => startEditCopy(copy)}
-                      className="rounded-lg p-1.5 text-sand-400 transition hover:bg-sand-100 hover:text-teal-800 dark:text-night-400 dark:hover:bg-night-700 dark:hover:text-teal-400"
+                      className="rounded-lg p-1.5 text-sand-500 transition hover:bg-sand-100 hover:text-teal-800 dark:text-night-400 dark:hover:bg-night-700 dark:hover:text-teal-400"
                     >
                       <Pencil className="size-3.5" />
                     </button>
                     <button
                       type="button"
                       onClick={() => setDeletingCopy(copy.id)}
-                      className="rounded-lg p-1.5 text-sand-400 transition hover:bg-red-50 hover:text-red-600 dark:text-night-400 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+                      className="rounded-lg p-1.5 text-sand-500 transition hover:bg-red-50 hover:text-red-600 dark:text-night-400 dark:hover:bg-red-900/20 dark:hover:text-red-400"
                     >
                       <Trash2 className="size-3.5" />
                     </button>

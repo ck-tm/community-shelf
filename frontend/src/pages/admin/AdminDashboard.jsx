@@ -70,7 +70,7 @@ export default function AdminDashboard() {
         <h1 className="font-heading text-3xl text-teal-900 dark:text-cream">
           Overview
         </h1>
-        <p className="mt-1 text-sand-400 dark:text-night-400">
+        <p className="mt-1 text-sand-500 dark:text-night-400">
           Manage your community library.
         </p>
       </div>
@@ -88,7 +88,7 @@ export default function AdminDashboard() {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-sand-400 dark:text-night-400">
+                <p className="text-sm font-medium text-sand-500 dark:text-night-400">
                   {s.label}
                 </p>
                 <p className="mt-1 text-3xl font-bold text-teal-900 dark:text-cream">

@@ -52,7 +52,7 @@ export default function Login() {
           <h1 className="font-heading text-2xl text-teal-900 dark:text-cream">
             Welcome back
           </h1>
-          <p className="mt-1 text-sm text-sand-400 dark:text-night-400">
+          <p className="mt-1 text-sm text-sand-500 dark:text-night-400">
             Sign in to your account
           </p>
         </div>
@@ -69,7 +69,7 @@ export default function Login() {
           )}
 
           <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
               Email
             </label>
             <input
@@ -85,7 +85,7 @@ export default function Login() {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
               Password
             </label>
             <input
@@ -108,7 +108,7 @@ export default function Login() {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-sand-400 dark:text-night-400">
+        <p className="mt-6 text-center text-sm text-sand-500 dark:text-night-400">
           Don&apos;t have an account?{" "}
           <Link
             to="/register"

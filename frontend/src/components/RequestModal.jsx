@@ -42,13 +42,13 @@ export default function RequestModal({ title, copy, onClose }) {
             <h3 className="text-xl font-bold text-teal-900 dark:text-cream">
               Login Required
             </h3>
-            <p className="mt-2 text-sm text-sand-400 dark:text-night-400">
+            <p className="mt-2 text-sm text-sand-500 dark:text-night-400">
               Please log in to request items.
             </p>
             <div className="mt-5 flex justify-center gap-3">
               <button
                 onClick={onClose}
-                className="rounded-xl border border-sand-200 px-4 py-2 text-sm font-semibold text-sand-400 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-700"
+                className="rounded-xl border border-sand-200 px-4 py-2 text-sm font-semibold text-sand-500 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-700"
               >
                 Close
               </button>
@@ -66,7 +66,7 @@ export default function RequestModal({ title, copy, onClose }) {
             <h3 className="text-xl font-bold text-teal-900 dark:text-cream">
               Request Submitted!
             </h3>
-            <p className="mt-2 text-sm text-sand-400 dark:text-night-400">
+            <p className="mt-2 text-sm text-sand-500 dark:text-night-400">
               Your request for <strong>{title.title}</strong> has been
               submitted. You'll be notified when it's approved.
             </p>
@@ -80,7 +80,7 @@ export default function RequestModal({ title, copy, onClose }) {
               </h2>
               <button
                 onClick={onClose}
-                className="rounded-lg p-1 text-sand-400 transition hover:bg-sand-100 dark:text-night-400 dark:hover:bg-night-700"
+                className="rounded-lg p-1 text-sand-500 transition hover:bg-sand-100 dark:text-night-400 dark:hover:bg-night-700"
                 aria-label="Close"
               >
                 <X className="size-5" />
@@ -99,7 +99,7 @@ export default function RequestModal({ title, copy, onClose }) {
                 <p className="truncate text-sm font-semibold text-teal-900 dark:text-cream">
                   {title.title}
                 </p>
-                <p className="text-xs text-sand-400 dark:text-night-400">
+                <p className="text-xs text-sand-500 dark:text-night-400">
                   {title.author}
                 </p>
                 {copy && (
@@ -113,7 +113,7 @@ export default function RequestModal({ title, copy, onClose }) {
             {/* Form */}
             <div className="space-y-4">
               <div>
-                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
                   Notes (Optional)
                 </label>
                 <textarea
@@ -136,7 +136,7 @@ export default function RequestModal({ title, copy, onClose }) {
             <div className="mt-6 flex gap-3">
               <button
                 onClick={onClose}
-                className="flex-1 rounded-xl border border-sand-200 px-4 py-2.5 text-sm font-semibold text-sand-400 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-700"
+                className="flex-1 rounded-xl border border-sand-200 px-4 py-2.5 text-sm font-semibold text-sand-500 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-700"
               >
                 Cancel
               </button>

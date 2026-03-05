@@ -233,6 +233,12 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+# --- Email ---
+
+DEFAULT_FROM_EMAIL = os.environ.get(
+    "DEFAULT_FROM_EMAIL", "Community Shelf <noreply@costico.eu>"
+)
+
 # --- Misc ---
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

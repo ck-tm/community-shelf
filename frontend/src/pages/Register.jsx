@@ -53,7 +53,7 @@ export default function Register() {
           <h1 className="font-heading text-2xl text-teal-900 dark:text-cream">
             Create an account
           </h1>
-          <p className="mt-1 text-sm text-sand-400 dark:text-night-400">
+          <p className="mt-1 text-sm text-sand-500 dark:text-night-400">
             Join the community library
           </p>
         </div>
@@ -70,7 +70,7 @@ export default function Register() {
           )}
 
           <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
               Email
             </label>
             <input
@@ -91,7 +91,7 @@ export default function Register() {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
               Password
             </label>
             <input
@@ -111,7 +111,7 @@ export default function Register() {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
               Confirm Password
             </label>
             <input
@@ -130,6 +130,16 @@ export default function Register() {
             )}
           </div>
 
+          <p className="text-center text-xs leading-relaxed text-sand-500 dark:text-night-400">
+            By creating an account you agree to our{" "}
+            <Link
+              to="/terms"
+              className="font-medium text-teal-700 underline decoration-teal-700/30 hover:text-teal-800 dark:text-teal-400 dark:decoration-teal-400/30"
+            >
+              Terms &amp; Conditions
+            </Link>
+          </p>
+
           <button
             type="submit"
             disabled={submitting}
@@ -139,7 +149,7 @@ export default function Register() {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-sand-400 dark:text-night-400">
+        <p className="mt-6 text-center text-sm text-sand-500 dark:text-night-400">
           Already have an account?{" "}
           <Link
             to="/login"

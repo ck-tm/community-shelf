@@ -1,5 +1,7 @@
+import logging
 from datetime import timedelta
 
+from django.db import connection
 from django.db.models import Count, Q
 from django.utils import timezone
 from rest_framework import generics, mixins, status, viewsets
@@ -7,6 +9,10 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+
+from apps.shared.email import send_html_email
+
+logger = logging.getLogger(__name__)
 
 
 class BrowsePagination(PageNumberPagination):
@@ -161,6 +167,35 @@ class UserInquiryViewSet(
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         inquiry = serializer.save()
+
+        # Notify tenant admins
+        try:
+            admin_emails = list(
+                TenantMembership.objects.filter(role="admin")
+                .values_list("user__email", flat=True)
+            )
+            if admin_emails:
+                tenant = connection.tenant
+                user = request.user
+                user_name = f"{user.first_name} {user.last_name}".strip() or user.email
+                send_html_email(
+                    subject=f"New borrow request — {inquiry.title_name}",
+                    template_name="emails/inquiry_created.html",
+                    context={
+                        "inquiry": inquiry,
+                        "user_name": user_name,
+                        "user_email": user.email,
+                        "library_name": tenant.name,
+                        "copy_condition": (
+                            inquiry.copy_ref.condition if inquiry.copy_ref else ""
+                        ),
+                        "admin_url": f"https://{tenant.slug}.library.costico.eu/admin/inquiries",
+                    },
+                    recipient_list=admin_emails,
+                )
+        except Exception:
+            logger.exception("Failed to send inquiry notification email")
+
         return Response(
             InquirySerializer(inquiry).data,
             status=status.HTTP_201_CREATED,

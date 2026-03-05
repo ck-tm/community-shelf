@@ -15,7 +15,7 @@ export default function Lists() {
         <h1 className="font-heading text-4xl tracking-tight text-teal-900 sm:text-5xl dark:text-cream">
           Curated Lists
         </h1>
-        <p className="mt-3 font-heading text-lg italic text-sand-400 dark:text-night-400">
+        <p className="mt-3 font-heading text-lg italic text-sand-500 dark:text-night-400">
           Hand-picked collections and reading guides from our community.
         </p>
       </div>
@@ -45,7 +45,7 @@ export default function Lists() {
           <h3 className="font-heading text-xl text-teal-900 dark:text-cream">
             No lists yet
           </h3>
-          <p className="mt-2 text-sm text-sand-400 dark:text-night-400">
+          <p className="mt-2 text-sm text-sand-500 dark:text-night-400">
             Check back soon for curated collections.
           </p>
         </div>

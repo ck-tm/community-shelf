@@ -14,6 +14,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { platformApi } from "../../api/endpoints";
+import { useAuth } from "../../context/AuthContext";
 
 const BASE_DOMAIN = import.meta.env.VITE_BASE_DOMAIN || "localhost";
 
@@ -69,6 +70,7 @@ function getTenantUrl(slug) {
 }
 
 export default function Landing() {
+  const { isAuthenticated } = useAuth();
   const [tenants, setTenants] = useState([]);
   const [tenantsLoading, setTenantsLoading] = useState(true);
 
@@ -113,7 +115,7 @@ export default function Landing() {
 
           {/* Subtitle */}
           <p
-            className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-sand-400 sm:text-xl dark:text-night-400"
+            className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-sand-500 sm:text-xl dark:text-night-400"
             style={{ animation: "fade-up 0.6s ease-out 0.2s both" }}
           >
             Share books, games, music, and more with your neighbors. Everything
@@ -127,15 +129,15 @@ export default function Landing() {
             style={{ animation: "fade-up 0.6s ease-out 0.3s both" }}
           >
             <Link
-              to="/register"
+              to={isAuthenticated ? "/dashboard" : "/register"}
               className="group inline-flex items-center gap-2 rounded-xl bg-teal-700 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-teal-700/20 transition hover:bg-teal-800 hover:shadow-xl hover:shadow-teal-700/25 dark:bg-teal-600 dark:shadow-teal-600/15 dark:hover:bg-teal-700"
             >
-              Create Your Library
+              {isAuthenticated ? "Go to Dashboard" : "Create Your Library"}
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <a
               href="#libraries"
-              className="inline-flex items-center gap-2 rounded-xl bg-warm px-7 py-3.5 text-sm font-semibold text-sand-400 ring-1 ring-sand-200/60 transition hover:bg-sand-100 hover:text-teal-800 dark:bg-night-900 dark:text-night-400 dark:ring-night-700/50 dark:hover:bg-night-800 dark:hover:text-cream"
+              className="inline-flex items-center gap-2 rounded-xl bg-warm px-7 py-3.5 text-sm font-semibold text-teal-800 ring-1 ring-sand-200/60 transition hover:bg-sand-100 hover:text-teal-900 dark:bg-night-900 dark:text-night-300 dark:ring-night-600 dark:hover:bg-night-800 dark:hover:text-cream"
             >
               See It in Action
             </a>
@@ -153,35 +155,41 @@ export default function Landing() {
             <h2 className="font-heading text-4xl text-teal-900 sm:text-5xl dark:text-cream">
               Built for Community Librarians
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-sand-400 dark:text-night-400">
+            <p className="mx-auto mt-4 max-w-xl text-sand-500 dark:text-night-400">
               Catalog your collection, manage lending, and make your library
               feel like home.
             </p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {FEATURES.map((feature, i) => (
-              <div
-                key={feature.title}
-                className="group rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:ring-sand-200 dark:bg-night-900 dark:ring-night-700/50 dark:hover:ring-night-600"
-                style={{
-                  animation: `fade-up 0.6s ease-out ${0.1 + i * 0.08}s both`,
-                }}
-              >
+            {FEATURES.map((feature, i) => {
+              const isLast = i === FEATURES.length - 1;
+              const isOrphan = FEATURES.length % 3 === 1 && isLast;
+              return (
                 <div
-                  className="mb-4 inline-flex size-10 items-center justify-center rounded-xl text-white shadow-sm"
-                  style={{ backgroundColor: feature.accent }}
+                  key={feature.title}
+                  className={`group rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:ring-sand-200 dark:bg-night-900 dark:ring-night-700/50 dark:hover:ring-night-600${
+                    isOrphan ? " sm:col-span-2 lg:col-span-3" : ""
+                  }`}
+                  style={{
+                    animation: `fade-up 0.6s ease-out ${0.1 + i * 0.08}s both`,
+                  }}
                 >
-                  <feature.icon className="size-5" />
+                  <div
+                    className="mb-4 inline-flex size-10 items-center justify-center rounded-xl text-white shadow-sm"
+                    style={{ backgroundColor: feature.accent }}
+                  >
+                    <feature.icon className="size-5" />
+                  </div>
+                  <h3 className="mb-2 font-heading text-xl text-teal-900 dark:text-cream">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-sand-500 dark:text-night-400">
+                    {feature.desc}
+                  </p>
                 </div>
-                <h3 className="mb-2 font-heading text-xl text-teal-900 dark:text-cream">
-                  {feature.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-sand-400 dark:text-night-400">
-                  {feature.desc}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -202,7 +210,7 @@ export default function Landing() {
             <h2 className="font-heading text-4xl text-teal-900 sm:text-5xl dark:text-cream">
               Libraries Already Using Community Shelf
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-sand-400 dark:text-night-400">
+            <p className="mx-auto mt-4 max-w-xl text-sand-500 dark:text-night-400">
               See what other communities have built.
             </p>
           </div>
@@ -222,7 +230,7 @@ export default function Landing() {
               style={{ animation: "fade-up 0.6s ease-out 0.1s both" }}
             >
               <Library className="mx-auto mb-4 size-10 text-sand-300 dark:text-night-500" />
-              <p className="text-sand-400 dark:text-night-400">
+              <p className="text-sand-500 dark:text-night-400">
                 No public libraries yet. Be the first to{" "}
                 <Link
                   to="/register"
@@ -234,7 +242,13 @@ export default function Landing() {
               </p>
             </div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div
+              className={
+                tenants.length < 3
+                  ? "mx-auto flex max-w-md flex-col gap-4"
+                  : "grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+              }
+            >
               {tenants.map((tenant, i) => (
                 <a
                   key={tenant.id}
@@ -252,7 +266,7 @@ export default function Landing() {
                       <h3 className="font-heading text-lg text-teal-900 dark:text-cream">
                         {tenant.name}
                       </h3>
-                      <p className="text-xs text-sand-300 dark:text-night-500">
+                      <p className="text-xs text-sand-500 dark:text-night-400">
                         {tenant.slug}.{BASE_DOMAIN}
                       </p>
                     </div>
@@ -274,32 +288,20 @@ export default function Landing() {
           <h2 className="font-heading text-3xl text-white sm:text-4xl">
             Ready to Share?
           </h2>
-          <p className="mx-auto mt-4 max-w-lg text-teal-100/70">
+          <p className="mx-auto mt-4 max-w-lg text-teal-100/80">
             Create a free account and we'll have your library up and running
             in minutes.
           </p>
           <Link
-            to="/register"
+            to={isAuthenticated ? "/dashboard" : "/register"}
             className="group mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3.5 text-sm font-semibold text-teal-800 shadow-lg transition hover:bg-cream hover:shadow-xl"
           >
-            Create Your Free Library
+            {isAuthenticated ? "Go to Dashboard" : "Create Your Free Library"}
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
       </section>
 
-      {/* ── FOOTER ────────────────────────────────────────────── */}
-      <footer className="border-t border-sand-200/60 px-4 py-8 dark:border-night-800/60">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <div className="flex items-center gap-2 text-sand-300 dark:text-night-500">
-            <Library className="size-4" />
-            <span className="text-sm font-medium">Community Shelf</span>
-          </div>
-          <p className="text-xs text-sand-300 dark:text-night-500">
-            &copy; {new Date().getFullYear()} Community Shelf
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

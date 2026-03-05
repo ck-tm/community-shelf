@@ -27,7 +27,7 @@ export default function MyRentals() {
         <h1 className="font-heading text-3xl text-teal-900 dark:text-cream">
           My Rentals
         </h1>
-        <p className="mt-1 text-sand-400 dark:text-night-400">
+        <p className="mt-1 text-sand-500 dark:text-night-400">
           Track your active loans and request history.
         </p>
       </div>
@@ -65,7 +65,7 @@ export default function MyRentals() {
             className={`flex items-center justify-between rounded-2xl border-l-4 bg-warm p-6 ring-1 ring-sand-200/50 transition-colors duration-300 dark:bg-night-900 dark:ring-night-700/50 ${s.accent}`}
           >
             <div>
-              <p className="text-sm font-medium text-sand-400 dark:text-night-400">
+              <p className="text-sm font-medium text-sand-500 dark:text-night-400">
                 {s.label}
               </p>
               <p className="mt-1 text-3xl font-bold text-teal-900 dark:text-cream">
@@ -96,7 +96,7 @@ export default function MyRentals() {
                 <p className="truncate font-semibold text-teal-900 dark:text-cream">
                   {inq.title}
                 </p>
-                <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-sand-400 dark:text-night-400">
+                <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-sand-500 dark:text-night-400">
                   <span className="flex items-center gap-1">
                     <TypeIcon type={inq.type} className="size-3.5" />
                     {inq.type}
@@ -128,7 +128,7 @@ export default function MyRentals() {
         ))}
 
         {inquiries.length === 0 && (
-          <p className="py-12 text-center text-sand-300 dark:text-night-400">
+          <p className="py-12 text-center text-sand-300 dark:text-night-500">
             No inquiries yet. Start browsing to request items!
           </p>
         )}

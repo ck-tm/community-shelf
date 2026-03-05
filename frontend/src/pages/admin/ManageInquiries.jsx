@@ -87,7 +87,7 @@ export default function ManageInquiries() {
         <h1 className="font-heading text-3xl text-teal-900 dark:text-cream">
           Inquiries
         </h1>
-        <p className="mt-1 text-sand-400 dark:text-night-400">
+        <p className="mt-1 text-sand-500 dark:text-night-400">
           Manage loan requests, active rentals, and returns.
         </p>
       </div>
@@ -104,7 +104,7 @@ export default function ManageInquiries() {
             className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150 ${
               activeTab === tab.key
                 ? "bg-white text-teal-800 shadow-sm dark:bg-night-700 dark:text-teal-400"
-                : "text-sand-400 hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
+                : "text-sand-500 hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
             }`}
           >
             {tab.label}
@@ -126,7 +126,7 @@ export default function ManageInquiries() {
                   <p className="truncate font-semibold text-teal-900 dark:text-cream">
                     {inq.title}
                   </p>
-                  <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-sand-400 dark:text-night-400">
+                  <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-sand-500 dark:text-night-400">
                     <span className="flex items-center gap-1">
                       <TypeIcon type={inq.type} className="size-3.5" />
                       {inq.type}
@@ -134,7 +134,7 @@ export default function ManageInquiries() {
                     <span className="text-sand-200 dark:text-night-600">·</span>
                     <span>{inq.requestDate}</span>
                   </div>
-                  <div className="mt-1 flex items-center gap-1 text-xs text-sand-400 dark:text-night-400">
+                  <div className="mt-1 flex items-center gap-1 text-xs text-sand-500 dark:text-night-400">
                     <User className="size-3" />
                     {inq.userName || inq.userEmail}
                     {inq.userName && (
@@ -152,7 +152,7 @@ export default function ManageInquiries() {
                   style={{ animation: "fade-up 0.3s ease-out both" }}
                 >
                   <div>
-                    <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+                    <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
                       Period (days)
                     </label>
                     <input
@@ -174,7 +174,7 @@ export default function ManageInquiries() {
                   </button>
                   <button
                     onClick={() => setAccepting(null)}
-                    className="rounded-lg bg-sand-100 p-2 text-sand-400 transition hover:bg-sand-200 dark:bg-night-700 dark:text-night-400"
+                    className="rounded-lg bg-sand-100 p-2 text-sand-500 transition hover:bg-sand-200 dark:bg-night-700 dark:text-night-400"
                   >
                     <X className="size-4" />
                   </button>
@@ -216,7 +216,7 @@ export default function ManageInquiries() {
                   <p className="truncate font-semibold text-teal-900 dark:text-cream">
                     {inq.title}
                   </p>
-                  <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-sand-400 dark:text-night-400">
+                  <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-sand-500 dark:text-night-400">
                     <span className="flex items-center gap-1">
                       <TypeIcon type={inq.type} className="size-3.5" />
                       {inq.type}
@@ -234,7 +234,7 @@ export default function ManageInquiries() {
                       </>
                     )}
                   </div>
-                  <div className="mt-1 flex items-center gap-1 text-xs text-sand-400 dark:text-night-400">
+                  <div className="mt-1 flex items-center gap-1 text-xs text-sand-500 dark:text-night-400">
                     <User className="size-3" />
                     {inq.userName || inq.userEmail}
                     {inq.userName && (
@@ -275,7 +275,7 @@ export default function ManageInquiries() {
                       }
                       className={`${inputClass} w-20`}
                     />
-                    <span className="text-xs text-sand-400 dark:text-night-400">
+                    <span className="text-xs text-sand-500 dark:text-night-400">
                       → {inq.dueDate ? addDays(inq.dueDate, extending.days) : "—"}
                     </span>
                     <button
@@ -287,7 +287,7 @@ export default function ManageInquiries() {
                     </button>
                     <button
                       onClick={() => setExtending(null)}
-                      className="rounded-lg bg-sand-100 p-1.5 text-sand-400 transition hover:bg-sand-200 dark:bg-night-700 dark:text-night-400"
+                      className="rounded-lg bg-sand-100 p-1.5 text-sand-500 transition hover:bg-sand-200 dark:bg-night-700 dark:text-night-400"
                     >
                       <X className="size-3.5" />
                     </button>
@@ -317,7 +317,7 @@ export default function ManageInquiries() {
                   <p className="truncate font-semibold text-teal-900 dark:text-cream">
                     {inq.title}
                   </p>
-                  <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-sand-400 dark:text-night-400">
+                  <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-sand-500 dark:text-night-400">
                     <span className="flex items-center gap-1">
                       <TypeIcon type={inq.type} className="size-3.5" />
                       {inq.type}
@@ -325,7 +325,7 @@ export default function ManageInquiries() {
                     <span className="text-sand-200 dark:text-night-600">·</span>
                     <span>Requested: {inq.requestDate}</span>
                   </div>
-                  <div className="mt-1 flex items-center gap-1 text-xs text-sand-400 dark:text-night-400">
+                  <div className="mt-1 flex items-center gap-1 text-xs text-sand-500 dark:text-night-400">
                     <User className="size-3" />
                     {inq.userName || inq.userEmail}
                     {inq.userName && (
@@ -333,7 +333,7 @@ export default function ManageInquiries() {
                     )}
                   </div>
                   {(inq.returnDate || inq.rentalPeriod) && (
-                    <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-sand-400 dark:text-night-400">
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-sand-500 dark:text-night-400">
                       {inq.returnDate && <span>Returned: {inq.returnDate}</span>}
                       {inq.returnDate && inq.rentalPeriod && (
                         <span className="text-sand-200 dark:text-night-600">·</span>
@@ -342,7 +342,7 @@ export default function ManageInquiries() {
                     </div>
                   )}
                   {inq.notes && (
-                    <p className="mt-1.5 text-xs text-sand-400 dark:text-night-400">
+                    <p className="mt-1.5 text-xs text-sand-500 dark:text-night-400">
                       {inq.notes}
                     </p>
                   )}

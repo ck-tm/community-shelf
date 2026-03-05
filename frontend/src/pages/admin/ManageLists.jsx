@@ -18,7 +18,7 @@ export default function ManageLists() {
           <h1 className="font-heading text-3xl text-teal-900 dark:text-cream">
             Curated Lists
           </h1>
-          <p className="mt-1 text-sm text-sand-400 dark:text-night-400">
+          <p className="mt-1 text-sm text-sand-500 dark:text-night-400">
             {curatedLists.length} lists published.
           </p>
         </div>
@@ -65,13 +65,13 @@ export default function ManageLists() {
               <div className="flex items-center gap-1">
                 <Link
                   to={`/admin/lists/${list.id}/edit`}
-                  className="rounded-lg p-2 text-sand-400 transition hover:bg-sand-100 hover:text-teal-800 dark:text-night-400 dark:hover:bg-night-800 dark:hover:text-teal-400"
+                  className="rounded-lg p-2 text-sand-500 transition hover:bg-sand-100 hover:text-teal-800 dark:text-night-400 dark:hover:bg-night-800 dark:hover:text-teal-400"
                 >
                   <Pencil className="size-4" />
                 </Link>
                 <button
                   onClick={() => setDeleting(list)}
-                  className="rounded-lg p-2 text-sand-400 transition hover:bg-red-50 hover:text-red-600 dark:text-night-400 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+                  className="rounded-lg p-2 text-sand-500 transition hover:bg-red-50 hover:text-red-600 dark:text-night-400 dark:hover:bg-red-900/20 dark:hover:text-red-400"
                 >
                   <Trash2 className="size-4" />
                 </button>

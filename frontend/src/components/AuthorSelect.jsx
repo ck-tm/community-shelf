@@ -84,7 +84,7 @@ export default function AuthorSelect({ authors, value, onChange }) {
     <div className="relative">
       {/* Trigger button */}
       <div className="relative" ref={buttonRef}>
-        <User className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-sand-400 dark:text-night-400" />
+        <User className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-sand-500 dark:text-night-400" />
         <button
           type="button"
           onClick={() => (open ? closeDropdown() : openDropdown())}
@@ -92,16 +92,16 @@ export default function AuthorSelect({ authors, value, onChange }) {
             open ? "bg-white ring-2 ring-teal-700/30 dark:bg-night-800" : "ring-sand-300/60"
           }`}
         >
-          <span className={`truncate ${value ? "text-teal-900 dark:text-cream" : "text-sand-400 dark:text-night-400"}`}>
+          <span className={`truncate ${value ? "text-teal-900 dark:text-cream" : "text-sand-500 dark:text-night-400"}`}>
             {value || "Filter by author…"}
           </span>
           {value ? (
             <X
-              className="ml-2 size-4 shrink-0 text-sand-400 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
+              className="ml-2 size-4 shrink-0 text-sand-500 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
               onClick={clear}
             />
           ) : (
-            <ChevronDown className={`ml-2 size-4 shrink-0 text-sand-400 transition-transform dark:text-night-400 ${open ? "rotate-180" : ""}`} />
+            <ChevronDown className={`ml-2 size-4 shrink-0 text-sand-500 transition-transform dark:text-night-400 ${open ? "rotate-180" : ""}`} />
           )}
         </button>
       </div>
@@ -116,7 +116,7 @@ export default function AuthorSelect({ authors, value, onChange }) {
           {/* Search */}
           <div className="border-b border-sand-100/80 p-2 dark:border-night-700">
             <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-sand-400 dark:text-night-400" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-sand-500 dark:text-night-400" />
               <input
                 ref={inputRef}
                 type="text"

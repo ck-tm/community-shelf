@@ -49,7 +49,7 @@ export default function Navbar() {
     `relative text-sm font-medium transition-colors duration-200 ${
       isActive
         ? "text-teal-800 dark:text-teal-400"
-        : "text-sand-400 hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
+        : "text-sand-500 hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
     }`;
 
   const mobileLinkClass = ({ isActive }) =>
@@ -93,7 +93,7 @@ export default function Navbar() {
             {dark ? (
               <Sun className="size-4 text-amber-400" />
             ) : (
-              <Moon className="size-4 text-sand-400" />
+              <Moon className="size-4 text-sand-500" />
             )}
           </button>
 
@@ -105,7 +105,7 @@ export default function Navbar() {
                   `flex size-9 items-center justify-center rounded-full transition-colors duration-200 ${
                     isActive
                       ? "bg-teal-800 text-white dark:bg-teal-700"
-                      : "bg-sand-100 text-sand-400 hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
+                      : "bg-sand-100 text-sand-500 hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
                   }`
                 }
                 aria-label="My Account"
@@ -119,7 +119,7 @@ export default function Navbar() {
                     `flex size-9 items-center justify-center rounded-full transition-colors duration-200 ${
                       isActive
                         ? "bg-teal-800 text-white dark:bg-teal-700"
-                        : "bg-sand-100 text-sand-400 hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
+                        : "bg-sand-100 text-sand-500 hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
                     }`
                   }
                   aria-label="Admin"
@@ -129,7 +129,7 @@ export default function Navbar() {
               )}
               <button
                 onClick={handleLogout}
-                className="flex size-9 items-center justify-center rounded-full bg-sand-100 text-sand-400 transition-colors duration-200 hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
+                className="flex size-9 items-center justify-center rounded-full bg-sand-100 text-sand-500 transition-colors duration-200 hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
                 aria-label="Sign out"
               >
                 <LogOut className="size-4" />
@@ -155,7 +155,7 @@ export default function Navbar() {
             {dark ? (
               <Sun className="size-4 text-amber-400" />
             ) : (
-              <Moon className="size-4 text-sand-400" />
+              <Moon className="size-4 text-sand-500" />
             )}
           </button>
           <button

@@ -75,7 +75,7 @@ export default function Dashboard() {
           <h1 className="font-heading text-4xl text-teal-900 dark:text-cream">
             Dashboard
           </h1>
-          <p className="mt-2 text-sand-400 dark:text-night-400">
+          <p className="mt-2 text-sand-500 dark:text-night-400">
             Welcome back, {user?.first_name || user?.username || user?.email}.
             Manage your library requests below.
           </p>
@@ -154,7 +154,7 @@ export default function Dashboard() {
                             {req.organization_name}
                           </h3>
                           {req.description && (
-                            <p className="mt-1 text-sm text-sand-400 dark:text-night-400">
+                            <p className="mt-1 text-sm text-sand-500 dark:text-night-400">
                               {req.description}
                             </p>
                           )}
@@ -272,7 +272,7 @@ export default function Dashboard() {
                         setShowForm(false);
                         setError(null);
                       }}
-                      className="rounded-xl px-5 py-2.5 text-sm font-medium text-sand-400 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-cream"
+                      className="rounded-xl px-5 py-2.5 text-sm font-medium text-sand-500 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-cream"
                     >
                       Cancel
                     </button>
@@ -281,7 +281,7 @@ export default function Dashboard() {
               ) : (
                 <button
                   onClick={() => setShowForm(true)}
-                  className="group flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-sand-200 py-6 text-sm font-semibold text-sand-400 transition hover:border-teal-700/30 hover:text-teal-700 dark:border-night-700 dark:text-night-400 dark:hover:border-teal-400/30 dark:hover:text-teal-400"
+                  className="group flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-sand-200 py-6 text-sm font-semibold text-sand-500 transition hover:border-teal-700/30 hover:text-teal-700 dark:border-night-700 dark:text-night-400 dark:hover:border-teal-400/30 dark:hover:text-teal-400"
                 >
                   <Plus className="size-4" />
                   Request a New Library

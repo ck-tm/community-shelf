@@ -1,0 +1,46 @@
+{% extends "emails/base.html" %}
+
+{% block subject %}New borrow request — {{ inquiry.title_name }}{% endblock %}
+{% block header_subtitle %}Borrow Request{% endblock %}
+
+{% block content %}
+<h2>New borrow request</h2>
+<p><strong>{{ user_name }}</strong> has requested to borrow an item from {{ library_name }}.</p>
+
+<table class="details" role="presentation" cellpadding="0" cellspacing="0">
+  <tr>
+    <td class="label">Title</td>
+    <td class="value">{{ inquiry.title_name }}</td>
+  </tr>
+  {% if inquiry.type_name %}
+  <tr>
+    <td class="label">Type</td>
+    <td class="value">{{ inquiry.type_name }}</td>
+  </tr>
+  {% endif %}
+  {% if copy_condition %}
+  <tr>
+    <td class="label">Copy</td>
+    <td class="value">{{ copy_condition }}</td>
+  </tr>
+  {% endif %}
+  {% if inquiry.notes %}
+  <tr>
+    <td class="label">Notes</td>
+    <td class="value">{{ inquiry.notes }}</td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td class="label">Date</td>
+    <td class="value">{{ inquiry.request_date }}</td>
+  </tr>
+  <tr>
+    <td class="label">Requested by</td>
+    <td class="value">{{ user_name }} ({{ user_email }})</td>
+  </tr>
+</table>
+
+<p style="text-align: center; margin-top: 24px;">
+  <a href="{{ admin_url }}" class="cta">View in Admin</a>
+</p>
+{% endblock %}

@@ -27,6 +27,17 @@ STORAGES = {
 # Media
 MEDIA_ROOT = "/app/media"
 
+# Anymail
+INSTALLED_APPS += ["anymail"]  # noqa: F405
+
+# Email (Mailgun API)
+EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
+ANYMAIL = {
+    "MAILGUN_API_KEY": os.environ.get("MAILGUN_API_KEY", ""),
+    "MAILGUN_SENDER_DOMAIN": os.environ.get("MAILGUN_DOMAIN", "mg.costico.eu"),
+    "MAILGUN_API_URL": "https://api.eu.mailgun.net/v3",
+}
+
 # Redis cache
 CACHES = {
     "default": {

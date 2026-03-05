@@ -92,7 +92,7 @@ export default function SiteConfig() {
         <h1 className="font-heading text-3xl text-teal-900 dark:text-cream">
           Site Config
         </h1>
-        <p className="mt-1 text-sand-400 dark:text-night-400">
+        <p className="mt-1 text-sand-500 dark:text-night-400">
           Customize your community library's identity and theme.
         </p>
       </div>
@@ -105,7 +105,7 @@ export default function SiteConfig() {
       >
         {/* Logo Upload */}
         <div>
-          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
             Logo
           </label>
           <div className="flex items-center gap-4">
@@ -125,7 +125,7 @@ export default function SiteConfig() {
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-sand-100 px-3 py-2 text-xs font-semibold text-sand-400 transition hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-sand-100 px-3 py-2 text-xs font-semibold text-sand-500 transition hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
               >
                 <Upload className="size-3.5" />
                 Upload Image
@@ -157,7 +157,7 @@ export default function SiteConfig() {
 
         {/* Site Title */}
         <div>
-          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
             Site Title <span className="text-red-400">*</span>
           </label>
           <input
@@ -171,7 +171,7 @@ export default function SiteConfig() {
 
         {/* Site Description */}
         <div>
-          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
             Site Description
           </label>
           <textarea
@@ -186,13 +186,13 @@ export default function SiteConfig() {
         {/* Theme Colors */}
         <div className="border-t border-sand-200/60 pt-5 dark:border-night-700/50">
           <div className="mb-4 flex items-center justify-between">
-            <label className="text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+            <label className="text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
               Theme Colors
             </label>
             <button
               type="button"
               onClick={resetColors}
-              className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-sand-400 transition hover:bg-sand-100 dark:text-night-400 dark:hover:bg-night-800"
+              className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-sand-500 transition hover:bg-sand-100 dark:text-night-400 dark:hover:bg-night-800"
             >
               <RotateCcw className="size-3" />
               Reset
@@ -259,7 +259,7 @@ export default function SiteConfig() {
         className="mt-6 rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50"
         style={{ animation: "fade-up 0.6s ease-out 0.2s both" }}
       >
-        <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+        <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
           Preview
         </h2>
         <div className="flex items-center gap-2.5">
@@ -279,7 +279,7 @@ export default function SiteConfig() {
           </span>
         </div>
         {form.description && (
-          <p className="mt-3 text-sm italic text-sand-400 dark:text-night-400">
+          <p className="mt-3 text-sm italic text-sand-500 dark:text-night-400">
             {form.description}
           </p>
         )}

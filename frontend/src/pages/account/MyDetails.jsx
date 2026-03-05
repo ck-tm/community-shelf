@@ -65,7 +65,7 @@ export default function MyDetails() {
         <h1 className="font-heading text-3xl text-teal-900 dark:text-cream">
           My Details
         </h1>
-        <p className="mt-1 text-sand-400 dark:text-night-400">
+        <p className="mt-1 text-sand-500 dark:text-night-400">
           Update your personal information.
         </p>
       </div>
@@ -83,7 +83,7 @@ export default function MyDetails() {
         <form onSubmit={handleSave} className="space-y-5 p-6">
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
                 First Name
               </label>
               <input
@@ -94,7 +94,7 @@ export default function MyDetails() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
                 Last Name
               </label>
               <input
@@ -106,7 +106,7 @@ export default function MyDetails() {
             </div>
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
               Email
             </label>
             <input
@@ -121,7 +121,7 @@ export default function MyDetails() {
           </div>
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
                 Phone
               </label>
               <input
@@ -132,7 +132,7 @@ export default function MyDetails() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-night-400">
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
                 Address
               </label>
               <input

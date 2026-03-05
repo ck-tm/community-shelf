@@ -24,7 +24,7 @@ export default function ListCard({ list }) {
         <h3 className="font-semibold text-teal-900 transition-colors duration-200 group-hover:text-teal-700 dark:text-cream dark:group-hover:text-teal-400">
           {list.title}
         </h3>
-        <p className="mt-1 line-clamp-2 text-sm text-sand-400 dark:text-night-400">
+        <p className="mt-1 line-clamp-2 text-sm text-sand-500 dark:text-night-400">
           {list.description}
         </p>
         <div className="mt-3 flex items-center justify-between">

@@ -33,7 +33,7 @@ export default function About() {
         <h1 className="font-heading text-4xl tracking-tight text-teal-900 sm:text-5xl dark:text-cream">
           About {siteConfig.title}
         </h1>
-        <p className="mt-3 font-heading text-lg italic text-sand-400 dark:text-night-400">
+        <p className="mt-3 font-heading text-lg italic text-sand-500 dark:text-night-400">
           {siteConfig.description}
         </p>
       </div>
@@ -49,7 +49,7 @@ export default function About() {
             <h2 className="font-heading text-2xl text-teal-900 dark:text-cream">
               Our Mission
             </h2>
-            <p className="mt-3 leading-relaxed text-sand-400 dark:text-night-400">
+            <p className="mt-3 leading-relaxed text-sand-500 dark:text-night-400">
               {siteConfig.title} connects people with the things their community
               has to share. Instead of buying new, borrow from your neighbors.
               Instead of collecting dust, let your books find new readers. We
@@ -81,7 +81,7 @@ export default function About() {
               <h3 className="font-semibold text-teal-900 dark:text-cream">
                 {step.title}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-sand-400 dark:text-night-400">
+              <p className="mt-2 text-sm leading-relaxed text-sand-500 dark:text-night-400">
                 {step.text}
               </p>
             </div>
@@ -97,7 +97,7 @@ export default function About() {
         <h2 className="font-heading text-2xl text-teal-900 dark:text-cream">
           Ready to explore?
         </h2>
-        <p className="mt-2 text-sand-400 dark:text-night-400">
+        <p className="mt-2 text-sand-500 dark:text-night-400">
           Browse what your community has to offer.
         </p>
         <Link
