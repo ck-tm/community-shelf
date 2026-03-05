@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Check, Library, Upload, X, RotateCcw } from "lucide-react";
+import { Check, Library, Upload, X, RotateCcw, Palette } from "lucide-react";
 import { useData } from "../../context/DataContext";
 
 const DEFAULT_THEME_COLORS = {
@@ -11,6 +11,74 @@ const DEFAULT_THEME_COLORS = {
   warm: "#f3ede4",
   "amber-500": "#f5a623",
 };
+
+const PRESET_THEMES = [
+  {
+    name: "Classic Teal",
+    description: "The original warm teal palette with amber accents",
+    colors: {
+      "teal-600": "#0d9488",
+      "teal-700": "#0d7377",
+      "teal-800": "#0a5c5f",
+      "teal-900": "#074e52",
+      cream: "#f8f4ed",
+      warm: "#f3ede4",
+      "amber-500": "#f5a623",
+    },
+  },
+  {
+    name: "Scholarly Indigo",
+    description: "Rich navy-indigo inspired by leather-bound books",
+    colors: {
+      "teal-600": "#5b6db4",
+      "teal-700": "#445299",
+      "teal-800": "#2f3d7a",
+      "teal-900": "#1e2851",
+      cream: "#faf8f5",
+      warm: "#f4f0e8",
+      "amber-500": "#d4a574",
+    },
+  },
+  {
+    name: "Forest Sage",
+    description: "Muted forest green evoking nature and growth",
+    colors: {
+      "teal-600": "#5b8b6f",
+      "teal-700": "#44705a",
+      "teal-800": "#2f5a47",
+      "teal-900": "#1d3d31",
+      cream: "#faf8f5",
+      warm: "#f3f0eb",
+      "amber-500": "#c9a876",
+    },
+  },
+  {
+    name: "Burgundy Wine",
+    description: "Warm burgundy with earthy gold accents",
+    colors: {
+      "teal-600": "#a04857",
+      "teal-700": "#843d47",
+      "teal-800": "#6a3339",
+      "teal-900": "#4d232d",
+      cream: "#faf8f6",
+      warm: "#f4f0ed",
+      "amber-500": "#d4a574",
+    },
+  },
+  {
+    name: "Warm Terracotta",
+    description: "Earthy terracotta rooted in warmth and heritage",
+    colors: {
+      "teal-600": "#b87654",
+      "teal-700": "#9b6341",
+      "teal-800": "#7f5133",
+      "teal-900": "#5c3a23",
+      cream: "#faf8f5",
+      warm: "#f4f0eb",
+      "amber-500": "#d4a574",
+    },
+  },
+];
 
 
 const THEME_COLOR_LABELS = [
@@ -197,6 +265,61 @@ export default function SiteConfig() {
               <RotateCcw className="size-3" />
               Reset
             </button>
+          </div>
+
+          {/* Preset themes */}
+          <div className="mb-5">
+            <p className="mb-2.5 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-sand-300 dark:text-night-500">
+              <Palette className="size-3" />
+              Quick Start Presets
+            </p>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+              {PRESET_THEMES.map((preset) => {
+                const isActive =
+                  form.themeColors["teal-900"] === preset.colors["teal-900"] &&
+                  form.themeColors["cream"] === preset.colors["cream"];
+                return (
+                  <button
+                    key={preset.name}
+                    type="button"
+                    onClick={() => update({ themeColors: { ...preset.colors } })}
+                    className={`group relative rounded-xl p-2.5 text-left transition ring-1 ${
+                      isActive
+                        ? "ring-2 ring-teal-600 bg-cream dark:ring-teal-400 dark:bg-night-800"
+                        : "ring-sand-200/60 bg-cream hover:ring-sand-300 dark:ring-night-700 dark:bg-night-800 dark:hover:ring-night-600"
+                    }`}
+                  >
+                    {/* Color dots */}
+                    <div className="mb-2 flex gap-1">
+                      {["teal-900", "teal-700", "teal-600", "amber-500"].map(
+                        (k) => (
+                          <div
+                            key={k}
+                            className="size-5 rounded-full ring-1 ring-black/10"
+                            style={{ backgroundColor: preset.colors[k] }}
+                          />
+                        )
+                      )}
+                      <div
+                        className="size-5 rounded-full ring-1 ring-black/10"
+                        style={{ backgroundColor: preset.colors.cream }}
+                      />
+                    </div>
+                    <p className="text-xs font-semibold text-teal-900 dark:text-cream">
+                      {preset.name}
+                    </p>
+                    <p className="mt-0.5 text-[10px] leading-tight text-sand-500 dark:text-night-400">
+                      {preset.description}
+                    </p>
+                    {isActive && (
+                      <div className="absolute right-1.5 top-1.5 flex size-4 items-center justify-center rounded-full bg-teal-600 text-white dark:bg-teal-400 dark:text-night-950">
+                        <Check className="size-2.5" />
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className="space-y-4">
