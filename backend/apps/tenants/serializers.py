@@ -13,6 +13,8 @@ class LibraryRequestSerializer(serializers.ModelSerializer):
             "id",
             "user_email",
             "organization_name",
+            "country",
+            "city",
             "description",
             "status",
             "admin_notes",

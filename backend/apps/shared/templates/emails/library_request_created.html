@@ -12,6 +12,12 @@
     <td class="label">Organization</td>
     <td class="value">{{ library_request.organization_name }}</td>
   </tr>
+  {% if library_request.city or library_request.country %}
+  <tr>
+    <td class="label">Location</td>
+    <td class="value">{% if library_request.city %}{{ library_request.city }}{% if library_request.country %}, {% endif %}{% endif %}{{ library_request.country }}</td>
+  </tr>
+  {% endif %}
   {% if library_request.description %}
   <tr>
     <td class="label">Description</td>

@@ -33,10 +33,10 @@ class DomainAdmin(ModelAdmin):
 
 @admin.register(LibraryRequest)
 class LibraryRequestAdmin(ModelAdmin):
-    list_display = ("organization_name", "user", "status", "tenant", "created_at")
+    list_display = ("organization_name", "user", "city", "country", "status", "tenant", "created_at")
     list_filter = ("status",)
-    search_fields = ("organization_name", "user__email")
-    readonly_fields = ("user", "organization_name", "description", "created_at")
+    search_fields = ("organization_name", "user__email", "city", "country")
+    readonly_fields = ("user", "organization_name", "country", "city", "description", "created_at")
     actions_detail = ["approve_and_create_tenant"]
 
     @action(

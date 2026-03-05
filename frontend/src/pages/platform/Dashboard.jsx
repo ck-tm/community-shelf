@@ -26,7 +26,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ organization_name: "", description: "" });
+  const [form, setForm] = useState({ organization_name: "", country: "", city: "", description: "" });
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function Dashboard() {
     setSubmitting(true);
     try {
       await platformApi.createLibraryRequest(form);
-      setForm({ organization_name: "", description: "" });
+      setForm({ organization_name: "", country: "", city: "", description: "" });
       setShowForm(false);
       await loadRequests();
     } catch (err) {
@@ -232,6 +232,43 @@ export default function Dashboard() {
                         placeholder="e.g. Greenwood Neighborhood Library"
                         className="w-full rounded-xl border-0 bg-cream px-4 py-3 text-sm text-teal-900 ring-1 ring-sand-200 placeholder:text-sand-300 focus:outline-none focus:ring-2 focus:ring-teal-700/50 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-500 dark:focus:ring-teal-400/50"
                       />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="mb-1.5 block text-sm font-medium text-teal-900 dark:text-cream">
+                          Country{" "}
+                          <span className="font-normal text-sand-300 dark:text-night-500">
+                            (optional)
+                          </span>
+                        </label>
+                        <input
+                          type="text"
+                          value={form.country}
+                          onChange={(e) =>
+                            setForm((f) => ({ ...f, country: e.target.value }))
+                          }
+                          placeholder="e.g. Romania"
+                          className="w-full rounded-xl border-0 bg-cream px-4 py-3 text-sm text-teal-900 ring-1 ring-sand-200 placeholder:text-sand-300 focus:outline-none focus:ring-2 focus:ring-teal-700/50 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-500 dark:focus:ring-teal-400/50"
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-1.5 block text-sm font-medium text-teal-900 dark:text-cream">
+                          City{" "}
+                          <span className="font-normal text-sand-300 dark:text-night-500">
+                            (optional)
+                          </span>
+                        </label>
+                        <input
+                          type="text"
+                          value={form.city}
+                          onChange={(e) =>
+                            setForm((f) => ({ ...f, city: e.target.value }))
+                          }
+                          placeholder="e.g. Timișoara"
+                          className="w-full rounded-xl border-0 bg-cream px-4 py-3 text-sm text-teal-900 ring-1 ring-sand-200 placeholder:text-sand-300 focus:outline-none focus:ring-2 focus:ring-teal-700/50 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-500 dark:focus:ring-teal-400/50"
+                        />
+                      </div>
                     </div>
 
                     <div>
