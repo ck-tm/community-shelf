@@ -71,3 +71,45 @@ body:where(.dark *) {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* ── Shelf view: 3D book spine flip ────────────────────────── */
+
+@keyframes shelf-slide-in {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.perspective-shelf {
+  perspective: 1200px;
+}
+
+.book-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              z-index 0s 0.3s;
+  z-index: 1;
+}
+
+.book-3d.is-flipped {
+  transform: rotateY(-180deg);
+  z-index: 10;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              z-index 0s 0s;
+}
+
+.book-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.book-face-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: rotateY(180deg);
+}
+
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}

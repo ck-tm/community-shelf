@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   BookOpen,
-  Copy,
-  ClipboardList,
+  Eye,
+  HandHelping,
   Layers,
   Palette,
   Globe,
@@ -21,43 +21,43 @@ const FEATURES = [
   {
     icon: BookOpen,
     title: "Catalog Management",
-    desc: "Organize your entire collection — books, media, games, and more — with rich metadata and cover art.",
+    desc: "Add books, games, music, and more — complete with cover art and details, auto-filled for you.",
     accent: "#0d7377",
   },
   {
     icon: ScanBarcode,
     title: "ISBN Scanner",
-    desc: "Scan book barcodes to instantly import titles with full metadata, or bulk-import your entire collection.",
+    desc: "Point your phone at a barcode to add a book in seconds. Got a big collection? Bulk-import it.",
     accent: "#0a5c5f",
   },
   {
-    icon: Copy,
-    title: "Copy Tracking",
-    desc: "Track every physical copy with conditions, locations, and real-time availability status.",
+    icon: Eye,
+    title: "Availability Tracking",
+    desc: "See which items are available, who has what, and where each copy lives — all in real time.",
     accent: "#074e52",
   },
   {
-    icon: ClipboardList,
-    title: "Rental System",
-    desc: "Handle borrow requests, approvals, due dates, and returns with a streamlined workflow.",
+    icon: HandHelping,
+    title: "Lending & Returns",
+    desc: "Members request a borrow, you approve it, they return it. Due date reminders happen automatically.",
     accent: "#f5a623",
   },
   {
     icon: Layers,
     title: "Curated Lists",
-    desc: "Create themed collections and reading lists to guide your community's discovery.",
+    desc: "Build reading lists, seasonal picks, or \"staff favorites\" to help members find their next read.",
     accent: "#0d9488",
   },
   {
     icon: Palette,
     title: "Custom Branding",
-    desc: "Make it yours with a custom logo, color palette, and site identity that reflects your community.",
+    desc: "Add your logo, pick your colors, and make the library feel like it belongs to your community.",
     accent: "#074e52",
   },
   {
     icon: Globe,
     title: "Your Own Space",
-    desc: "Each library gets its own isolated space — separate catalogs, members, and admin controls.",
+    desc: "Your library is completely yours — your own catalog, members, and settings, separate from everyone else.",
     accent: "#0d7377",
   },
 ];
@@ -97,7 +97,7 @@ export default function Landing() {
             style={{ animation: "fade-up 0.6s ease-out both" }}
           >
             <Sparkles className="size-3.5" />
-            Free for community organizations
+            Free for every community
           </div>
 
           {/* Headline */}
@@ -105,7 +105,7 @@ export default function Landing() {
             className="font-heading text-5xl leading-[1.1] text-teal-900 sm:text-6xl lg:text-7xl dark:text-cream"
             style={{ animation: "fade-up 0.6s ease-out 0.1s both" }}
           >
-            Your Community
+            Your Neighborhood
             <br />
             <span className="text-teal-700 dark:text-teal-400">Library</span>,
             Online
@@ -116,9 +116,9 @@ export default function Landing() {
             className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-sand-400 sm:text-xl dark:text-night-400"
             style={{ animation: "fade-up 0.6s ease-out 0.2s both" }}
           >
-            Share books, games, music, and more with your neighborhood. Community
-            Shelf gives every community the tools to run a beautiful, modern
-            lending library.
+            Share books, games, music, and more with your neighbors. Everything
+            you need to run a beautiful lending library — no tech skills
+            required.
           </p>
 
           {/* CTAs */}
@@ -130,14 +130,14 @@ export default function Landing() {
               to="/register"
               className="group inline-flex items-center gap-2 rounded-xl bg-teal-700 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-teal-700/20 transition hover:bg-teal-800 hover:shadow-xl hover:shadow-teal-700/25 dark:bg-teal-600 dark:shadow-teal-600/15 dark:hover:bg-teal-700"
             >
-              Get Started Free
+              Create Your Library
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <a
               href="#libraries"
               className="inline-flex items-center gap-2 rounded-xl bg-warm px-7 py-3.5 text-sm font-semibold text-sand-400 ring-1 ring-sand-200/60 transition hover:bg-sand-100 hover:text-teal-800 dark:bg-night-900 dark:text-night-400 dark:ring-night-700/50 dark:hover:bg-night-800 dark:hover:text-cream"
             >
-              Explore Libraries
+              See It in Action
             </a>
           </div>
         </div>
@@ -151,11 +151,11 @@ export default function Landing() {
             style={{ animation: "fade-up 0.6s ease-out both" }}
           >
             <h2 className="font-heading text-4xl text-teal-900 sm:text-5xl dark:text-cream">
-              Everything You Need
+              Built for Community Librarians
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-sand-400 dark:text-night-400">
-              A complete toolkit for running your community library — from
-              cataloging to custom branding.
+              Catalog your collection, manage lending, and make your library
+              feel like home.
             </p>
           </div>
 
@@ -200,10 +200,10 @@ export default function Landing() {
             style={{ animation: "fade-up 0.6s ease-out both" }}
           >
             <h2 className="font-heading text-4xl text-teal-900 sm:text-5xl dark:text-cream">
-              Explore Libraries
+              Libraries Already Using Community Shelf
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-sand-400 dark:text-night-400">
-              Discover community libraries already powered by Community Shelf.
+              See what other communities have built.
             </p>
           </div>
 
@@ -272,17 +272,17 @@ export default function Landing() {
           style={{ animation: "fade-up 0.6s ease-out both" }}
         >
           <h2 className="font-heading text-3xl text-white sm:text-4xl">
-            Start Your Library Today
+            Ready to Share?
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-teal-100/70">
-            Create a free account and request your own community library space.
-            We'll get you set up in no time.
+            Create a free account and we'll have your library up and running
+            in minutes.
           </p>
           <Link
             to="/register"
             className="group mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3.5 text-sm font-semibold text-teal-800 shadow-lg transition hover:bg-cream hover:shadow-xl"
           >
-            Get Started Free
+            Create Your Free Library
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>

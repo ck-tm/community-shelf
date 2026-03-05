@@ -1,9 +1,10 @@
-import { useState, useEffect, useMemo } from "react";
-import { Search, BookOpen, ChevronDown, LayoutGrid, List, ChevronLeft, ChevronRight, ArrowRight, Layers } from "lucide-react";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { Search, BookOpen, ChevronDown, LayoutGrid, List, ChevronLeft, ChevronRight, ArrowRight, Layers, Library } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useData } from "../context/DataContext";
 import { publicApi } from "../api/endpoints";
 import TitleCard from "../components/TitleCard";
+import ShelfView from "../components/ShelfView";
 import TypeIcon from "../components/TypeIcon";
 import AuthorSelect from "../components/AuthorSelect";
 import ListCard from "../components/ListCard";
@@ -26,6 +27,12 @@ export default function Browse() {
   const [view, setView] = useState("grid");
   const [page, setPage] = useState(1);
 
+  // Shelf view: infinite scroll state
+  const [shelfTitles, setShelfTitles] = useState([]);
+  const [shelfPage, setShelfPage] = useState(1);
+  const [shelfHasMore, setShelfHasMore] = useState(true);
+  const [shelfLoading, setShelfLoading] = useState(false);
+
   // Authors list for the select dropdown
   const [authors, setAuthors] = useState([]);
   useEffect(() => {
@@ -40,7 +47,12 @@ export default function Browse() {
   }, [search]);
 
   // Reset to page 1 on filter changes
-  useEffect(() => { setPage(1); }, [debouncedSearch, authorSearch, type, sort]);
+  useEffect(() => {
+    setPage(1);
+    setShelfTitles([]);
+    setShelfPage(1);
+    setShelfHasMore(true);
+  }, [debouncedSearch, authorSearch, type, sort]);
 
   // Server fetch
   const [titles, setTitles] = useState([]);
@@ -63,6 +75,41 @@ export default function Browse() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [page, debouncedSearch, authorSearch, type, sort]);
+
+  // Shelf-specific fetch (infinite scroll — accumulates results)
+  useEffect(() => {
+    if (view !== "shelf") return;
+
+    setShelfLoading(true);
+    const params = {
+      page: shelfPage,
+      page_size: PAGE_SIZE,
+      ordering: SORT_MAP[sort] || "-year",
+    };
+    if (debouncedSearch) params.search = debouncedSearch;
+    if (authorSearch) params.author = authorSearch;
+    if (type !== "All") params.type = type;
+
+    publicApi
+      .getTitles(params)
+      .then((res) => {
+        const results = res.results ?? res;
+        const count = res.count ?? results.length;
+        setShelfTitles((prev) =>
+          shelfPage === 1 ? results : [...prev, ...results],
+        );
+        setTotalCount(count);
+        setShelfHasMore(shelfPage * PAGE_SIZE < count);
+      })
+      .catch(() => {})
+      .finally(() => setShelfLoading(false));
+  }, [view, shelfPage, debouncedSearch, authorSearch, type, sort]);
+
+  const loadMoreShelf = useCallback(() => {
+    if (!shelfLoading && shelfHasMore) {
+      setShelfPage((p) => p + 1);
+    }
+  }, [shelfLoading, shelfHasMore]);
 
   // Pick up to 2 random lists (stable per mount)
   const featuredLists = useMemo(() => {
@@ -178,12 +225,23 @@ export default function Browse() {
             >
               <List className="size-4" />
             </button>
+            <button
+              onClick={() => setView("shelf")}
+              className={`flex size-9 items-center justify-center rounded-xl transition ${
+                view === "shelf"
+                  ? "bg-teal-800 text-white dark:bg-teal-700"
+                  : "text-sand-400 hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
+              }`}
+              aria-label="Shelf view"
+            >
+              <Library className="size-4" />
+            </button>
           </div>
         </div>
       </div>
 
       {/* Loading skeleton */}
-      {loading && (
+      {loading && view !== "shelf" && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <div
@@ -193,8 +251,19 @@ export default function Browse() {
           ))}
         </div>
       )}
+      {shelfLoading && view === "shelf" && shelfTitles.length === 0 && (
+        <div className="flex items-end gap-1 overflow-hidden pb-3">
+          {Array.from({ length: 14 }).map((_, i) => (
+            <div
+              key={i}
+              className="shrink-0 animate-pulse rounded-sm bg-sand-100 dark:bg-night-800"
+              style={{ width: 40 + (i % 3) * 8, height: 220 }}
+            />
+          ))}
+        </div>
+      )}
 
-      {!loading && titles.length === 0 && (
+      {!loading && titles.length === 0 && view !== "shelf" && (
         <div
           className="py-28 text-center"
           style={{ animation: "fade-in 0.4s ease-out both" }}
@@ -211,7 +280,35 @@ export default function Browse() {
         </div>
       )}
 
-      {!loading && titles.length > 0 && (
+      {/* ── Shelf view (independent data flow) ── */}
+      {view === "shelf" && shelfTitles.length > 0 && (
+        <ShelfView
+          titles={shelfTitles}
+          hasMore={shelfHasMore}
+          loadingMore={shelfLoading && shelfPage > 1}
+          onLoadMore={loadMoreShelf}
+        />
+      )}
+
+      {view === "shelf" && !shelfLoading && shelfTitles.length === 0 && (
+        <div
+          className="py-28 text-center"
+          style={{ animation: "fade-in 0.4s ease-out both" }}
+        >
+          <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-warm dark:bg-night-800">
+            <BookOpen className="size-7 text-sand-300 dark:text-night-400" />
+          </div>
+          <h3 className="font-heading text-xl text-teal-900 dark:text-cream">
+            Nothing found
+          </h3>
+          <p className="mt-2 text-sm text-sand-400 dark:text-night-400">
+            Try a different search term or filter.
+          </p>
+        </div>
+      )}
+
+      {/* ── Grid + Table views ── */}
+      {!loading && titles.length > 0 && view !== "shelf" && (
         <>
           {/* ── Grid view ── */}
           {view === "grid" && (

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, BookOpen, MapPin } from "lucide-react";
+import { ArrowLeft, MapPin } from "lucide-react";
 import { useData } from "../context/DataContext";
 import TypeIcon from "../components/TypeIcon";
 import RequestModal from "../components/RequestModal";
@@ -49,37 +49,25 @@ export default function TitleDetail() {
           className="flex flex-col gap-8 md:flex-row"
           style={{ animation: "fade-up 0.6s ease-out both" }}
         >
-          {/* Cover */}
-          <div className="w-full shrink-0 md:w-56">
-            <div
-              className="relative flex aspect-[3/4] w-full items-center justify-center overflow-hidden rounded-2xl text-white shadow-lg"
-              style={{ backgroundColor: title.cover }}
-            >
-              {title.cover_image ? (
+          {/* Cover — desktop only (left column), hidden on mobile */}
+          {title.cover_image && (
+            <div className="hidden w-56 shrink-0 md:block">
+              <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl shadow-lg">
                 <img
                   src={title.cover_image}
                   alt={title.title}
                   className="absolute inset-0 size-full object-contain"
                 />
-              ) : (
-                <>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-white/5" />
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
-                  <BookOpen
-                    className="relative size-16 text-white/50"
-                    strokeWidth={1.2}
-                  />
-                </>
-              )}
+              </div>
+              <div
+                className="mt-3 flex items-center justify-center gap-1.5 rounded-xl py-2 text-sm font-semibold text-white"
+                style={{ backgroundColor: color }}
+              >
+                <TypeIcon type={title.type} className="size-3.5" />
+                {title.type}
+              </div>
             </div>
-            <div
-              className="mt-3 flex items-center justify-center gap-1.5 rounded-xl py-2 text-sm font-semibold text-white"
-              style={{ backgroundColor: color }}
-            >
-              <TypeIcon type={title.type} className="size-3.5" />
-              {title.type}
-            </div>
-          </div>
+          )}
 
           {/* Info */}
           <div className="flex-1">
@@ -89,9 +77,32 @@ export default function TitleDetail() {
             <p className="mt-1 text-lg text-sand-400 dark:text-night-400">
               {title.author}
             </p>
+
+            {/* Type badge — shown on mobile always, on desktop only when no cover */}
+            <div
+              className={`mt-3 inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold text-white ${title.cover_image ? "md:hidden" : ""}`}
+              style={{ backgroundColor: color }}
+            >
+              <TypeIcon type={title.type} className="size-3.5" />
+              {title.type}
+            </div>
+
             <p className="mt-4 text-[15px] leading-relaxed text-sand-400 dark:text-night-400">
               {title.description}
             </p>
+
+            {/* Cover — mobile only, after description */}
+            {title.cover_image && (
+              <div className="mt-6 md:hidden">
+                <div className="relative aspect-[3/4] w-full max-w-xs overflow-hidden rounded-2xl shadow-lg">
+                  <img
+                    src={title.cover_image}
+                    alt={title.title}
+                    className="absolute inset-0 size-full object-contain"
+                  />
+                </div>
+              </div>
+            )}
 
             <div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-4">
               {[
