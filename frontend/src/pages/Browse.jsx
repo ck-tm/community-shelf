@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
-import { Search, BookOpen, ChevronDown, LayoutGrid, List, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Search, BookOpen, ChevronDown, LayoutGrid, List, ChevronLeft, ChevronRight, ArrowRight, Layers } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useData } from "../context/DataContext";
 import { publicApi } from "../api/endpoints";
 import TitleCard from "../components/TitleCard";
 import TypeIcon from "../components/TypeIcon";
 import AuthorSelect from "../components/AuthorSelect";
+import ListCard from "../components/ListCard";
 
 const PAGE_SIZE = 12;
 
@@ -16,7 +17,7 @@ const SORT_MAP = {
 };
 
 export default function Browse() {
-  const { browseTypes, typeColors, siteConfig } = useData();
+  const { browseTypes, typeColors, siteConfig, curatedLists } = useData();
 
   const [search, setSearch] = useState("");
   const [authorSearch, setAuthorSearch] = useState("");
@@ -62,6 +63,13 @@ export default function Browse() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [page, debouncedSearch, authorSearch, type, sort]);
+
+  // Pick up to 2 random lists (stable per mount)
+  const featuredLists = useMemo(() => {
+    if (curatedLists.length === 0) return [];
+    const shuffled = [...curatedLists].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 2);
+  }, [curatedLists]);
 
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -367,6 +375,65 @@ export default function Browse() {
             </div>
           )}
         </>
+      )}
+      {/* ── Curated Lists ── */}
+      {featuredLists.length > 0 && (
+        <section
+          className="mt-20 border-t border-sand-200/60 pt-14 dark:border-night-700/50"
+          style={{ animation: "fade-up 0.6s ease-out 0.3s both" }}
+        >
+          <div className="mb-8 flex items-end justify-between">
+            <div>
+              <div className="mb-2 flex items-center gap-2">
+                <Layers className="size-5 text-teal-700 dark:text-teal-400" />
+                <span className="text-xs font-bold uppercase tracking-wider text-sand-300 dark:text-night-400">
+                  Curated Lists
+                </span>
+              </div>
+              <h2 className="font-heading text-2xl tracking-tight text-teal-900 sm:text-3xl dark:text-cream">
+                Hand-picked Collections
+              </h2>
+              <p className="mt-1 text-sm text-sand-400 dark:text-night-400">
+                Explore themed reading guides curated by our community.
+              </p>
+            </div>
+            {curatedLists.length > 2 && (
+              <Link
+                to="/lists"
+                className="hidden items-center gap-1.5 rounded-xl bg-teal-800 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-teal-700 sm:inline-flex dark:bg-teal-700 dark:hover:bg-teal-600"
+              >
+                View all lists
+                <ArrowRight className="size-4" />
+              </Link>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            {featuredLists.map((list, i) => (
+              <div
+                key={list.id}
+                style={{
+                  animation: "fade-up 0.5s ease-out both",
+                  animationDelay: `${0.4 + i * 0.1}s`,
+                }}
+              >
+                <ListCard list={list} />
+              </div>
+            ))}
+          </div>
+
+          {curatedLists.length > 2 && (
+            <div className="mt-6 text-center sm:hidden">
+              <Link
+                to="/lists"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-teal-800 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-teal-700 dark:bg-teal-700 dark:hover:bg-teal-600"
+              >
+                View all lists
+                <ArrowRight className="size-4" />
+              </Link>
+            </div>
+          )}
+        </section>
       )}
     </div>
   );
