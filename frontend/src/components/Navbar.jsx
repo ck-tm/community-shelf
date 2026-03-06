@@ -91,20 +91,6 @@ export default function Navbar() {
           <NavLink to="/about" className={linkClass}>{t("tenantNav.about")}</NavLink>
           <NavLink to="/contact" className={linkClass}>{t("tenantNav.contact")}</NavLink>
 
-          <button
-            onClick={() => setDark(!dark)}
-            className="flex size-9 items-center justify-center rounded-full bg-sand-100 transition-all duration-200 hover:bg-sand-200 dark:bg-night-800 dark:hover:bg-night-700"
-            aria-label={dark ? t("tenantNav.lightMode") : t("tenantNav.darkMode")}
-          >
-            {dark ? (
-              <Sun className="size-4 text-amber-400" />
-            ) : (
-              <Moon className="size-4 text-sand-500" />
-            )}
-          </button>
-
-          <LanguageSwitcher />
-
           {isAuthenticated ? (
             <>
               <NavLink
@@ -151,10 +137,7 @@ export default function Navbar() {
               {t("tenantNav.login")}
             </NavLink>
           )}
-        </div>
 
-        {/* Mobile right: theme + burger */}
-        <div className="flex items-center gap-2 sm:hidden">
           <button
             onClick={() => setDark(!dark)}
             className="flex size-9 items-center justify-center rounded-full bg-sand-100 transition-all duration-200 hover:bg-sand-200 dark:bg-night-800 dark:hover:bg-night-700"
@@ -166,7 +149,12 @@ export default function Navbar() {
               <Moon className="size-4 text-sand-500" />
             )}
           </button>
+
           <LanguageSwitcher />
+        </div>
+
+        {/* Mobile: burger only */}
+        <div className="flex items-center sm:hidden">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="flex size-9 items-center justify-center rounded-full bg-sand-100 text-sand-500 transition hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
@@ -212,6 +200,18 @@ export default function Navbar() {
                 {t("tenantNav.login")}
               </NavLink>
             )}
+          </div>
+
+          {/* Theme & Language */}
+          <div className="mt-3 flex items-center justify-between border-t border-sand-200/60 px-4 pt-3 dark:border-night-800">
+            <button
+              onClick={() => setDark(!dark)}
+              className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-sand-500 transition hover:bg-sand-100 dark:text-night-400 dark:hover:bg-night-800"
+            >
+              {dark ? <Sun className="size-4 text-amber-400" /> : <Moon className="size-4" />}
+              {dark ? t("tenantNav.lightMode") : t("tenantNav.darkMode")}
+            </button>
+            <LanguageSwitcher />
           </div>
         </div>
       )}

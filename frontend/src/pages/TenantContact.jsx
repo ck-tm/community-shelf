@@ -3,6 +3,7 @@ import { Send, CheckCircle2, Loader2, MessageSquare, MapPin, ExternalLink } from
 import { useTranslation } from "react-i18next";
 import { publicApi } from "../api/endpoints";
 import { useData } from "../context/DataContext";
+import { pinFriendlyUrl } from "../utils/maps";
 
 export default function TenantContact() {
   const { t } = useTranslation();
@@ -258,7 +259,7 @@ export default function TenantContact() {
                 </div>
                 {siteConfig.googleMapsUrl && (
                   <a
-                    href={siteConfig.googleMapsUrl}
+                    href={pinFriendlyUrl(siteConfig.googleMapsUrl)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-teal-700 transition hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300"

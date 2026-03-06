@@ -3,11 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { Library } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
+import { TENANT_SLUG } from "../api/client";
 
 export default function Register() {
   const { register, isAuthenticated, error, clearError } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const redirectTo = TENANT_SLUG ? "/" : "/dashboard";
 
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
@@ -15,8 +17,8 @@ export default function Register() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated) navigate("/", { replace: true });
-  }, [isAuthenticated, navigate]);
+    if (isAuthenticated) navigate(redirectTo, { replace: true });
+  }, [isAuthenticated, navigate, redirectTo]);
 
   useEffect(() => {
     clearError();
@@ -28,7 +30,7 @@ export default function Register() {
     setSubmitting(true);
     const ok = await register(email, password1, password2);
     setSubmitting(false);
-    if (ok) navigate("/", { replace: true });
+    if (ok) navigate(redirectTo, { replace: true });
   };
 
   // DRF returns field-level errors as { email: [...], password1: [...], ... }

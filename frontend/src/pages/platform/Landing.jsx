@@ -17,6 +17,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { platformApi } from "../../api/endpoints";
 import { useAuth } from "../../context/AuthContext";
+import LibraryMap from "../../components/LibraryMap";
 
 const BASE_DOMAIN = import.meta.env.VITE_BASE_DOMAIN || "localhost";
 
@@ -254,6 +255,11 @@ export default function Landing() {
           )}
         </div>
       </section>
+
+      {/* ── MAP ─────────────────────────────────────────────────── */}
+      {!tenantsLoading && tenants.length > 0 && (
+        <LibraryMap tenants={tenants} getTenantUrl={getTenantUrl} />
+      )}
 
       {/* ── FINAL CTA ─────────────────────────────────────────── */}
       <section className="px-4 py-24 sm:px-6 lg:px-8">

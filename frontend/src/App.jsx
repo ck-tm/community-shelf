@@ -30,7 +30,11 @@ import Landing from "./pages/platform/Landing";
 import Dashboard from "./pages/platform/Dashboard";
 import Contact from "./pages/platform/Contact";
 import PlatformTerms from "./pages/platform/Terms";
+import PlatformPrivacy from "./pages/platform/Privacy";
+import PlatformCopyright from "./pages/platform/Copyright";
 import Terms from "./pages/Terms";
+import TenantPrivacy from "./pages/TenantPrivacy";
+import TenantCopyright from "./pages/TenantCopyright";
 import Footer from "./components/Footer";
 
 function TenantApp() {
@@ -50,6 +54,8 @@ function TenantApp() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<TenantPrivacy />} />
+            <Route path="/copyright" element={<TenantCopyright />} />
 
             {/* Protected: user account */}
             <Route
@@ -104,6 +110,8 @@ function PlatformApp() {
           <Route path="/register" element={<Register />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/terms" element={<PlatformTerms />} />
+          <Route path="/privacy" element={<PlatformPrivacy />} />
+          <Route path="/copyright" element={<PlatformCopyright />} />
           <Route
             path="/dashboard"
             element={

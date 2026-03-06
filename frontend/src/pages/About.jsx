@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useData } from "../context/DataContext";
 import { useLocalize } from "../hooks/useLocalize";
+import { pinFriendlyUrl } from "../utils/maps";
 
 export default function About() {
   const { siteConfig, descriptionPage } = useData();
@@ -81,7 +82,7 @@ export default function About() {
               </div>
               {siteConfig.googleMapsUrl && (
                 <a
-                  href={siteConfig.googleMapsUrl}
+                  href={pinFriendlyUrl(siteConfig.googleMapsUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-teal-700 transition hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300"

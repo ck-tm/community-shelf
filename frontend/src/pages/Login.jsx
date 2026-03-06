@@ -3,13 +3,15 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Library } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
+import { TENANT_SLUG } from "../api/client";
 
 export default function Login() {
   const { login, isAuthenticated, error, clearError } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
-  const from = location.state?.from?.pathname || "/";
+  const defaultRedirect = TENANT_SLUG ? "/" : "/dashboard";
+  const from = location.state?.from?.pathname || defaultRedirect;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

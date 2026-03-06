@@ -13,7 +13,10 @@
   "footer": {
     "brand": "Community Shelf",
     "terms": "Termeni și condiții",
-    "contact": "Contact"
+    "contact": "Contact",
+    "privacy": "Confidențialitate",
+    "copyright": "Drepturi de autor",
+    "madeWith": "Făcut cu ♥ de"
   },
   "landing": {
     "badge": "Gratuit pentru orice comunitate",
@@ -44,8 +47,13 @@
     "directorySubtitle": "Descoperă ce au construit alte comunități.",
     "directoryEmpty": "Nicio bibliotecă publică încă. Fii primul care",
     "directoryEmptyLink": "creează una",
+    "mapTitle": "Găsește o bibliotecă în apropierea ta",
+    "mapSubtitle": "Explorează bibliotecile comunitare pe hartă.",
+    "mapVisit": "Vizitează biblioteca",
+    "locateMe": "Găsește-mă",
+    "you": "Tu",
     "ctaBottomTitle": "Gata să împarți?",
-    "ctaBottomSubtitle": "Creează un cont gratuit și biblioteca ta va fi gata în câteva minute.",
+    "ctaBottomSubtitle": "Creează un cont gratuit și biblioteca ta va fi gata cât mai repede posibil.",
     "ctaBottomButton": "Creează-ți biblioteca gratuită"
   },
   "dashboard": {
@@ -514,7 +522,7 @@
     "section1Title": "1. Despre această bibliotecă",
     "section1p1": "{{name}} este o bibliotecă comunitară de împrumut alimentată de Community Shelf. Biblioteca este administrată independent de administratorul (administratorii) ei. Community Shelf oferă găzduirea și software-ul; administratorul gestionează catalogul, membrii și politicile de împrumut.",
     "section2Title": "2. Membership",
-    "section2p1": "Prin crearea unui cont pe {{name}} ești de acord cu acești termeni și cu Termenii și Condițiile platformei Community Shelf. Contul tău îți oferă acces doar la această bibliotecă — este separat de conturile de pe alte biblioteci Community Shelf.",
+    "section2p1": "Prin crearea unui cont pe {{name}} ești de acord cu acești termeni și cu Termenii și Condițiile platformei Community Shelf. Contul tău este universal — același cont funcționează pe toate bibliotecile Community Shelf.",
     "section3Title": "3. Împrumuturi și returnări",
     "section3p1": "Când soliciți un articol, administratorul bibliotecii decide dacă aprobă sau respinge cererea. Împrumuturile aprobate au o dată scadentă; te rugăm să returnezi articolele la timp pentru ca și alții să se poată bucura de ele. Nereturnarea repetată poate duce la suspendarea privilegiilor de împrumut.",
     "section3p2": "Ești responsabil(ă) pentru articolele aflate în posesia ta. Dacă un articol este pierdut sau deteriorat, contactează direct administratorul bibliotecii pentru a găsi o soluție.",
@@ -561,5 +569,123 @@
     "sendAnother": "Trimite alt mesaj",
     "findUs": "Unde ne găsești",
     "viewOnMap": "Vezi pe Google Maps"
+  },
+  "tenantPrivacy": {
+    "title": "Politica de confidențialitate",
+    "lastUpdated": "Ultima actualizare: {{date}}",
+    "intro": "Această politică de confidențialitate explică modul în care {{name}} gestionează datele tale personale. Biblioteca funcționează pe platforma Community Shelf; administratorul bibliotecii gestionează contul tău și activitatea de împrumut.",
+    "section1Title": "1. Operatorul de date",
+    "section1p1": "{{name}} (administratorul bibliotecii) este operatorul de date pentru toate datele personale colectate prin această bibliotecă. Community Shelf furnizează platforma tehnică și acționează ca persoană împuternicită în numele bibliotecii.",
+    "section2Title": "2. Datele pe care le colectăm",
+    "dataList": [
+      "Numele și adresa de email (la crearea contului)",
+      "Istoricul împrumuturilor (articole solicitate, împrumutate și returnate)",
+      "Mesajele trimise prin formularul de contact"
+    ],
+    "section3Title": "3. Cum folosim datele tale",
+    "purposeList": [
+      "Gestionarea contului și a calității de membru",
+      "Procesarea cererilor de împrumut și returnare",
+      "Comunicarea cu tine despre împrumuturi sau întrebări",
+      "Menținerea catalogului și a disponibilității articolelor"
+    ],
+    "section4Title": "4. Cine poate vedea datele tale",
+    "section4p1": "Numele, email-ul și istoricul împrumuturilor sunt vizibile administratorului (administratorilor) bibliotecii. Aceste informații sunt folosite exclusiv pentru gestionarea împrumuturilor și nu vor fi partajate cu terți din afara bibliotecii.",
+    "section5Title": "5. Cookie-uri",
+    "section5p1": "Acest site folosește cookie-uri doar pentru autentificare (menținerea sesiunii) și stocarea preferințelor de temă și limbă. Nu se folosesc cookie-uri de urmărire sau publicitate.",
+    "section6Title": "6. Drepturile tale",
+    "rightsList": [
+      "Accesarea datelor personale pe care le deținem",
+      "Corectarea informațiilor incorecte",
+      "Solicitarea ștergerii contului și a datelor",
+      "Limitarea sau opoziția la prelucrare",
+      "Solicitarea portabilității datelor"
+    ],
+    "platformNote": "Pentru detalii despre cum platforma Community Shelf gestionează datele la nivel tehnic, consultă",
+    "platformLink": "Politica de confidențialitate a platformei",
+    "contactNote": "Pentru exercitarea oricăruia dintre aceste drepturi sau dacă ai întrebări, contactează-ne prin",
+    "contactLink": "pagina de contact",
+    "backToBrowsing": "Înapoi la colecție"
+  },
+  "tenantCopyright": {
+    "title": "Politica privind drepturile de autor",
+    "lastUpdated": "Ultima actualizare: {{date}}",
+    "intro": "Această pagină prezintă responsabilitățile legate de drepturile de autor pentru materialele listate pe {{name}}.",
+    "section1Title": "1. Conținutul catalogului",
+    "section1p1": "Administratorul bibliotecii este responsabil pentru conformitatea tuturor articolelor din catalog — inclusiv titluri, descrieri și imagini — cu legislația privind drepturile de autor. Articolele listate sunt destinate împrumutului comunitar, nu distribuției comerciale.",
+    "section2Title": "2. Conținut generat de utilizatori",
+    "section2p1": "Dacă contribui cu conținut precum recenzii sau liste de lectură, rămâi proprietarul lucrării tale, dar acorzi {{name}} o licență neexclusivă de a-l afișa în cadrul bibliotecii. Ești responsabil(ă) să te asiguri că contribuțiile tale nu încalcă drepturile terților.",
+    "section3Title": "3. Raportarea problemelor de copyright",
+    "section3p1": "Dacă consideri că un conținut de pe această bibliotecă îți încalcă drepturile de autor, contactează administratorul bibliotecii cu următoarele detalii:",
+    "reportSteps": [
+      "O descriere a operei protejate",
+      "Locația conținutului pe acest site",
+      "Datele tale de contact",
+      "O declarație de bună credință privind utilizarea neautorizată"
+    ],
+    "platformNote": "Poți raporta problemele și direct platformei Community Shelf. Consultă",
+    "platformLink": "Politica platformei privind drepturile de autor",
+    "backToBrowsing": "Înapoi la colecție"
+  },
+  "privacy": {
+    "title": "Politica de confidențialitate",
+    "lastUpdated": "Ultima actualizare: {{date}}",
+    "intro": "Community Shelf respectă confidențialitatea utilizatorilor și prelucrează datele personale conform GDPR.",
+    "section1Title": "1. Introducere",
+    "section1p1": "Această politică explică modul în care Community Shelf colectează, utilizează și protejează datele tale personale.",
+    "section2Title": "2. Date colectate",
+    "dataList": [
+      "Nume",
+      "Adresă de email",
+      "Informații despre cont",
+      "Activitate în bibliotecă (articole împrumutate, rezervări)"
+    ],
+    "section3Title": "3. Scopul prelucrării",
+    "purposeList": [
+      "Furnizarea accesului la platformă",
+      "Gestionarea membrilor bibliotecilor",
+      "Urmărirea împrumuturilor",
+      "Comunicarea cu utilizatorii"
+    ],
+    "section4Title": "4. Rolul organizațiilor",
+    "section4p1": "Organizațiile care folosesc platforma acționează ca operatori de date pentru membrii lor.",
+    "section4p2": "Community Shelf acționează ca persoană împuternicită, oferind infrastructura tehnică.",
+    "section5Title": "5. Stocarea și securitatea datelor",
+    "section5p1": "Datele sunt păstrate doar atât timp cât este necesar. Implementăm măsuri tehnice și organizatorice pentru protejarea datelor personale.",
+    "section6Title": "6. Cookie-uri",
+    "section6p1": "Folosim cookie-uri doar pentru autentificare și preferințe de temă — fără cookie-uri de urmărire sau publicitate.",
+    "section7Title": "7. Drepturile tale",
+    "rightsList": [
+      "Accesarea datelor",
+      "Corectarea datelor incorecte",
+      "Solicitarea ștergerii",
+      "Limitarea prelucrării",
+      "Portabilitatea datelor"
+    ],
+    "contactNote": "Pentru exercitarea acestor drepturi sau întrebări, contactează-ne la",
+    "backHome": "Înapoi la pagina principală"
+  },
+  "copyright": {
+    "title": "Politica privind drepturile de autor",
+    "lastUpdated": "Ultima actualizare: {{date}}",
+    "intro": "Community Shelf respectă drepturile de proprietate intelectuală și așteaptă același lucru de la toți utilizatorii și organizațiile.",
+    "section1Title": "1. Responsabilitatea conținutului",
+    "section1p1": "Organizațiile sunt responsabile pentru legalitatea materialelor încărcate sau listate. Community Shelf nu verifică statutul juridic al materialelor.",
+    "section2Title": "2. Raportarea încălcărilor",
+    "section2p1": "Dacă considerați că un material protejat este distribuit fără permisiune, trimiteți:",
+    "reportList": [
+      "Identificarea operei protejate",
+      "Locația materialului pe platformă",
+      "Datele dumneavoastră de contact",
+      "O declarație de bună credință"
+    ],
+    "sendTo": "Notificările pot fi trimise la",
+    "section3Title": "3. Acțiuni",
+    "section3p1": "După primirea unei notificări valide, platforma poate:",
+    "responseList": [
+      "Elimina conținutul care încalcă drepturile",
+      "Suspenda contul responsabil"
+    ],
+    "backHome": "Înapoi la pagina principală"
   }
 }

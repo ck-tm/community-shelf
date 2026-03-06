@@ -1,0 +1,95 @@
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useData } from "../context/DataContext";
+
+const LAST_UPDATED = "March 6, 2026";
+const PLATFORM_URL = import.meta.env.VITE_PLATFORM_URL || "https://library.costico.eu";
+
+const SECTIONS = [
+  { key: "section1", paragraphs: ["p1"] },
+  { key: "section2", paragraphs: ["p1"] },
+  { key: "section3", paragraphs: ["p1"], list: "reportSteps" },
+];
+
+export default function TenantCopyright() {
+  const { t } = useTranslation();
+  const { siteConfig } = useData();
+  const libraryName = siteConfig.title || "this library";
+
+  return (
+    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+      <div style={{ animation: "fade-up 0.6s ease-out both" }}>
+        <h1 className="font-heading text-4xl tracking-tight text-teal-900 sm:text-5xl dark:text-cream">
+          {t("tenantCopyright.title")}
+        </h1>
+        <p className="mt-3 text-sm text-sand-500 dark:text-night-400">
+          {t("tenantCopyright.lastUpdated", { date: LAST_UPDATED })}
+        </p>
+        <p className="mt-6 leading-relaxed text-sand-500 dark:text-night-400">
+          {t("tenantCopyright.intro", { name: libraryName })}
+        </p>
+      </div>
+
+      <div className="mt-10 space-y-10">
+        {SECTIONS.map((s, i) => (
+          <section
+            key={s.key}
+            style={{
+              animation: "fade-up 0.5s ease-out both",
+              animationDelay: `${0.1 + i * 0.04}s`,
+            }}
+          >
+            <h2 className="font-heading text-xl text-teal-900 dark:text-cream">
+              {t(`tenantCopyright.${s.key}Title`)}
+            </h2>
+            {s.paragraphs?.map((p) => (
+              <p
+                key={p}
+                className="mt-3 leading-relaxed text-sand-500 dark:text-night-400"
+              >
+                {t(`tenantCopyright.${s.key}${p}`, { name: libraryName })}
+              </p>
+            ))}
+            {s.list && (
+              <ul className="mt-3 list-disc space-y-1 pl-5 text-sand-500 dark:text-night-400">
+                {t(`tenantCopyright.${s.list}`, { returnObjects: true }).map((item, j) => (
+                  <li key={j}>{item}</li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))}
+      </div>
+
+      {/* Platform policy reference */}
+      <div
+        className="mt-10 rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50"
+        style={{ animation: "fade-up 0.5s ease-out 0.3s both" }}
+      >
+        <p className="text-sm leading-relaxed text-sand-500 dark:text-night-400">
+          {t("tenantCopyright.platformNote")}{" "}
+          <a
+            href={`${PLATFORM_URL}/copyright`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-teal-700 underline decoration-teal-700/30 transition hover:text-teal-900 hover:decoration-teal-900/50 dark:text-teal-400 dark:decoration-teal-400/30 dark:hover:text-teal-300"
+          >
+            {t("tenantCopyright.platformLink")}
+          </a>
+        </p>
+      </div>
+
+      <div
+        className="mt-14 border-t border-sand-200/60 pt-8 dark:border-night-800"
+        style={{ animation: "fade-up 0.5s ease-out 0.4s both" }}
+      >
+        <Link
+          to="/"
+          className="text-sm font-medium text-teal-700 transition hover:text-teal-900 dark:text-teal-400 dark:hover:text-teal-300"
+        >
+          &larr; {t("tenantCopyright.backToBrowsing")}
+        </Link>
+      </div>
+    </div>
+  );
+}

@@ -3,6 +3,7 @@ import { MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { TENANT_SLUG } from "../api/client";
 import { useData } from "../context/DataContext";
+import { pinFriendlyUrl } from "../utils/maps";
 
 function TenantLocationLink() {
   const { siteConfig } = useData();
@@ -21,7 +22,7 @@ function TenantLocationLink() {
   );
 
   return siteConfig.googleMapsUrl ? (
-    <a href={siteConfig.googleMapsUrl} target="_blank" rel="noopener noreferrer">
+    <a href={pinFriendlyUrl(siteConfig.googleMapsUrl)} target="_blank" rel="noopener noreferrer">
       {inner}
     </a>
   ) : (
@@ -29,29 +30,53 @@ function TenantLocationLink() {
   );
 }
 
+const linkClass =
+  "text-xs text-sand-400 transition hover:text-teal-800 dark:text-night-500 dark:hover:text-teal-400";
+
 export default function Footer() {
   const { t } = useTranslation();
 
   return (
     <footer className="mt-auto border-t border-sand-200/60 dark:border-night-800">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-6 sm:px-6 lg:px-8">
-        <p className="text-xs text-sand-500 dark:text-night-400">
-          &copy; {new Date().getFullYear()} {t("footer.brand")}
-        </p>
-        {TENANT_SLUG && <TenantLocationLink />}
-        <div className="flex items-center gap-4">
-          <Link
-            to="/contact"
-            className="text-xs font-medium text-sand-500 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
-          >
-            {t("footer.contact")}
-          </Link>
-          <Link
-            to="/terms"
-            className="text-xs font-medium text-sand-500 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
-          >
-            {t("footer.terms")}
-          </Link>
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+          {/* Copyright + made by */}
+          <div className="text-xs text-sand-400 dark:text-night-500">
+            <p>&copy; {new Date().getFullYear()} {t("footer.brand")}</p>
+            <p className="mt-0.5">
+              {t("footer.madeWith")}{" "}
+              <a
+                href="https://costico.eu"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-sand-500 transition hover:text-teal-700 dark:text-night-400 dark:hover:text-teal-400"
+              >
+                costico.eu
+              </a>
+            </p>
+          </div>
+
+          {/* Address (tenant only) */}
+          {TENANT_SLUG && <TenantLocationLink />}
+
+          {/* Legal links */}
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+            <Link to="/contact" className={linkClass}>
+              {t("footer.contact")}
+            </Link>
+            <span className="text-sand-200 dark:text-night-800">·</span>
+            <Link to="/terms" className={linkClass}>
+              {t("footer.terms")}
+            </Link>
+            <span className="text-sand-200 dark:text-night-800">·</span>
+            <Link to="/privacy" className={linkClass}>
+              {t("footer.privacy")}
+            </Link>
+            <span className="text-sand-200 dark:text-night-800">·</span>
+            <Link to="/copyright" className={linkClass}>
+              {t("footer.copyright")}
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
