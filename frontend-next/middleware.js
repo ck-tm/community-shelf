@@ -8,8 +8,13 @@ import { NextResponse } from "next/server";
  *    so both can share the same public paths (/, /contact, /login, etc.).
  */
 export function middleware(request) {
-  const { hostname, pathname } = request.nextUrl;
+  const { pathname } = request.nextUrl;
   const baseDomain = process.env.NEXT_PUBLIC_BASE_DOMAIN || "localhost";
+
+  // Use the Host header for tenant detection (request.nextUrl.hostname
+  // returns the server bind address in dev mode, not the actual hostname).
+  const hostHeader = request.headers.get("host") || "";
+  const hostname = hostHeader.replace(/:\d+$/, ""); // strip port
 
   // ── Tenant detection ──────────────────────────────────────────
   let tenantSlug = "";
