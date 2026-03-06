@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import { I18nProvider } from "@/context/I18nProvider";
 import { AuthProvider } from "@/context/AuthContext";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata = {
   title: "Community Shelf",
@@ -24,6 +25,7 @@ export default async function RootLayout({ children }) {
             </AuthProvider>
           </I18nProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
