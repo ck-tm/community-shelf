@@ -12,10 +12,28 @@
     <td class="label">Organization</td>
     <td class="value">{{ library_request.organization_name }}</td>
   </tr>
+  {% if library_request.slug %}
+  <tr>
+    <td class="label">Subdomain</td>
+    <td class="value">{{ library_request.slug }}.{{ base_domain }}</td>
+  </tr>
+  {% endif %}
   {% if library_request.city or library_request.country %}
   <tr>
     <td class="label">Location</td>
     <td class="value">{% if library_request.city %}{{ library_request.city }}{% if library_request.country %}, {% endif %}{% endif %}{{ library_request.country }}</td>
+  </tr>
+  {% endif %}
+  {% if library_request.address %}
+  <tr>
+    <td class="label">Address</td>
+    <td class="value">{{ library_request.address }}</td>
+  </tr>
+  {% endif %}
+  {% if library_request.google_maps_url %}
+  <tr>
+    <td class="label">Google Maps</td>
+    <td class="value"><a href="{{ library_request.google_maps_url }}">View on Map</a></td>
   </tr>
   {% endif %}
   {% if library_request.description %}

@@ -89,6 +89,7 @@ export default function Navbar() {
           <NavLink to="/" end className={linkClass}>{t("tenantNav.browse")}</NavLink>
           <NavLink to="/lists" className={linkClass}>{t("tenantNav.lists")}</NavLink>
           <NavLink to="/about" className={linkClass}>{t("tenantNav.about")}</NavLink>
+          <NavLink to="/contact" className={linkClass}>{t("tenantNav.contact")}</NavLink>
 
           <button
             onClick={() => setDark(!dark)}
@@ -183,6 +184,7 @@ export default function Navbar() {
             <NavLink to="/" end className={mobileLinkClass} onClick={() => setMenuOpen(false)}>{t("tenantNav.browse")}</NavLink>
             <NavLink to="/lists" className={mobileLinkClass} onClick={() => setMenuOpen(false)}>{t("tenantNav.lists")}</NavLink>
             <NavLink to="/about" className={mobileLinkClass} onClick={() => setMenuOpen(false)}>{t("tenantNav.about")}</NavLink>
+            <NavLink to="/contact" className={mobileLinkClass} onClick={() => setMenuOpen(false)}>{t("tenantNav.contact")}</NavLink>
 
             {isAuthenticated ? (
               <>

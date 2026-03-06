@@ -12,6 +12,7 @@ import {
   Library,
   ChevronRight,
   Sparkles,
+  MapPin,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { platformApi } from "../../api/endpoints";
@@ -238,6 +239,12 @@ export default function Landing() {
                       <p className="text-xs text-sand-500 dark:text-night-400">
                         {tenant.slug}.{BASE_DOMAIN}
                       </p>
+                      {(tenant.city || tenant.country) && (
+                        <p className="mt-0.5 flex items-center gap-1 text-xs text-sand-400 dark:text-night-500">
+                          <MapPin className="size-3" />
+                          {[tenant.city, tenant.country].filter(Boolean).join(", ")}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <ChevronRight className="size-5 text-sand-300 transition-transform group-hover:translate-x-0.5 group-hover:text-teal-700 dark:text-night-500 dark:group-hover:text-teal-400" />

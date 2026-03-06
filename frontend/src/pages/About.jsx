@@ -1,4 +1,4 @@
-import { BookOpen, ArrowRight, Users, Heart } from "lucide-react";
+import { BookOpen, ArrowRight, Users, Heart, MapPin, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useData } from "../context/DataContext";
@@ -11,6 +11,8 @@ export default function About() {
 
   // Use descriptionPage from admin if available, else fall back to i18n strings
   const dp = descriptionPage;
+
+  const hasLocation = siteConfig.address || siteConfig.city;
 
   const steps = [
     { icon: BookOpen, title: t("aboutPage.step1Title"), text: t("aboutPage.step1Text") },
@@ -56,6 +58,42 @@ export default function About() {
           </div>
         </div>
       </div>
+
+      {/* Visit Us */}
+      {hasLocation && (
+        <div
+          className="mb-14 rounded-2xl bg-warm p-8 ring-1 ring-sand-200/50 sm:p-10 dark:bg-night-900 dark:ring-night-700/50"
+          style={{ animation: "fade-up 0.6s ease-out 0.15s both" }}
+        >
+          <div className="flex items-start gap-4">
+            <MapPin className="mt-1 size-6 shrink-0 text-teal-700 dark:text-teal-400" />
+            <div>
+              <h2 className="font-heading text-2xl text-teal-900 dark:text-cream">
+                {t("aboutPage.visitUs")}
+              </h2>
+              <div className="mt-3 space-y-1 leading-relaxed text-sand-500 dark:text-night-400">
+                {siteConfig.address && <p>{siteConfig.address}</p>}
+                {(siteConfig.city || siteConfig.country) && (
+                  <p>
+                    {[siteConfig.city, siteConfig.country].filter(Boolean).join(", ")}
+                  </p>
+                )}
+              </div>
+              {siteConfig.googleMapsUrl && (
+                <a
+                  href={siteConfig.googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-teal-700 transition hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300"
+                >
+                  {t("aboutPage.viewOnMap")}
+                  <ExternalLink className="size-3.5" />
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* How it works */}
       <div style={{ animation: "fade-up 0.6s ease-out 0.2s both" }}>

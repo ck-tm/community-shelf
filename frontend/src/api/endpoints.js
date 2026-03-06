@@ -15,6 +15,7 @@ export const publicApi = {
   getList: (id) => api.get(`/lists/${id}/`),
   getSiteConfig: () => api.get("/site-config/"),
   getDescriptionPage: () => api.get("/description-page/"),
+  submitTenantContact: (data) => api.post("/contact/", data),
 };
 
 // ── Auth ─────────────────────────────────────────────────────────
@@ -106,4 +107,5 @@ export const platformApi = {
   getTenants: () => api.get("/platform/tenants/"),
   getLibraryRequests: () => api.get("/platform/library-requests/"),
   createLibraryRequest: (data) => api.post("/platform/library-requests/", data),
+  submitContact: (data) => api.post("/platform/contact/", data),
 };

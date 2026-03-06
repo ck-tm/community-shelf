@@ -7,6 +7,7 @@ from .models import (
     Inquiry,
     Section,
     SiteConfig,
+    TenantContactSubmission,
     TenantMembership,
     Title,
     Type,
@@ -315,11 +316,15 @@ class SiteConfigSerializer(serializers.ModelSerializer):
         source="description_ro", required=False, allow_blank=True
     )
     themeColors = serializers.JSONField(source="theme_colors")
+    googleMapsUrl = serializers.URLField(
+        source="google_maps_url", required=False, allow_blank=True
+    )
 
     class Meta:
         model = SiteConfig
         fields = [
             "logo", "title", "titleRo", "description", "descriptionRo", "themeColors",
+            "address", "googleMapsUrl", "city", "country",
         ]
 
 
@@ -387,3 +392,12 @@ class StatsSerializer(serializers.Serializer):
     pendingInquiries = serializers.IntegerField()
     overdueInquiries = serializers.IntegerField()
     totalMembers = serializers.IntegerField()
+
+
+# ── TenantContactSubmission ──────────────────────────────────────
+
+
+class TenantContactSubmissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TenantContactSubmission
+        fields = ["name", "email", "subject", "message"]

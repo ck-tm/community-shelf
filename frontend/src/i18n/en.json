@@ -7,11 +7,13 @@
     "signOut": "Sign out",
     "lightMode": "Switch to light mode",
     "darkMode": "Switch to dark mode",
-    "pageTitle": "Community Shelf — Your Neighborhood Library, Online"
+    "pageTitle": "Community Shelf — Your Neighborhood Library, Online",
+    "contact": "Contact"
   },
   "footer": {
     "brand": "Community Shelf",
-    "terms": "Terms & Conditions"
+    "terms": "Terms & Conditions",
+    "contact": "Contact"
   },
   "landing": {
     "badge": "Free for every community",
@@ -64,9 +66,38 @@
     "countryPlaceholder": "e.g. Romania",
     "cityPlaceholder": "e.g. Timișoara",
     "descPlaceholder": "Tell us about your community and what you'd like to share...",
+    "slug": "Subdomain",
+    "slugPlaceholder": "my-library",
+    "slugHint": "This will be your library's web address",
     "submit": "Submit Request",
     "cancel": "Cancel",
-    "open": "Open"
+    "open": "Open",
+    "address": "Address",
+    "addressPlaceholder": "123 Main Street, Building A",
+    "googleMapsUrl": "Google Maps Link",
+    "googleMapsPlaceholder": "https://maps.google.com/..."
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "Have a question, suggestion, or found a bug? We'd love to hear from you.",
+    "name": "Your Name",
+    "namePlaceholder": "John Doe",
+    "email": "Email Address",
+    "emailPlaceholder": "john@example.com",
+    "category": "Category",
+    "categoryGeneral": "General Inquiry",
+    "categoryFeature": "Feature Suggestion",
+    "categoryBug": "Bug Report",
+    "subject": "Subject",
+    "subjectPlaceholder": "How can we help?",
+    "message": "Message",
+    "messagePlaceholder": "Tell us more...",
+    "submit": "Send Message",
+    "submitting": "Sending...",
+    "successTitle": "Message Sent!",
+    "successMessage": "Thank you for reaching out. We'll get back to you as soon as possible.",
+    "sendAnother": "Send Another Message",
+    "turnstileError": "Please complete the verification"
   },
   "terms": {
     "title": "Terms & Conditions",
@@ -122,6 +153,7 @@
     "browse": "Browse",
     "lists": "Lists",
     "about": "About",
+    "contact": "Contact",
     "myAccount": "My Account",
     "admin": "Admin",
     "adminPanel": "Admin Panel",
@@ -184,7 +216,9 @@
     "step3Text": "Collect your item, enjoy it at your own pace, and return it when you're done.",
     "readyToExplore": "Ready to explore?",
     "browseOffer": "Browse what your community has to offer.",
-    "browseCollection": "Browse the Collection"
+    "browseCollection": "Browse the Collection",
+    "visitUs": "Visit Us",
+    "viewOnMap": "View on Google Maps"
   },
   "listsPage": {
     "title": "Curated Lists",
@@ -383,7 +417,15 @@
     "surface": "Surface",
     "saveConfig": "Save Config",
     "saved": "Saved!",
-    "preview": "Preview"
+    "preview": "Preview",
+    "location": "Location",
+    "address": "Address",
+    "addressPlaceholder": "123 Main Street",
+    "googleMapsUrl": "Google Maps Link",
+    "googleMapsPlaceholder": "https://maps.google.com/...",
+    "city": "City",
+    "country": "Country",
+    "viewOnMap": "View on Map"
   },
   "titleForm": {
     "backToTitles": "Back to Titles",
@@ -500,5 +542,24 @@
     "roPlaceholder": "Romanian translation…",
     "save": "Save",
     "saved": "Saved!"
+  },
+  "tenantContact": {
+    "title": "Contact Us",
+    "subtitle": "Have a question or feedback? We'd love to hear from you.",
+    "name": "Your Name",
+    "namePlaceholder": "John Doe",
+    "email": "Email Address",
+    "emailPlaceholder": "john@example.com",
+    "subject": "Subject",
+    "subjectPlaceholder": "How can we help?",
+    "message": "Message",
+    "messagePlaceholder": "Tell us more...",
+    "submit": "Send Message",
+    "submitting": "Sending...",
+    "successTitle": "Message Sent!",
+    "successMessage": "Thank you for reaching out. We'll get back to you soon.",
+    "sendAnother": "Send Another Message",
+    "findUs": "Find Us",
+    "viewOnMap": "View on Google Maps"
   }
 }

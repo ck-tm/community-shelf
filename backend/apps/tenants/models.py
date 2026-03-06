@@ -73,8 +73,18 @@ class LibraryRequest(models.Model):
         related_name="library_requests",
     )
     organization_name = models.CharField(max_length=200)
+    slug = models.SlugField(
+        max_length=63,
+        help_text="Desired subdomain for the library",
+    )
     country = models.CharField(max_length=100, blank=True)
     city = models.CharField(max_length=100, blank=True)
+    address = models.CharField(max_length=500, blank=True)
+    google_maps_url = models.URLField(
+        max_length=500,
+        blank=True,
+        help_text="Google Maps link to the library location",
+    )
     description = models.TextField(blank=True)
     status = models.CharField(
         max_length=10,
@@ -97,3 +107,30 @@ class LibraryRequest(models.Model):
 
     def __str__(self):
         return f"{self.organization_name} ({self.status})"
+
+
+class ContactSubmission(models.Model):
+    """Public contact form submission."""
+
+    class Category(models.TextChoices):
+        GENERAL = "general", "General Inquiry"
+        FEATURE = "feature", "Feature Suggestion"
+        BUG = "bug", "Bug Report"
+
+    name = models.CharField(max_length=200)
+    email = models.EmailField()
+    category = models.CharField(
+        max_length=10,
+        choices=Category.choices,
+        default=Category.GENERAL,
+    )
+    subject = models.CharField(max_length=300)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "tenants_contact_submission"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.subject} ({self.get_category_display()})"

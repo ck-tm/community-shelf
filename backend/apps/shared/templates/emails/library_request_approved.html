@@ -1,0 +1,34 @@
+{% extends "emails/base.html" %}
+
+{% block subject %}Your library is ready — {{ library_request.organization_name }}{% endblock %}
+{% block header_subtitle %}Library Approved{% endblock %}
+
+{% block content %}
+<h2>Your library is ready! 🎉</h2>
+<p>Great news, <strong>{{ user_name }}</strong>! Your request to create <strong>{{ library_request.organization_name }}</strong> has been approved.</p>
+
+<p>Your library is now live and ready for you to set up. You've been added as an administrator, so you can start adding your catalog, customizing your branding, and inviting members right away.</p>
+
+<table class="details" role="presentation" cellpadding="0" cellspacing="0">
+  <tr>
+    <td class="label">Library</td>
+    <td class="value">{{ library_request.organization_name }}</td>
+  </tr>
+  <tr>
+    <td class="label">Web Address</td>
+    <td class="value"><a href="{{ library_url }}" style="color: #0d7377; text-decoration: none;">{{ subdomain }}</a></td>
+  </tr>
+  <tr>
+    <td class="label">Your Role</td>
+    <td class="value">Administrator</td>
+  </tr>
+</table>
+
+<p style="text-align: center; margin-top: 24px;">
+  <a href="{{ library_url }}" class="cta">Open Your Library</a>
+</p>
+{% endblock %}
+
+{% block footer_extra %}
+<p style="margin-top: 8px;">Need help getting started? Reply to this email — we're happy to help.</p>
+{% endblock %}

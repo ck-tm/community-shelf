@@ -46,6 +46,14 @@ export default function PlatformNavbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-2">
+          {/* Contact link */}
+          <Link
+            to="/contact"
+            className="rounded-xl px-3 py-2 text-sm font-medium text-sand-500 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-cream"
+          >
+            {t("nav.contact")}
+          </Link>
+
           {/* Language toggle */}
           <LanguageSwitcher />
 

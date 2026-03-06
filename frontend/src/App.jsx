@@ -10,6 +10,7 @@ import AccountLayout from "./pages/account/AccountLayout";
 import MyRentals from "./pages/account/MyRentals";
 import MyDetails from "./pages/account/MyDetails";
 import About from "./pages/About";
+import TenantContact from "./pages/TenantContact";
 import Lists from "./pages/Lists";
 import ListDetail from "./pages/ListDetail";
 import Login from "./pages/Login";
@@ -27,6 +28,7 @@ import DescriptionPageAdmin from "./pages/admin/DescriptionPageAdmin";
 import PlatformNavbar from "./components/PlatformNavbar";
 import Landing from "./pages/platform/Landing";
 import Dashboard from "./pages/platform/Dashboard";
+import Contact from "./pages/platform/Contact";
 import PlatformTerms from "./pages/platform/Terms";
 import Terms from "./pages/Terms";
 import Footer from "./components/Footer";
@@ -42,6 +44,7 @@ function TenantApp() {
             <Route path="/" element={<Browse />} />
             <Route path="/title/:id" element={<TitleDetail />} />
             <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<TenantContact />} />
             <Route path="/lists" element={<Lists />} />
             <Route path="/lists/:id" element={<ListDetail />} />
             <Route path="/login" element={<Login />} />
@@ -99,6 +102,7 @@ function PlatformApp() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/terms" element={<PlatformTerms />} />
           <Route
             path="/dashboard"

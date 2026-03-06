@@ -1,0 +1,30 @@
+{% extends "emails/base.html" %}
+
+{% block subject %}Library request update — {{ library_request.organization_name }}{% endblock %}
+{% block header_subtitle %}Request Update{% endblock %}
+
+{% block content %}
+<h2>Library request update</h2>
+<p>Hi <strong>{{ user_name }}</strong>,</p>
+
+<p>Thank you for your interest in creating a community library. After review, we were unable to approve your request for <strong>{{ library_request.organization_name }}</strong> at this time.</p>
+
+<table class="details" role="presentation" cellpadding="0" cellspacing="0">
+  <tr>
+    <td class="label">Library</td>
+    <td class="value">{{ library_request.organization_name }}</td>
+  </tr>
+  {% if library_request.admin_notes %}
+  <tr>
+    <td class="label">Reason</td>
+    <td class="value">{{ library_request.admin_notes }}</td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td class="label">Date</td>
+    <td class="value">{{ library_request.created_at|date:"N j, Y" }}</td>
+  </tr>
+</table>
+
+<p>If you have questions or believe this was a mistake, please don't hesitate to reach out by replying to this email. We'd love to help you find a way forward.</p>
+{% endblock %}

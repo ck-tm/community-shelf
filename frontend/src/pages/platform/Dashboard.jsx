@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Library,
   Send,
@@ -8,6 +8,8 @@ import {
   ExternalLink,
   Plus,
   Loader2,
+  Globe,
+  MapPin,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { platformApi } from "../../api/endpoints";
@@ -21,6 +23,16 @@ function getTenantUrl(slug) {
   return `${protocol}//${slug}.${BASE_DOMAIN}${portSuffix}`;
 }
 
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // strip diacritics
+    .replace(/[^a-z0-9]+/g, "-") // replace non-alphanumeric with hyphens
+    .replace(/^-+|-+$/g, "") // strip leading/trailing hyphens
+    .slice(0, 63);
+}
+
 export default function Dashboard() {
   const { user } = useAuth();
   const { t } = useTranslation();
@@ -28,8 +40,10 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ organization_name: "", country: "", city: "", description: "" });
+  const [form, setForm] = useState({ organization_name: "", slug: "", country: "", city: "", address: "", google_maps_url: "", description: "" });
   const [error, setError] = useState(null);
+  const [slugError, setSlugError] = useState(null);
+  const userEditedSlug = useRef(false);
 
   useEffect(() => {
     loadRequests();
@@ -46,17 +60,46 @@ export default function Dashboard() {
     }
   }
 
+  function handleOrgNameChange(e) {
+    const name = e.target.value;
+    setForm((f) => ({
+      ...f,
+      organization_name: name,
+      slug: userEditedSlug.current ? f.slug : slugify(name),
+    }));
+  }
+
+  function handleSlugChange(e) {
+    userEditedSlug.current = true;
+    setSlugError(null);
+    const raw = e.target.value
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, "")
+      .slice(0, 63);
+    setForm((f) => ({ ...f, slug: raw }));
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
+    setSlugError(null);
     setSubmitting(true);
     try {
       await platformApi.createLibraryRequest(form);
-      setForm({ organization_name: "", country: "", city: "", description: "" });
+      setForm({ organization_name: "", slug: "", country: "", city: "", address: "", google_maps_url: "", description: "" });
+      userEditedSlug.current = false;
       setShowForm(false);
       await loadRequests();
     } catch (err) {
-      setError(err.body?.organization_name?.[0] || err.message || "Failed to submit request");
+      const body = err.body || {};
+      if (body.slug) {
+        setSlugError(body.slug[0] || body.slug);
+      }
+      if (body.organization_name) {
+        setError(body.organization_name[0]);
+      } else if (!body.slug) {
+        setError(err.message || "Failed to submit request");
+      }
     } finally {
       setSubmitting(false);
     }
@@ -65,6 +108,9 @@ export default function Dashboard() {
   const pending = requests.filter((r) => r.status === "pending");
   const approved = requests.filter((r) => r.status === "approved");
   const rejected = requests.filter((r) => r.status === "rejected");
+
+  const inputClass =
+    "w-full rounded-xl border-0 bg-cream px-4 py-3 text-sm text-teal-900 ring-1 ring-sand-200 placeholder:text-sand-300 focus:outline-none focus:ring-2 focus:ring-teal-700/50 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-500 dark:focus:ring-teal-400/50";
 
   return (
     <div className="px-4 py-12 sm:px-6 lg:px-8">
@@ -155,6 +201,11 @@ export default function Dashboard() {
                           <h3 className="font-heading text-lg text-teal-900 dark:text-cream">
                             {req.organization_name}
                           </h3>
+                          {req.slug && (
+                            <p className="mt-0.5 text-xs text-sand-300 dark:text-night-500">
+                              {req.slug}.{BASE_DOMAIN}
+                            </p>
+                          )}
                           {req.description && (
                             <p className="mt-1 text-sm text-sand-500 dark:text-night-400">
                               {req.description}
@@ -225,15 +276,46 @@ export default function Dashboard() {
                         type="text"
                         required
                         value={form.organization_name}
-                        onChange={(e) =>
-                          setForm((f) => ({
-                            ...f,
-                            organization_name: e.target.value,
-                          }))
-                        }
+                        onChange={handleOrgNameChange}
                         placeholder={t("dashboard.orgPlaceholder")}
-                        className="w-full rounded-xl border-0 bg-cream px-4 py-3 text-sm text-teal-900 ring-1 ring-sand-200 placeholder:text-sand-300 focus:outline-none focus:ring-2 focus:ring-teal-700/50 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-500 dark:focus:ring-teal-400/50"
+                        className={inputClass}
                       />
+                    </div>
+
+                    {/* Slug / Subdomain composite field */}
+                    <div>
+                      <label className="mb-1.5 block text-sm font-medium text-teal-900 dark:text-cream">
+                        {t("dashboard.slug")}
+                      </label>
+                      <div
+                        className={`flex items-center overflow-hidden rounded-xl bg-cream ring-1 transition dark:bg-night-800 ${
+                          slugError
+                            ? "ring-red-400 dark:ring-red-500"
+                            : "ring-sand-200 focus-within:ring-2 focus-within:ring-teal-700/50 dark:ring-night-700 dark:focus-within:ring-teal-400/50"
+                        }`}
+                      >
+                        <input
+                          type="text"
+                          required
+                          value={form.slug}
+                          onChange={handleSlugChange}
+                          placeholder={t("dashboard.slugPlaceholder")}
+                          className="min-w-0 flex-1 border-0 bg-transparent px-4 py-3 text-sm text-teal-900 placeholder:text-sand-300 focus:outline-none dark:text-cream dark:placeholder:text-night-500"
+                        />
+                        <span className="flex shrink-0 items-center gap-1.5 border-l border-sand-200/60 bg-sand-50 px-3 py-3 text-sm text-sand-400 dark:border-night-700/60 dark:bg-night-900 dark:text-night-500">
+                          <Globe className="size-3.5" />
+                          .{BASE_DOMAIN}
+                        </span>
+                      </div>
+                      {slugError ? (
+                        <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">
+                          {slugError}
+                        </p>
+                      ) : (
+                        <p className="mt-1.5 text-xs text-sand-300 dark:text-night-500">
+                          {t("dashboard.slugHint")}
+                        </p>
+                      )}
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -251,7 +333,7 @@ export default function Dashboard() {
                             setForm((f) => ({ ...f, country: e.target.value }))
                           }
                           placeholder={t("dashboard.countryPlaceholder")}
-                          className="w-full rounded-xl border-0 bg-cream px-4 py-3 text-sm text-teal-900 ring-1 ring-sand-200 placeholder:text-sand-300 focus:outline-none focus:ring-2 focus:ring-teal-700/50 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-500 dark:focus:ring-teal-400/50"
+                          className={inputClass}
                         />
                       </div>
                       <div>
@@ -268,7 +350,48 @@ export default function Dashboard() {
                             setForm((f) => ({ ...f, city: e.target.value }))
                           }
                           placeholder={t("dashboard.cityPlaceholder")}
-                          className="w-full rounded-xl border-0 bg-cream px-4 py-3 text-sm text-teal-900 ring-1 ring-sand-200 placeholder:text-sand-300 focus:outline-none focus:ring-2 focus:ring-teal-700/50 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-500 dark:focus:ring-teal-400/50"
+                          className={inputClass}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Address */}
+                    <div>
+                      <label className="mb-1.5 block text-sm font-medium text-teal-900 dark:text-cream">
+                        {t("dashboard.address")}{" "}
+                        <span className="font-normal text-sand-300 dark:text-night-500">
+                          ({t("dashboard.optional")})
+                        </span>
+                      </label>
+                      <input
+                        type="text"
+                        value={form.address}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, address: e.target.value }))
+                        }
+                        placeholder={t("dashboard.addressPlaceholder")}
+                        className={inputClass}
+                      />
+                    </div>
+
+                    {/* Google Maps Link */}
+                    <div>
+                      <label className="mb-1.5 block text-sm font-medium text-teal-900 dark:text-cream">
+                        {t("dashboard.googleMapsUrl")}{" "}
+                        <span className="font-normal text-sand-300 dark:text-night-500">
+                          ({t("dashboard.optional")})
+                        </span>
+                      </label>
+                      <div className="relative">
+                        <MapPin className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-sand-300 dark:text-night-500" />
+                        <input
+                          type="url"
+                          value={form.google_maps_url}
+                          onChange={(e) =>
+                            setForm((f) => ({ ...f, google_maps_url: e.target.value }))
+                          }
+                          placeholder={t("dashboard.googleMapsPlaceholder")}
+                          className={`${inputClass} pl-10`}
                         />
                       </div>
                     </div>
@@ -287,7 +410,7 @@ export default function Dashboard() {
                           setForm((f) => ({ ...f, description: e.target.value }))
                         }
                         placeholder={t("dashboard.descPlaceholder")}
-                        className="w-full resize-none rounded-xl border-0 bg-cream px-4 py-3 text-sm text-teal-900 ring-1 ring-sand-200 placeholder:text-sand-300 focus:outline-none focus:ring-2 focus:ring-teal-700/50 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-500 dark:focus:ring-teal-400/50"
+                        className={`${inputClass} resize-none`}
                       />
                     </div>
                   </div>
@@ -310,6 +433,7 @@ export default function Dashboard() {
                       onClick={() => {
                         setShowForm(false);
                         setError(null);
+                        setSlugError(null);
                       }}
                       className="rounded-xl px-5 py-2.5 text-sm font-medium text-sand-500 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-cream"
                     >

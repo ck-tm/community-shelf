@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Check, Library, Upload, X, RotateCcw, Palette } from "lucide-react";
+import { Check, Library, Upload, X, RotateCcw, Palette, MapPin, ExternalLink } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useData } from "../../context/DataContext";
 
@@ -382,6 +382,77 @@ export default function SiteConfig() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Location */}
+        <div className="border-t border-sand-200/60 pt-5 dark:border-night-700/50">
+          <label className="mb-4 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+            <MapPin className="size-3.5" />
+            {t("siteConfig.location")}
+          </label>
+          <div className="space-y-4">
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+                {t("siteConfig.address")}
+              </label>
+              <input
+                type="text"
+                value={form.address || ""}
+                onChange={set("address")}
+                placeholder={t("siteConfig.addressPlaceholder")}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+                {t("siteConfig.googleMapsUrl")}
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="url"
+                  value={form.googleMapsUrl || ""}
+                  onChange={set("googleMapsUrl")}
+                  placeholder={t("siteConfig.googleMapsPlaceholder")}
+                  className={`${inputClass} flex-1`}
+                />
+                {form.googleMapsUrl && (
+                  <a
+                    href={form.googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-sand-100 px-3 py-2.5 text-xs font-semibold text-sand-500 transition hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
+                  >
+                    <ExternalLink className="size-3.5" />
+                    {t("siteConfig.viewOnMap")}
+                  </a>
+                )}
+              </div>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+                  {t("siteConfig.city")}
+                </label>
+                <input
+                  type="text"
+                  value={form.city || ""}
+                  onChange={set("city")}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+                  {t("siteConfig.country")}
+                </label>
+                <input
+                  type="text"
+                  value={form.country || ""}
+                  onChange={set("country")}
+                  className={inputClass}
+                />
+              </div>
+            </div>
           </div>
         </div>
 

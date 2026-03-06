@@ -190,6 +190,10 @@ class SiteConfig(models.Model):
     )
     description_ro = models.TextField(blank=True)
     theme_colors = models.JSONField(default=dict, blank=True)
+    address = models.CharField(max_length=500, blank=True)
+    google_maps_url = models.URLField(max_length=500, blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    country = models.CharField(max_length=100, blank=True)
 
     class Meta:
         verbose_name = "Site Configuration"
@@ -243,3 +247,19 @@ class DescriptionPage(models.Model):
             existing = DescriptionPage.objects.first()
             self.pk = existing.pk
         super().save(*args, **kwargs)
+
+
+class TenantContactSubmission(models.Model):
+    """Contact form submissions for a specific tenant library."""
+
+    name = models.CharField(max_length=200)
+    email = models.EmailField()
+    subject = models.CharField(max_length=300)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.subject} — {self.name}"

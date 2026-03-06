@@ -7,11 +7,13 @@
     "signOut": "Deconectare",
     "lightMode": "Comută la modul luminos",
     "darkMode": "Comută la modul întunecat",
-    "pageTitle": "Community Shelf — Biblioteca comunității tale, online"
+    "pageTitle": "Community Shelf — Biblioteca comunității tale, online",
+    "contact": "Contact"
   },
   "footer": {
     "brand": "Community Shelf",
-    "terms": "Termeni și condiții"
+    "terms": "Termeni și condiții",
+    "contact": "Contact"
   },
   "landing": {
     "badge": "Gratuit pentru orice comunitate",
@@ -64,9 +66,38 @@
     "countryPlaceholder": "ex. România",
     "cityPlaceholder": "ex. Timișoara",
     "descPlaceholder": "Spune-ne despre comunitatea ta și ce ai vrea să împarți...",
+    "slug": "Subdomeniu",
+    "slugPlaceholder": "biblioteca-mea",
+    "slugHint": "Aceasta va fi adresa web a bibliotecii tale",
     "submit": "Trimite cererea",
     "cancel": "Anulează",
-    "open": "Deschide"
+    "open": "Deschide",
+    "address": "Adresă",
+    "addressPlaceholder": "Strada Principală nr. 123, Bloc A",
+    "googleMapsUrl": "Link Google Maps",
+    "googleMapsPlaceholder": "https://maps.google.com/..."
+  },
+  "contact": {
+    "title": "Contactează-ne",
+    "subtitle": "Ai o întrebare, o sugestie sau ai găsit un bug? Ne-ar plăcea să auzim de la tine.",
+    "name": "Numele tău",
+    "namePlaceholder": "Ion Popescu",
+    "email": "Adresă de email",
+    "emailPlaceholder": "ion@exemplu.ro",
+    "category": "Categorie",
+    "categoryGeneral": "Întrebare generală",
+    "categoryFeature": "Sugestie funcționalitate",
+    "categoryBug": "Raport de eroare",
+    "subject": "Subiect",
+    "subjectPlaceholder": "Cum te putem ajuta?",
+    "message": "Mesaj",
+    "messagePlaceholder": "Spune-ne mai multe...",
+    "submit": "Trimite mesajul",
+    "submitting": "Se trimite...",
+    "successTitle": "Mesaj trimis!",
+    "successMessage": "Mulțumim că ne-ai scris. Vom reveni cu un răspuns cât mai curând posibil.",
+    "sendAnother": "Trimite alt mesaj",
+    "turnstileError": "Te rugăm să completezi verificarea"
   },
   "terms": {
     "title": "Termeni și condiții",
@@ -122,6 +153,7 @@
     "browse": "Colecție",
     "lists": "Liste",
     "about": "Despre",
+    "contact": "Contact",
     "myAccount": "Contul meu",
     "admin": "Administrare",
     "adminPanel": "Panou admin",
@@ -184,7 +216,9 @@
     "step3Text": "Ridică articolul, bucură-te de el în ritmul tău și returnează-l când ai terminat.",
     "readyToExplore": "Gata de explorare?",
     "browseOffer": "Explorează ce are de oferit comunitatea ta.",
-    "browseCollection": "Explorează colecția"
+    "browseCollection": "Explorează colecția",
+    "visitUs": "Vizitează-ne",
+    "viewOnMap": "Vezi pe Google Maps"
   },
   "listsPage": {
     "title": "Colecții curatoriate",
@@ -383,7 +417,15 @@
     "surface": "Suprafață",
     "saveConfig": "Salvează configurația",
     "saved": "Salvat!",
-    "preview": "Previzualizare"
+    "preview": "Previzualizare",
+    "location": "Locație",
+    "address": "Adresă",
+    "addressPlaceholder": "Strada Principală nr. 123",
+    "googleMapsUrl": "Link Google Maps",
+    "googleMapsPlaceholder": "https://maps.google.com/...",
+    "city": "Oraș",
+    "country": "Țară",
+    "viewOnMap": "Vezi pe hartă"
   },
   "titleForm": {
     "backToTitles": "Înapoi la titluri",
@@ -500,5 +542,24 @@
     "roPlaceholder": "Traducere în română…",
     "save": "Salvează",
     "saved": "Salvat!"
+  },
+  "tenantContact": {
+    "title": "Contactează-ne",
+    "subtitle": "Ai o întrebare sau un feedback? Ne-ar plăcea să auzim de la tine.",
+    "name": "Numele tău",
+    "namePlaceholder": "Ion Popescu",
+    "email": "Adresă de email",
+    "emailPlaceholder": "ion@exemplu.ro",
+    "subject": "Subiect",
+    "subjectPlaceholder": "Cum te putem ajuta?",
+    "message": "Mesaj",
+    "messagePlaceholder": "Spune-ne mai multe...",
+    "submit": "Trimite mesajul",
+    "submitting": "Se trimite...",
+    "successTitle": "Mesaj trimis!",
+    "successMessage": "Mulțumim că ne-ai scris. Vom reveni cu un răspuns în curând.",
+    "sendAnother": "Trimite alt mesaj",
+    "findUs": "Unde ne găsești",
+    "viewOnMap": "Vezi pe Google Maps"
   }
 }

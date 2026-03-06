@@ -28,6 +28,7 @@ from .models import (
     DescriptionPage,
     Inquiry,
     SiteConfig,
+    TenantContactSubmission,
     TenantMembership,
     Title,
     Type,
@@ -44,6 +45,7 @@ from .serializers import (
     InquirySerializer,
     SiteConfigSerializer,
     StatsSerializer,
+    TenantContactSubmissionSerializer,
     TenantMembershipSerializer,
     TitleDetailSerializer,
     TitleListSerializer,
@@ -421,3 +423,33 @@ class AdminStatsView(generics.GenericAPIView):
         }
         serializer = StatsSerializer(data)
         return Response(serializer.data)
+
+
+class PublicTenantContactView(generics.CreateAPIView):
+    """POST /api/v1/contact/ — public contact form for a tenant library."""
+
+    serializer_class = TenantContactSubmissionSerializer
+    permission_classes = [AllowAny]
+
+    def perform_create(self, serializer):
+        submission = serializer.save()
+
+        # Notify tenant admins
+        try:
+            admin_emails = list(
+                TenantMembership.objects.filter(role="admin")
+                .values_list("user__email", flat=True)
+            )
+            if admin_emails:
+                tenant = connection.tenant
+                send_html_email(
+                    subject=f"Contact: {submission.subject} — {tenant.name}",
+                    template_name="emails/tenant_contact_submission.html",
+                    context={
+                        "submission": submission,
+                        "library_name": tenant.name,
+                    },
+                    recipient_list=admin_emails,
+                )
+        except Exception:
+            logger.exception("Failed to send tenant contact notification email")

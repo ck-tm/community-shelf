@@ -78,6 +78,16 @@ def sidebar_navigation(request):
                     "icon": "language",
                     "link": "/tenants/domain/",
                 },
+                {
+                    "title": "Library Requests",
+                    "icon": "request_page",
+                    "link": "/tenants/libraryrequest/",
+                },
+                {
+                    "title": "Contact Submissions",
+                    "icon": "contact_mail",
+                    "link": "/tenants/contactsubmission/",
+                },
             ],
         },
         {

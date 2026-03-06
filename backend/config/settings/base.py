@@ -239,6 +239,14 @@ DEFAULT_FROM_EMAIL = os.environ.get(
     "DEFAULT_FROM_EMAIL", "Community Shelf <noreply@costico.eu>"
 )
 
+# --- Tenants ---
+
+TENANT_BASE_DOMAIN = os.environ.get("TENANT_BASE_DOMAIN", "localhost")
+
+# --- Cloudflare Turnstile ---
+
+TURNSTILE_SECRET_KEY = os.environ.get("TURNSTILE_SECRET_KEY", "")
+
 # --- Misc ---
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
