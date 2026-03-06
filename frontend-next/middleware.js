@@ -35,6 +35,13 @@ export function middleware(request) {
   // ── Theme from cookie ─────────────────────────────────────────
   const theme = request.cookies.get("theme")?.value || "light";
 
+  // ── Let /api requests pass through to Next.js rewrites (proxy) ──
+  if (pathname.startsWith("/api")) {
+    const response = NextResponse.next();
+    response.headers.set("x-tenant-slug", tenantSlug);
+    return response;
+  }
+
   // ── Skip rewriting for root-level routes (SEO files etc.) ─────
   const skipRewrite = [
     "/sitemap.xml",
