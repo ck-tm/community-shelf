@@ -1,91 +1,126 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Library, Loader2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Library } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
-import { useData } from "@/context/DataContext";
-import { useLocalize } from "@/hooks/useLocalize";
+import { TENANT_SLUG } from "@/lib/api-client";
 
-export default function TenantLogin() {
-  const { login, error, clearError } = useAuth();
-  const { siteConfig } = useData();
+export default function Login() {
+  const { login, isAuthenticated, error, clearError } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useTranslation();
-  const l = useLocalize();
+  const defaultRedirect = TENANT_SLUG ? "/" : "/dashboard";
+  const from = searchParams.get("from") || defaultRedirect;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) router.replace(from);
+  }, [isAuthenticated, router, from]);
+
+  useEffect(() => {
+    clearError();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    const success = await login(email, password);
-    setLoading(false);
-    if (success) router.push("/");
+    if (!email || !password) return;
+    setSubmitting(true);
+    const ok = await login(email, password);
+    setSubmitting(false);
+    if (ok) router.replace(from);
   };
 
+  const errorMessage =
+    typeof error === "string"
+      ? error
+      : error?.non_field_errors?.[0] || error?.detail || null;
+
   const inputClass =
-    "w-full rounded-xl border-0 bg-warm px-4 py-3 text-sm ring-1 ring-sand-200/70 outline-none transition focus:ring-2 focus:ring-teal-600/30 dark:bg-night-800 dark:text-cream dark:ring-night-700";
+    "w-full rounded-xl border-0 bg-cream px-4 py-3 text-sm ring-1 ring-sand-200/70 outline-none transition focus:ring-2 focus:ring-teal-600/30 dark:bg-night-800 dark:text-cream dark:ring-night-700";
 
   return (
-    <div className="flex min-h-[70vh] items-center justify-center px-4 py-12">
-      <div className="w-full max-w-sm" style={{ animation: "fade-up 0.6s ease-out both" }}>
+    <div className="flex min-h-[80vh] items-center justify-center px-4">
+      <div
+        className="w-full max-w-sm"
+        style={{ animation: "fade-up 0.6s ease-out both" }}
+      >
+        {/* Logo */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-teal-800 text-white dark:bg-teal-700">
-            {siteConfig.logo ? (
-              <img src={siteConfig.logo} alt="Logo" className="size-7 object-contain" />
-            ) : (
-              <Library className="size-7" />
-            )}
+          <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-2xl bg-teal-800 text-white shadow-sm">
+            <Library className="size-6" />
           </div>
-          <h1 className="font-heading text-3xl text-teal-900 dark:text-cream">
+          <h1 className="font-heading text-2xl text-teal-900 dark:text-cream">
             {t("auth.welcomeBack")}
           </h1>
-          <p className="mt-2 text-sm text-sand-500 dark:text-night-400">
-            {t("auth.signInSubtitle", { library: l(siteConfig, "title") })}
+          <p className="mt-1 text-sm text-sand-500 dark:text-night-400">
+            {t("auth.signInSubtitle")}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => { setEmail(e.target.value); clearError(); }}
-            placeholder={t("auth.email")}
-            required
-            className={inputClass}
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => { setPassword(e.target.value); clearError(); }}
-            placeholder={t("auth.password")}
-            required
-            className={inputClass}
-          />
-
-          {error && (
-            <p className="text-sm text-red-600 dark:text-red-400">
-              {typeof error === "string" ? error : t("auth.error")}
-            </p>
+        {/* Form */}
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50"
+        >
+          {errorMessage && (
+            <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-400">
+              {errorMessage}
+            </div>
           )}
+
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+              {t("auth.email")}
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoComplete="email"
+              autoFocus
+              className={inputClass}
+              placeholder="you@example.com"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+              {t("auth.password")}
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+              className={inputClass}
+              placeholder="••••••••"
+            />
+          </div>
 
           <button
             type="submit"
-            disabled={loading}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-teal-800 disabled:opacity-50 dark:bg-teal-600 dark:hover:bg-teal-700"
+            disabled={submitting}
+            className="w-full rounded-xl bg-teal-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-teal-800 disabled:opacity-50 dark:bg-teal-600 dark:hover:bg-teal-700"
           >
-            {loading && <Loader2 className="size-4 animate-spin" />}
-            {loading ? t("auth.signingIn") : t("auth.signIn")}
+            {submitting ? t("auth.signingIn") : t("auth.signIn")}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-sand-500 dark:text-night-400">
           {t("auth.noAccount")}{" "}
-          <Link href="/register" className="font-medium text-teal-700 hover:text-teal-800 dark:text-teal-400">
+          <Link
+            href="/register"
+            className="font-medium text-teal-700 hover:text-teal-800 dark:text-teal-400"
+          >
             {t("auth.createOne")}
           </Link>
         </p>

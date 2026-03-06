@@ -5,7 +5,9 @@
  * For mutations and interactive data fetching from "use client" components.
  */
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "";
+// Client-side calls use relative URLs ("/api/v1/...") so they go through
+// the Next.js rewrite proxy — same-origin, no CORS issues, cookies work.
+const API_BASE = "";
 
 function resolveTenantSlug() {
   if (typeof window === "undefined") return null;

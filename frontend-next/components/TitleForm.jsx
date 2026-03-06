@@ -3,473 +3,735 @@
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { ScanBarcode, Loader2, Plus, Trash2, Check, X, Pencil, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import {
+  ArrowLeft,
+  Search,
+  Camera,
+  Loader2,
+  CheckCircle,
+  Plus,
+  Pencil,
+  Trash2,
+  Check,
+  X,
+  AlertTriangle,
+  MapPin,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useData } from "@/context/DataContext";
 import ConfirmDialog from "@/components/ConfirmDialog";
 
-const ISBNScanner = dynamic(() => import("./ISBNScanner"), { ssr: false });
+const ISBNScanner = dynamic(() => import("@/components/ISBNScanner"), { ssr: false });
 
-const EMPTY_FORM = {
-  title: "",
-  author: "",
-  year: "",
-  language: "",
-  isbn: "",
-  publisher: "",
-  pages: "",
-  description: "",
-  cover: "#0D7377",
-  cover_image: "",
-  type: "",
+/* -- OpenLibrary ISBN lookup ---------------------------------------- */
+
+const LANG_MAP = {
+  eng: "English",
+  fre: "French",
+  ger: "German",
+  spa: "Spanish",
+  ita: "Italian",
+  por: "Portuguese",
+  rum: "Romanian",
+  dut: "Dutch",
+  rus: "Russian",
+  jpn: "Japanese",
+  chi: "Chinese",
+  kor: "Korean",
+  ara: "Arabic",
 };
 
+async function lookupISBN(isbn) {
+  const cleaned = isbn.replace(/[^0-9Xx]/g, "");
+  if (cleaned.length !== 10 && cleaned.length !== 13) {
+    throw new Error("ISBN must be 10 or 13 digits");
+  }
+
+  const res = await fetch(
+    `https://openlibrary.org/search.json?isbn=${cleaned}&fields=title,author_name,first_publish_year,publisher,number_of_pages_median,language,cover_i&limit=1`,
+  );
+  if (!res.ok) throw new Error("Failed to reach OpenLibrary");
+
+  const data = await res.json();
+  if (!data.docs || data.docs.length === 0) {
+    throw new Error("No results found for this ISBN");
+  }
+
+  const doc = data.docs[0];
+  const langCode = doc.language?.[0] || "";
+  const coverId = doc.cover_i;
+
+  return {
+    title: doc.title || "",
+    author: (doc.author_name || []).join(", "),
+    year: doc.first_publish_year || "",
+    publisher: (doc.publisher || [])[0] || "",
+    pages: doc.number_of_pages_median || "",
+    language: LANG_MAP[langCode] || langCode || "",
+    isbn: cleaned,
+    cover_image: coverId
+      ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
+      : "",
+  };
+}
+
+/* -- Also fetch description from the edition endpoint --------------- */
+
+async function fetchDescription(isbn) {
+  try {
+    const res = await fetch(`https://openlibrary.org/isbn/${isbn}.json`);
+    if (!res.ok) return "";
+    const data = await res.json();
+    if (!data.description) return "";
+    return typeof data.description === "string"
+      ? data.description
+      : data.description.value || "";
+  } catch {
+    return "";
+  }
+}
+
+/* -- Component ------------------------------------------------------ */
+
 export default function TitleForm({ initialTitle = null }) {
-  const router = useRouter();
   const { t } = useTranslation();
-  const { types, addTitle, updateTitle, deleteTitle, addCopy, updateCopy, deleteCopy } = useData();
+  const {
+    titles,
+    types,
+    addTitle,
+    updateTitle,
+    addCopy,
+    updateCopy,
+    deleteCopy,
+  } = useData();
+  const router = useRouter();
+  const existing = initialTitle || null;
 
-  const isEditing = !!initialTitle;
-
-  const [form, setForm] = useState(() => {
-    if (initialTitle) {
-      return {
-        title: initialTitle.title || "",
-        author: initialTitle.author || "",
-        year: initialTitle.year || "",
-        language: initialTitle.language || "",
-        isbn: initialTitle.isbn || "",
-        publisher: initialTitle.publisher || "",
-        pages: initialTitle.pages || "",
-        description: initialTitle.description || "",
-        cover: initialTitle.cover || "#0D7377",
-        cover_image: initialTitle.cover_image || "",
-        type: initialTitle.type || "",
-      };
-    }
-    return { ...EMPTY_FORM };
+  const [form, setForm] = useState({
+    title: existing?.title || "",
+    author: existing?.author || "",
+    type: existing?.type || types[0]?.name || "",
+    description: existing?.description || "",
+    isbn: existing?.isbn || "",
+    year: existing?.year || new Date().getFullYear(),
+    language: existing?.language || "English",
+    cover: existing?.cover || "#0D7377",
+    cover_image: existing?.cover_image || "",
+    publisher: existing?.publisher || "",
+    pages: existing?.pages || "",
   });
-
-  const [copies, setCopies] = useState(initialTitle?.copies || []);
-  const [editingCopy, setEditingCopy] = useState(null);
-  const [copyForm, setCopyForm] = useState({ code: "", condition: "good", notes: "" });
-  const [addingCopy, setAddingCopy] = useState(false);
-
+  const [copyForm, setCopyForm] = useState({
+    condition: "Good",
+    location: "",
+  });
   const [saving, setSaving] = useState(false);
-  const [scanning, setScanning] = useState(false);
-  const [lookingUp, setLookingUp] = useState(false);
-  const [confirmDeleteTitle, setConfirmDeleteTitle] = useState(false);
-  const [confirmDeleteCopy, setConfirmDeleteCopy] = useState(null);
+  const [looking, setLooking] = useState(false);
+  const [lookupMsg, setLookupMsg] = useState(null);
+  const [showScanner, setShowScanner] = useState(false);
+  const [duplicateTitle, setDuplicateTitle] = useState(null);
 
-  const set = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
+  // Inline copies editing (edit mode only)
+  const [editingCopy, setEditingCopy] = useState(null);
+  const [deletingCopy, setDeletingCopy] = useState(null);
 
-  // ISBN lookup from OpenLibrary
-  const lookupISBN = useCallback(async (isbn) => {
-    setLookingUp(true);
-    try {
-      const res = await fetch(`https://openlibrary.org/isbn/${isbn}.json`);
-      if (!res.ok) return;
-      const data = await res.json();
+  const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
+  const setCopyField = (key) => (e) =>
+    setCopyForm({ ...copyForm, [key]: e.target.value });
 
-      // Get author info
-      let authorName = "";
-      if (data.authors?.length) {
-        const authorKey = data.authors[0].key;
-        try {
-          const authorRes = await fetch(`https://openlibrary.org${authorKey}.json`);
-          const authorData = await authorRes.json();
-          authorName = authorData.name || "";
-        } catch {}
+  /* -- ISBN lookup --------------------------------------------------- */
+
+  const handleLookup = useCallback(
+    async (isbn) => {
+      const target = isbn || form.isbn;
+      if (!target.trim()) return;
+      const cleaned = target.replace(/[^0-9Xx]/g, "");
+
+      // Check for existing title with this ISBN
+      const dup = titles.find(
+        (ti) => ti.isbn === cleaned && ti.id !== existing?.id,
+      );
+      if (dup) {
+        setDuplicateTitle(dup);
+        return;
       }
+      setDuplicateTitle(null);
 
-      // Get cover image
-      let coverImage = "";
-      if (data.covers?.length) {
-        coverImage = `https://covers.openlibrary.org/b/id/${data.covers[0]}-M.jpg`;
+      setLooking(true);
+      setLookupMsg(null);
+      try {
+        const [result, description] = await Promise.all([
+          lookupISBN(target),
+          fetchDescription(cleaned),
+        ]);
+        setForm((prev) => ({
+          ...prev,
+          ...result,
+          description: description || prev.description,
+          type: prev.type,
+          cover: prev.cover,
+        }));
+        setLookupMsg({ type: "success", text: t("titleForm.bookInfoLoaded") });
+        setTimeout(() => setLookupMsg(null), 3000);
+      } catch (err) {
+        setLookupMsg({ type: "error", text: err.message });
+      } finally {
+        setLooking(false);
       }
+    },
+    [form.isbn, titles, existing?.id, t],
+  );
 
-      setForm((prev) => ({
-        ...prev,
-        title: data.title || prev.title,
-        author: authorName || prev.author,
-        year: data.publish_date ? data.publish_date.match(/\d{4}/)?.[0] || prev.year : prev.year,
-        publisher: data.publishers?.[0] || prev.publisher,
-        pages: data.number_of_pages?.toString() || prev.pages,
-        isbn: isbn,
-        cover_image: coverImage || prev.cover_image,
-        description: typeof data.description === "string"
-          ? data.description
-          : data.description?.value || prev.description,
-      }));
-    } catch {
-      // silently fail
-    } finally {
-      setLookingUp(false);
-    }
-  }, []);
+  const handleScan = useCallback(
+    (isbn) => {
+      setShowScanner(false);
+      setForm((prev) => ({ ...prev, isbn }));
+      handleLookup(isbn);
+    },
+    [handleLookup],
+  );
 
-  const handleScan = useCallback((isbn) => {
-    setScanning(false);
-    set("isbn", isbn);
-    lookupISBN(isbn);
-  }, [lookupISBN]);
-
-  const handleISBNBlur = () => {
-    const isbn = form.isbn.trim();
-    if (isbn.length === 10 || isbn.length === 13) {
-      lookupISBN(isbn);
+  const handleISBNKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleLookup();
     }
   };
 
-  // Save title
-  const handleSave = async () => {
+  /* -- Save title ---------------------------------------------------- */
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.title.trim()) return;
     setSaving(true);
     try {
-      const payload = {
+      const data = {
         ...form,
-        year: form.year ? parseInt(form.year, 10) : null,
-        pages: form.pages ? parseInt(form.pages, 10) : null,
+        year: Number(form.year) || null,
+        pages: form.pages ? Number(form.pages) : null,
       };
-
-      if (isEditing) {
-        await updateTitle(initialTitle.id, payload);
+      if (existing) {
+        await updateTitle(existing.id, data);
       } else {
-        await addTitle(payload);
+        const newTitleId = await addTitle(data);
+        if (copyForm.location.trim()) {
+          await addCopy(newTitleId, {
+            condition: copyForm.condition,
+            location: copyForm.location,
+            status: "available",
+          });
+        }
       }
       router.push("/admin/titles");
-    } catch {
-      // error handled by context
+    } catch (err) {
+      console.error("Failed to save title:", err);
     } finally {
       setSaving(false);
     }
   };
 
-  // Delete title
-  const handleDeleteTitle = async () => {
-    try {
-      await deleteTitle(initialTitle.id);
-      router.push("/admin/titles");
-    } catch {}
-    setConfirmDeleteTitle(false);
-  };
+  /* -- Inline copy management (edit mode) ---------------------------- */
 
-  // Copies management
-  const handleAddCopy = async () => {
-    if (!isEditing) return;
-    setSaving(true);
-    try {
-      await addCopy(initialTitle.id, copyForm);
-      setCopies((prev) => [...prev, { ...copyForm, id: Date.now() }]);
-      setAddingCopy(false);
-      setCopyForm({ code: "", condition: "good", notes: "" });
-    } catch {} finally { setSaving(false); }
-  };
+  const startAddCopy = () =>
+    setEditingCopy({
+      condition: "Good",
+      location: "",
+      status: "available",
+      isNew: true,
+      id: null,
+    });
 
-  const handleUpdateCopy = async () => {
-    if (!isEditing) return;
-    setSaving(true);
+  const startEditCopy = (copy) => setEditingCopy({ ...copy, isNew: false });
+
+  const saveCopy = async () => {
+    if (!editingCopy || !editingCopy.location.trim() || !existing) return;
+    const data = {
+      condition: editingCopy.condition,
+      location: editingCopy.location.trim(),
+      status: editingCopy.status,
+    };
     try {
-      await updateCopy(initialTitle.id, editingCopy, copyForm);
-      setCopies((prev) => prev.map((c) => (c.id === editingCopy ? { ...c, ...copyForm } : c)));
+      if (editingCopy.isNew) {
+        await addCopy(existing.id, data);
+      } else {
+        await updateCopy(existing.id, editingCopy.id, data);
+      }
       setEditingCopy(null);
-    } catch {} finally { setSaving(false); }
+    } catch (err) {
+      console.error("Failed to save copy:", err);
+    }
   };
 
-  const handleDeleteCopy = async (copyId) => {
-    if (!isEditing) return;
-    try {
-      await deleteCopy(initialTitle.id, copyId);
-      setCopies((prev) => prev.filter((c) => c.id !== copyId));
-    } catch {}
-    setConfirmDeleteCopy(null);
-  };
+  /* -- Styles -------------------------------------------------------- */
 
-  const startEditCopy = (copy) => {
-    setEditingCopy(copy.id);
-    setCopyForm({ code: copy.code || "", condition: copy.condition || "good", notes: copy.notes || "" });
-  };
+  const inputClass =
+    "w-full rounded-xl border-0 bg-cream px-3 py-2.5 text-sm ring-1 ring-sand-200/70 outline-none transition focus:ring-2 focus:ring-teal-600/30 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-400";
 
-  const inputClass = "w-full rounded-xl border-0 bg-cream px-4 py-3 text-sm ring-1 ring-sand-200/70 outline-none transition focus:ring-2 focus:ring-teal-600/30 dark:bg-night-800 dark:text-cream dark:ring-night-700";
-  const labelClass = "block text-sm font-medium text-teal-900 dark:text-cream mb-1.5";
+  const labelClass =
+    "mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400";
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Link href="/admin/titles" className="rounded-lg p-2 text-sand-500 transition hover:bg-sand-100 dark:text-night-400 dark:hover:bg-night-800">
-            <ArrowLeft className="size-5" />
-          </Link>
-          <h1 className="font-heading text-2xl text-teal-900 dark:text-cream">
-            {isEditing ? t("titleForm.editTitle") : t("titleForm.addTitle")}
-          </h1>
-        </div>
-        {isEditing && (
-          <button
-            onClick={() => setConfirmDeleteTitle(true)}
-            className="flex items-center gap-1.5 rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
-          >
-            <Trash2 className="size-4" /> {t("confirm.delete")}
-          </button>
-        )}
-      </div>
+      <button
+        onClick={() => router.push("/admin/titles")}
+        className="mb-6 flex items-center gap-1.5 text-sm font-medium text-sand-500 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
+      >
+        <ArrowLeft className="size-4" /> {t("titleForm.backToTitles")}
+      </button>
 
-      {/* ISBN Section */}
-      <div className="rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50">
-        <div className="flex items-end gap-3">
-          <div className="flex-1">
-            <label className={labelClass}>{t("titleForm.isbn")}</label>
+      <h1
+        className="mb-8 font-heading text-3xl text-teal-900 dark:text-cream"
+        style={{ animation: "fade-up 0.6s ease-out both" }}
+      >
+        {existing ? t("titleForm.editTitle") : t("titleForm.addTitle")}
+      </h1>
+
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-5 rounded-2xl bg-warm p-4 ring-1 ring-sand-200/50 sm:p-6 dark:bg-night-900 dark:ring-night-700/50"
+        style={{ animation: "fade-up 0.6s ease-out 0.1s both" }}
+      >
+        {/* ISBN Lookup Row */}
+        <div>
+          <label className={labelClass}>{t("titleForm.isbnLookup")}</label>
+          <div className="flex flex-col gap-2 sm:flex-row">
             <input
+              type="text"
               value={form.isbn}
-              onChange={(e) => set("isbn", e.target.value)}
-              onBlur={handleISBNBlur}
-              placeholder="978-..."
+              onChange={set("isbn")}
+              onKeyDown={handleISBNKeyDown}
+              placeholder={t("titleForm.isbnPlaceholder")}
               className={inputClass}
             />
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => handleLookup()}
+                disabled={looking || !form.isbn.trim()}
+                className="flex flex-1 shrink-0 items-center justify-center gap-1.5 rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-teal-800 disabled:opacity-40 sm:flex-initial dark:bg-teal-600 dark:hover:bg-teal-700"
+              >
+                {looking ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Search className="size-4" />
+                )}
+                {t("titleForm.lookup")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowScanner(true)}
+                className="flex shrink-0 items-center gap-1.5 rounded-xl border border-sand-200 px-4 py-2.5 text-sm font-medium text-sand-500 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-300 dark:hover:bg-night-800"
+              >
+                <Camera className="size-4" />
+                <span className="hidden sm:inline">{t("titleForm.scan")}</span>
+              </button>
+            </div>
           </div>
-          <button
-            onClick={() => setScanning(true)}
-            className="flex items-center gap-2 rounded-xl bg-teal-700 px-4 py-3 text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600"
-          >
-            <ScanBarcode className="size-4" />
-            {t("titleForm.scan")}
-          </button>
-          {lookingUp && (
-            <div className="flex items-center gap-2 text-sm text-sand-500 dark:text-night-400">
-              <Loader2 className="size-4 animate-spin" />
-              {t("scanner.lookingUp")}
+
+          {/* Lookup messages */}
+          {lookupMsg && (
+            <p
+              className={`mt-2 flex items-center gap-1.5 text-sm ${
+                lookupMsg.type === "success"
+                  ? "text-emerald-600 dark:text-emerald-400"
+                  : "text-red-600 dark:text-red-400"
+              }`}
+            >
+              {lookupMsg.type === "success" && (
+                <CheckCircle className="size-3.5" />
+              )}
+              {lookupMsg.text}
+            </p>
+          )}
+
+          {/* Duplicate ISBN warning */}
+          {duplicateTitle && (
+            <div className="mt-2 flex flex-wrap items-center gap-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
+              <AlertTriangle className="size-4 shrink-0" />
+              <span>
+                {t("titleForm.isbnDuplicate", { title: duplicateTitle.title })}
+              </span>
+              <Link
+                href={`/admin/titles/${duplicateTitle.id}/edit`}
+                className="ml-auto rounded-lg bg-amber-200 px-3 py-1 text-xs font-semibold text-amber-900 transition hover:bg-amber-300 dark:bg-amber-800 dark:text-amber-200"
+              >
+                {t("titleForm.openAddCopy")}
+              </Link>
             </div>
           )}
         </div>
-      </div>
 
-      {/* Main Fields */}
-      <div className="mt-4 rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="sm:col-span-2">
-            <label className={labelClass}>{t("titleForm.title")}</label>
-            <input value={form.title} onChange={(e) => set("title", e.target.value)} className={inputClass} />
+        <hr className="border-sand-200/60 dark:border-night-700/50" />
+
+        {/* Title & Author */}
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label className={labelClass}>{t("titleForm.title")} *</label>
+            <input
+              type="text"
+              value={form.title}
+              onChange={set("title")}
+              required
+              className={inputClass}
+            />
           </div>
-
-          <div className="sm:col-span-2">
+          <div>
             <label className={labelClass}>{t("titleForm.author")}</label>
-            <input value={form.author} onChange={(e) => set("author", e.target.value)} className={inputClass} />
-          </div>
-
-          <div>
-            <label className={labelClass}>{t("titleForm.type")}</label>
-            <select value={form.type} onChange={(e) => set("type", e.target.value)} className={inputClass}>
-              <option value="">{t("titleForm.type")}</option>
-              {types.map((type) => (
-                <option key={type.id} value={type.name}>{type.name}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className={labelClass}>{t("titleForm.year")}</label>
-            <input type="number" value={form.year} onChange={(e) => set("year", e.target.value)} className={inputClass} />
-          </div>
-
-          <div>
-            <label className={labelClass}>{t("titleForm.language")}</label>
-            <input value={form.language} onChange={(e) => set("language", e.target.value)} placeholder="en" className={inputClass} />
-          </div>
-
-          <div>
-            <label className={labelClass}>{t("titleForm.publisher")}</label>
-            <input value={form.publisher} onChange={(e) => set("publisher", e.target.value)} className={inputClass} />
-          </div>
-
-          <div>
-            <label className={labelClass}>{t("titleForm.pages")}</label>
-            <input type="number" value={form.pages} onChange={(e) => set("pages", e.target.value)} className={inputClass} />
-          </div>
-
-          <div>
-            <label className={labelClass}>{t("titleForm.fallbackColor")}</label>
-            <div className="flex items-center gap-3">
-              <input
-                type="color"
-                value={form.cover}
-                onChange={(e) => set("cover", e.target.value)}
-                className="size-10 cursor-pointer rounded-lg border-0"
-              />
-              <span className="text-sm text-sand-500 dark:text-night-400">{form.cover}</span>
-            </div>
-          </div>
-
-          <div className="sm:col-span-2">
-            <label className={labelClass}>{t("titleForm.cover")}</label>
-            <input value={form.cover_image} onChange={(e) => set("cover_image", e.target.value)} placeholder="https://..." className={inputClass} />
-            {form.cover_image && (
-              <img src={form.cover_image} alt="Cover preview" className="mt-2 h-32 rounded-lg object-cover" />
-            )}
-          </div>
-
-          <div className="sm:col-span-2">
-            <label className={labelClass}>{t("titleForm.description")}</label>
-            <textarea
-              value={form.description}
-              onChange={(e) => set("description", e.target.value)}
-              rows={4}
+            <input
+              type="text"
+              value={form.author}
+              onChange={set("author")}
               className={inputClass}
             />
           </div>
         </div>
-      </div>
 
-      {/* Copies Section (only for editing) */}
-      {isEditing && (
-        <div className="mt-4 rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-teal-900 dark:text-cream">{t("titleForm.copies")}</h2>
-            <button
-              onClick={() => { setAddingCopy(true); setCopyForm({ code: "", condition: "good", notes: "" }); }}
-              className="flex items-center gap-1.5 rounded-xl bg-teal-700 px-3 py-2 text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600"
+        {/* Type / Year / Language */}
+        <div className="grid gap-5 sm:grid-cols-3">
+          <div>
+            <label className={labelClass}>{t("titleForm.type")}</label>
+            <select
+              value={form.type}
+              onChange={set("type")}
+              className={inputClass}
             >
-              <Plus className="size-4" /> {t("titleForm.add")}
+              {types.map((tp) => (
+                <option key={tp.id} value={tp.name}>
+                  {tp.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className={labelClass}>{t("titleForm.year")}</label>
+            <input
+              type="number"
+              value={form.year}
+              onChange={set("year")}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>{t("titleForm.language")}</label>
+            <input
+              type="text"
+              value={form.language}
+              onChange={set("language")}
+              className={inputClass}
+            />
+          </div>
+        </div>
+
+        {/* Publisher / Pages */}
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label className={labelClass}>{t("titleForm.publisher")}</label>
+            <input
+              type="text"
+              value={form.publisher}
+              onChange={set("publisher")}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>{t("titleForm.pages")}</label>
+            <input
+              type="number"
+              value={form.pages}
+              onChange={set("pages")}
+              className={inputClass}
+            />
+          </div>
+        </div>
+
+        {/* Description */}
+        <div>
+          <label className={labelClass}>{t("titleForm.description")}</label>
+          <textarea
+            value={form.description}
+            onChange={set("description")}
+            rows={4}
+            className={`${inputClass} resize-none`}
+          />
+        </div>
+
+        {/* Cover */}
+        <div>
+          <label className={labelClass}>{t("titleForm.cover")}</label>
+          <div className="flex items-center gap-4">
+            <div
+              className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-lg shadow-sm ring-1 ring-sand-200/70 dark:ring-night-700"
+              style={{ backgroundColor: form.cover }}
+            >
+              {form.cover_image ? (
+                <img
+                  src={form.cover_image}
+                  alt="Cover"
+                  className="size-full object-cover"
+                />
+              ) : (
+                <span className="text-[10px] font-medium text-white/60">
+                  {t("titleForm.noImage")}
+                </span>
+              )}
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={form.cover}
+                  onChange={set("cover")}
+                  className="size-8 cursor-pointer rounded border-0 bg-transparent"
+                />
+                <span className="text-xs text-sand-500 dark:text-night-400">
+                  {t("titleForm.fallbackColor")}
+                </span>
+              </div>
+              {form.cover_image && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setForm((prev) => ({ ...prev, cover_image: "" }))
+                  }
+                  className="text-xs text-red-500 transition hover:text-red-700 dark:text-red-400"
+                >
+                  {t("titleForm.removeImage")}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* -- First Copy (new titles only) --------------------------- */}
+        {!existing && (
+          <>
+            <hr className="border-sand-200/60 dark:border-night-700/50" />
+            <p className="text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+              {t("titleForm.firstCopy")}
+            </p>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div>
+                <label className={labelClass}>{t("titleForm.location")}</label>
+                <input
+                  type="text"
+                  value={copyForm.location}
+                  onChange={setCopyField("location")}
+                  placeholder={t("titleForm.locationPlaceholder")}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>{t("titleForm.condition")}</label>
+                <select
+                  value={copyForm.condition}
+                  onChange={setCopyField("condition")}
+                  className={inputClass}
+                >
+                  <option value="Excellent">{t("titleForm.excellent")}</option>
+                  <option value="Good">{t("titleForm.good")}</option>
+                  <option value="Fair">{t("titleForm.fair")}</option>
+                </select>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Submit buttons */}
+        <div className="flex gap-3 pt-2">
+          <button
+            type="button"
+            onClick={() => router.push("/admin/titles")}
+            className="rounded-xl border border-sand-200 px-5 py-2.5 text-sm font-medium text-sand-500 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-800"
+          >
+            {t("titleForm.cancel")}
+          </button>
+          <button
+            type="submit"
+            disabled={saving}
+            className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-800 disabled:opacity-50 dark:bg-teal-600 dark:hover:bg-teal-700"
+          >
+            {saving
+              ? t("titleForm.saving")
+              : existing
+                ? t("titleForm.saveChanges")
+                : t("titleForm.createTitle")}
+          </button>
+        </div>
+      </form>
+
+      {/* -- Copies section (edit mode only) -------------------------- */}
+      {existing && (
+        <div
+          className="mt-6 rounded-2xl bg-warm p-4 ring-1 ring-sand-200/50 sm:p-6 dark:bg-night-900 dark:ring-night-700/50"
+          style={{ animation: "fade-up 0.6s ease-out 0.2s both" }}
+        >
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="font-heading text-xl text-teal-900 dark:text-cream">
+              {t("titleForm.copies")}
+              <span className="ml-2 text-sm font-normal text-sand-500 dark:text-night-400">
+                ({existing.copies.length})
+              </span>
+            </h2>
+            <button
+              type="button"
+              onClick={startAddCopy}
+              className="flex items-center gap-1.5 rounded-xl bg-teal-700 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700"
+            >
+              <Plus className="size-3.5" /> {t("titleForm.add")}
             </button>
           </div>
 
-          <div className="space-y-2">
-            {addingCopy && (
-              <div className="flex items-center gap-3 rounded-xl bg-cream p-3 ring-1 ring-sand-200/50 dark:bg-night-800 dark:ring-night-700/50">
-                <input
-                  value={copyForm.code}
-                  onChange={(e) => setCopyForm({ ...copyForm, code: e.target.value })}
-                  placeholder={t("titleForm.locationPlaceholderShort")}
-                  className="flex-1 rounded-lg border-0 bg-white px-3 py-2 text-sm ring-1 ring-sand-200/70 outline-none focus:ring-2 focus:ring-teal-600/30 dark:bg-night-900 dark:text-cream dark:ring-night-700"
-                />
+          {/* Inline edit form */}
+          {editingCopy && (
+            <div className="mb-4 flex flex-col gap-3 rounded-xl bg-cream p-3 ring-2 ring-teal-600/30 sm:flex-row sm:flex-wrap sm:items-end dark:bg-night-800">
+              <div className="sm:w-28">
+                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+                  {t("titleForm.condition")}
+                </label>
                 <select
-                  value={copyForm.condition}
-                  onChange={(e) => setCopyForm({ ...copyForm, condition: e.target.value })}
-                  className="rounded-lg border-0 bg-white px-3 py-2 text-sm ring-1 ring-sand-200/70 outline-none focus:ring-2 focus:ring-teal-600/30 dark:bg-night-900 dark:text-cream dark:ring-night-700"
+                  value={editingCopy.condition}
+                  onChange={(e) =>
+                    setEditingCopy({
+                      ...editingCopy,
+                      condition: e.target.value,
+                    })
+                  }
+                  className={inputClass}
                 >
-                  <option value="excellent">{t("titleForm.excellent")}</option>
-                  <option value="good">{t("titleForm.good")}</option>
-                  <option value="fair">{t("titleForm.fair")}</option>
+                  <option value="Excellent">{t("titleForm.excellent")}</option>
+                  <option value="Good">{t("titleForm.good")}</option>
+                  <option value="Fair">{t("titleForm.fair")}</option>
                 </select>
+              </div>
+              <div className="flex-1">
+                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+                  {t("titleForm.location")}
+                </label>
                 <input
-                  value={copyForm.notes}
-                  onChange={(e) => setCopyForm({ ...copyForm, notes: e.target.value })}
-                  placeholder={t("titleForm.description")}
-                  className="flex-1 rounded-lg border-0 bg-white px-3 py-2 text-sm ring-1 ring-sand-200/70 outline-none focus:ring-2 focus:ring-teal-600/30 dark:bg-night-900 dark:text-cream dark:ring-night-700"
+                  type="text"
+                  value={editingCopy.location}
+                  onChange={(e) =>
+                    setEditingCopy({
+                      ...editingCopy,
+                      location: e.target.value,
+                    })
+                  }
+                  placeholder={t("titleForm.locationPlaceholderShort")}
+                  autoFocus
+                  className={inputClass}
                 />
-                <button onClick={handleAddCopy} disabled={saving} className="rounded-lg bg-teal-700 p-2 text-white hover:bg-teal-800">
+              </div>
+              <div className="sm:w-32">
+                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+                  {t("titleForm.status")}
+                </label>
+                <select
+                  value={editingCopy.status}
+                  onChange={(e) =>
+                    setEditingCopy({
+                      ...editingCopy,
+                      status: e.target.value,
+                    })
+                  }
+                  className={inputClass}
+                >
+                  <option value="available">{t("titleForm.statusAvailable")}</option>
+                  <option value="reserved">{t("titleForm.statusReserved")}</option>
+                </select>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={saveCopy}
+                  disabled={!editingCopy.location.trim()}
+                  className="rounded-lg bg-teal-700 p-2 text-white transition hover:bg-teal-800 disabled:opacity-40 dark:bg-teal-600"
+                >
                   <Check className="size-4" />
                 </button>
-                <button onClick={() => setAddingCopy(false)} className="rounded-lg p-2 text-sand-500 hover:bg-sand-100 dark:text-night-400">
+                <button
+                  type="button"
+                  onClick={() => setEditingCopy(null)}
+                  className="rounded-lg bg-gray-200 p-2 text-gray-600 transition hover:bg-gray-300 dark:bg-night-700 dark:text-night-400"
+                >
                   <X className="size-4" />
                 </button>
               </div>
-            )}
+            </div>
+          )}
 
-            {copies.map((copy) => (
-              <div key={copy.id} className="flex items-center justify-between rounded-xl bg-cream p-3 ring-1 ring-sand-200/50 dark:bg-night-800 dark:ring-night-700/50">
-                {editingCopy === copy.id ? (
-                  <div className="flex flex-1 items-center gap-3">
-                    <input
-                      value={copyForm.code}
-                      onChange={(e) => setCopyForm({ ...copyForm, code: e.target.value })}
-                      className="flex-1 rounded-lg border-0 bg-white px-3 py-2 text-sm ring-1 ring-sand-200/70 outline-none focus:ring-2 focus:ring-teal-600/30 dark:bg-night-900 dark:text-cream dark:ring-night-700"
-                    />
-                    <select
-                      value={copyForm.condition}
-                      onChange={(e) => setCopyForm({ ...copyForm, condition: e.target.value })}
-                      className="rounded-lg border-0 bg-white px-3 py-2 text-sm ring-1 ring-sand-200/70 outline-none focus:ring-2 focus:ring-teal-600/30 dark:bg-night-900 dark:text-cream dark:ring-night-700"
+          {/* Copies list */}
+          <div className="space-y-2">
+            {existing.copies.map((copy) => {
+              const isAvail = copy.status === "available";
+              return (
+                <div
+                  key={copy.id}
+                  className="flex flex-col gap-2 rounded-xl bg-cream p-3 ring-1 ring-sand-200/50 sm:flex-row sm:items-center sm:justify-between dark:bg-night-800 dark:ring-night-700/50"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span
+                      className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                        isAvail
+                          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400"
+                          : "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
+                      }`}
                     >
-                      <option value="excellent">{t("titleForm.excellent")}</option>
-                      <option value="good">{t("titleForm.good")}</option>
-                      <option value="fair">{t("titleForm.fair")}</option>
-                    </select>
-                    <input
-                      value={copyForm.notes}
-                      onChange={(e) => setCopyForm({ ...copyForm, notes: e.target.value })}
-                      className="flex-1 rounded-lg border-0 bg-white px-3 py-2 text-sm ring-1 ring-sand-200/70 outline-none focus:ring-2 focus:ring-teal-600/30 dark:bg-night-900 dark:text-cream dark:ring-night-700"
-                    />
-                    <button onClick={handleUpdateCopy} disabled={saving} className="rounded-lg bg-teal-700 p-2 text-white hover:bg-teal-800">
-                      <Check className="size-4" />
+                      {isAvail ? t("titleForm.statusAvailable") : t("titleForm.statusReserved")}
+                    </span>
+                    <span className="text-sm font-medium text-teal-900 dark:text-cream">
+                      {copy.condition}
+                    </span>
+                    <span className="flex items-center gap-1 text-sm text-sand-500 dark:text-night-400">
+                      <MapPin className="size-3" />
+                      {copy.location}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => startEditCopy(copy)}
+                      className="rounded-lg p-1.5 text-sand-500 transition hover:bg-sand-100 hover:text-teal-800 dark:text-night-400 dark:hover:bg-night-700 dark:hover:text-teal-400"
+                    >
+                      <Pencil className="size-3.5" />
                     </button>
-                    <button onClick={() => setEditingCopy(null)} className="rounded-lg p-2 text-sand-500 hover:bg-sand-100 dark:text-night-400">
-                      <X className="size-4" />
+                    <button
+                      type="button"
+                      onClick={() => setDeletingCopy(copy.id)}
+                      className="rounded-lg p-1.5 text-sand-500 transition hover:bg-red-50 hover:text-red-600 dark:text-night-400 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+                    >
+                      <Trash2 className="size-3.5" />
                     </button>
                   </div>
-                ) : (
-                  <>
-                    <div className="flex items-center gap-3">
-                      <span className="rounded-md bg-teal-100 px-2 py-0.5 text-xs font-semibold text-teal-800 dark:bg-teal-900/30 dark:text-teal-300">
-                        {copy.code || "—"}
-                      </span>
-                      <span className="text-sm capitalize text-sand-500 dark:text-night-400">{copy.condition}</span>
-                      {copy.notes && <span className="text-xs text-sand-300 dark:text-night-500">{copy.notes}</span>}
-                      {copy.status && (
-                        <span className={`rounded-md px-2 py-0.5 text-xs font-medium ${
-                          copy.status === "available" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
-                        }`}>
-                          {copy.status}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex gap-1">
-                      <button onClick={() => startEditCopy(copy)} className="rounded-lg p-2 text-sand-500 hover:bg-sand-100 dark:text-night-400 dark:hover:bg-night-800">
-                        <Pencil className="size-4" />
-                      </button>
-                      <button onClick={() => setConfirmDeleteCopy(copy.id)} className="rounded-lg p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">
-                        <Trash2 className="size-4" />
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
-
-            {copies.length === 0 && !addingCopy && (
-              <p className="py-4 text-center text-sm text-sand-400 dark:text-night-500">{t("titleForm.noCopiesYet")}</p>
+                </div>
+              );
+            })}
+            {existing.copies.length === 0 && !editingCopy && (
+              <p className="py-8 text-center text-sm text-sand-300 dark:text-night-400">
+                {t("titleForm.noCopiesYet")}
+              </p>
             )}
           </div>
         </div>
       )}
 
-      {/* Save Button */}
-      <div className="mt-6 flex justify-end gap-3">
-        <Link
-          href="/admin/titles"
-          className="rounded-xl border border-sand-200 px-6 py-3 text-sm font-medium text-sand-500 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-800"
-        >
-          {t("titleForm.cancel")}
-        </Link>
-        <button
-          onClick={handleSave}
-          disabled={saving || !form.title}
-          className="flex items-center gap-2 rounded-xl bg-teal-700 px-6 py-3 text-sm font-medium text-white transition hover:bg-teal-800 disabled:opacity-50 dark:bg-teal-600"
-        >
-          {saving && <Loader2 className="size-4 animate-spin" />}
-          {isEditing ? t("titleForm.saveChanges") : t("titleForm.createTitle")}
-        </button>
-      </div>
-
-      {/* Scanner Modal */}
-      {scanning && <ISBNScanner onScan={handleScan} onClose={() => setScanning(false)} />}
-
-      {/* Delete Title Confirm */}
-      {confirmDeleteTitle && (
-        <ConfirmDialog
-          title={t("titleForm.deleteCopy")}
-          message={t("titleForm.deleteCopyConfirm")}
-          onConfirm={handleDeleteTitle}
-          onCancel={() => setConfirmDeleteTitle(false)}
+      {/* Scanner modal */}
+      {showScanner && (
+        <ISBNScanner
+          onScan={handleScan}
+          onClose={() => setShowScanner(false)}
         />
       )}
 
-      {/* Delete Copy Confirm */}
-      {confirmDeleteCopy && (
+      {/* Delete copy confirm */}
+      {deletingCopy && existing && (
         <ConfirmDialog
           title={t("titleForm.deleteCopy")}
           message={t("titleForm.deleteCopyConfirm")}
-          onConfirm={() => handleDeleteCopy(confirmDeleteCopy)}
-          onCancel={() => setConfirmDeleteCopy(null)}
+          onConfirm={async () => {
+            await deleteCopy(existing.id, deletingCopy);
+            setDeletingCopy(null);
+          }}
+          onCancel={() => setDeletingCopy(null)}
         />
       )}
     </div>

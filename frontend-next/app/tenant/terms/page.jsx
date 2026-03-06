@@ -3,23 +3,24 @@
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { useData } from "@/context/DataContext";
-import { useLocalize } from "@/hooks/useLocalize";
 
-export default function TenantTerms() {
-  const { siteConfig } = useData();
+const LAST_UPDATED = "March 5, 2026";
+const PLATFORM_URL = process.env.NEXT_PUBLIC_PLATFORM_URL || "http://localhost:3001";
+
+const SECTIONS = [
+  { key: "section1", paragraphs: ["p1"] },
+  { key: "section2", paragraphs: ["p1"] },
+  { key: "section3", paragraphs: ["p1", "p2"] },
+  { key: "section4", paragraphs: ["p1"] },
+  { key: "section5", paragraphs: ["p1"] },
+  { key: "section6", paragraphs: ["p1"] },
+  { key: "section7", paragraphs: ["p1"] },
+];
+
+export default function Terms() {
   const { t } = useTranslation();
-  const l = useLocalize();
-
-  const libraryName = l(siteConfig, "title") || siteConfig.title || "Library";
-
-  const SECTIONS = [
-    { key: "section1", paragraphs: ["p1"] },
-    { key: "section2", paragraphs: ["p1"] },
-    { key: "section3", paragraphs: ["p1"] },
-    { key: "section4", paragraphs: ["p1"] },
-    { key: "section5", paragraphs: ["p1"] },
-    { key: "section6", paragraphs: ["p1"] },
-  ];
+  const { siteConfig } = useData();
+  const libraryName = siteConfig.title || "this library";
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
@@ -28,10 +29,21 @@ export default function TenantTerms() {
           {t("tenantTerms.title")}
         </h1>
         <p className="mt-3 text-sm text-sand-500 dark:text-night-400">
-          {t("tenantTerms.lastUpdated", { date: "March 6, 2026" })}
+          {t("tenantTerms.lastUpdated", { date: LAST_UPDATED })}
         </p>
         <p className="mt-6 leading-relaxed text-sand-500 dark:text-night-400">
-          {t("tenantTerms.intro", { name: libraryName })}
+          {t("tenantTerms.intro")}{" "}
+          <strong className="text-teal-900 dark:text-cream">{libraryName}</strong>.{" "}
+          {t("tenantTerms.introSuffix")}{" "}
+          <a
+            href={`${PLATFORM_URL}/terms`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-teal-700 underline decoration-teal-700/30 transition hover:text-teal-900 hover:decoration-teal-900/50 dark:text-teal-400 dark:decoration-teal-400/30 dark:hover:text-teal-300"
+          >
+            {t("tenantTerms.platformTerms")}
+          </a>{" "}
+          {t("tenantTerms.introEnd")}
         </p>
       </div>
 
@@ -47,7 +59,7 @@ export default function TenantTerms() {
             <h2 className="font-heading text-xl text-teal-900 dark:text-cream">
               {t(`tenantTerms.${s.key}Title`)}
             </h2>
-            {s.paragraphs?.map((p) => (
+            {s.paragraphs.map((p) => (
               <p
                 key={p}
                 className="mt-3 leading-relaxed text-sand-500 dark:text-night-400"
@@ -59,9 +71,10 @@ export default function TenantTerms() {
         ))}
       </div>
 
+      {/* Back link */}
       <div
         className="mt-14 border-t border-sand-200/60 pt-8 dark:border-night-800"
-        style={{ animation: "fade-up 0.5s ease-out 0.4s both" }}
+        style={{ animation: "fade-up 0.5s ease-out 0.5s both" }}
       >
         <Link
           href="/"

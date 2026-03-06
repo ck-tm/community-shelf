@@ -1,81 +1,140 @@
 "use client";
 
-import { useTranslation } from "react-i18next";
-import { BookOpen, Clock, AlertTriangle } from "lucide-react";
+import { BookOpen, Clock, XCircle } from "lucide-react";
 import { useData } from "@/context/DataContext";
-import StatusBadge from "@/components/StatusBadge";
 import TypeIcon from "@/components/TypeIcon";
+import StatusBadge from "@/components/StatusBadge";
+import { useTranslation } from "react-i18next";
 
 export default function MyRentals() {
-  const { inquiries, cancelInquiry } = useData();
   const { t } = useTranslation();
+  const { inquiries, cancelInquiry } = useData();
 
-  const active = inquiries.filter((i) => i.status === "Active").length;
-  const pending = inquiries.filter((i) => i.status === "Pending").length;
-  const overdue = inquiries.filter((i) => i.status === "Overdue").length;
+  const stats = {
+    active: inquiries.filter((i) => i.status === "Active").length,
+    pending: inquiries.filter((i) => i.status === "Pending").length,
+    overdue: inquiries.filter((i) => i.status === "Overdue").length,
+  };
 
-  const stats = [
-    { label: t("rentals.activeLoans"), value: active, icon: BookOpen, color: "text-emerald-600" },
-    { label: t("rentals.pendingRequests"), value: pending, icon: Clock, color: "text-amber-600" },
-    { label: t("rentals.overdueItems"), value: overdue, icon: AlertTriangle, color: "text-red-600" },
-  ];
+  const cancel = async (id) => {
+    try {
+      await cancelInquiry(id);
+    } catch (err) {
+      console.error("Failed to cancel inquiry:", err);
+    }
+  };
 
   return (
     <div>
-      <h1 className="font-heading text-2xl text-teal-900 dark:text-cream">
-        {t("rentals.title")}
-      </h1>
+      {/* Header */}
+      <div className="mb-8" style={{ animation: "fade-up 0.6s ease-out both" }}>
+        <h1 className="font-heading text-3xl text-teal-900 dark:text-cream">
+          {t("rentals.title")}
+        </h1>
+        <p className="mt-1 text-sand-500 dark:text-night-400">
+          {t("rentals.subtitle")}
+        </p>
+      </div>
 
       {/* Stats */}
-      <div className="mt-6 grid grid-cols-3 gap-3">
-        {stats.map((s) => (
-          <div key={s.label} className="rounded-2xl bg-warm p-4 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50">
-            <s.icon className={`size-5 ${s.color}`} />
-            <p className="mt-2 text-2xl font-bold text-teal-900 dark:text-cream">{s.value}</p>
-            <p className="text-xs text-sand-400 dark:text-night-500">{s.label}</p>
+      <div
+        className="mb-8 grid gap-5 sm:grid-cols-3"
+        style={{ animation: "fade-up 0.5s ease-out 0.08s both" }}
+      >
+        {[
+          {
+            label: t("rentals.activeLoans"),
+            value: stats.active,
+            icon: BookOpen,
+            iconColor: "text-teal-700/20 dark:text-teal-400/20",
+            accent: "border-l-teal-700 dark:border-l-teal-500",
+          },
+          {
+            label: t("rentals.pendingRequests"),
+            value: stats.pending,
+            icon: Clock,
+            iconColor: "text-amber-500/20 dark:text-amber-400/20",
+            accent: "border-l-amber-500 dark:border-l-amber-400",
+          },
+          {
+            label: t("rentals.overdueItems"),
+            value: stats.overdue,
+            icon: XCircle,
+            iconColor: "text-red-500/20 dark:text-red-400/20",
+            accent: "border-l-red-500 dark:border-l-red-400",
+          },
+        ].map((s) => (
+          <div
+            key={s.label}
+            className={`flex items-center justify-between rounded-2xl border-l-4 bg-warm p-6 ring-1 ring-sand-200/50 transition-colors duration-300 dark:bg-night-900 dark:ring-night-700/50 ${s.accent}`}
+          >
+            <div>
+              <p className="text-sm font-medium text-sand-500 dark:text-night-400">
+                {s.label}
+              </p>
+              <p className="mt-1 text-3xl font-bold text-teal-900 dark:text-cream">
+                {s.value}
+              </p>
+            </div>
+            <s.icon className={`size-8 ${s.iconColor}`} />
           </div>
         ))}
       </div>
 
-      {/* Inquiries list */}
-      <div className="mt-8 space-y-3">
-        {inquiries.length === 0 ? (
-          <p className="py-8 text-center text-sand-400 dark:text-night-500">
+      {/* Loan History */}
+      <div
+        className="space-y-2"
+        style={{ animation: "fade-up 0.5s ease-out 0.14s both" }}
+      >
+        <h2 className="mb-4 font-heading text-lg text-teal-900 dark:text-cream">
+          {t("rentals.loanHistory")}
+        </h2>
+
+        {inquiries.map((inq) => (
+          <div
+            key={inq.id}
+            className="rounded-2xl bg-warm p-4 ring-1 ring-sand-200/50 transition-colors duration-300 dark:bg-night-900 dark:ring-night-700/50"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-semibold text-teal-900 dark:text-cream">
+                  {inq.title}
+                </p>
+                <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-sand-500 dark:text-night-400">
+                  <span className="flex items-center gap-1">
+                    <TypeIcon type={inq.type} className="size-3.5" />
+                    {inq.type}
+                  </span>
+                  <span className="text-sand-200 dark:text-night-600">&middot;</span>
+                  <span>{inq.requestDate}</span>
+                  {inq.dueDate && (
+                    <>
+                      <span className="text-sand-200 dark:text-night-600">&middot;</span>
+                      <span>{t("rentals.due", { date: inq.dueDate })}</span>
+                    </>
+                  )}
+                </div>
+              </div>
+              <StatusBadge status={inq.status} />
+            </div>
+
+            {inq.status === "Pending" && (
+              <div className="mt-3 border-t border-sand-200/60 pt-3 dark:border-night-700/50">
+                <button
+                  onClick={() => cancel(inq.id)}
+                  className="rounded-lg border border-red-200 bg-red-50 px-3 py-1 text-xs font-semibold text-red-600 transition-colors hover:bg-red-100 dark:border-red-800/50 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50"
+                >
+                  {t("rentals.cancel")}
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+
+        {inquiries.length === 0 && (
+          <p className="py-12 text-center text-sand-300 dark:text-night-500">
             {t("rentals.noInquiries")}
           </p>
-        ) : (
-          inquiries.map((inq) => (
-            <div
-              key={inq.id}
-              className="flex items-center justify-between rounded-2xl bg-warm p-4 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50"
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className="flex size-10 items-center justify-center rounded-lg text-white"
-                  style={{ backgroundColor: inq.title_cover || "#0D7377" }}
-                >
-                  <TypeIcon type={inq.title_type || "Books"} className="size-4" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-teal-900 dark:text-cream">{inq.title_name}</p>
-                  <p className="text-xs text-sand-400 dark:text-night-500">
-                    {inq.created_at && new Date(inq.created_at).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <StatusBadge status={inq.status} />
-                {inq.status === "Pending" && (
-                  <button
-                    onClick={() => cancelInquiry(inq.id)}
-                    className="text-xs font-medium text-red-500 hover:text-red-700 dark:text-red-400"
-                  >
-                    {t("rentals.cancel")}
-                  </button>
-                )}
-              </div>
-            </div>
-          ))
         )}
       </div>
     </div>

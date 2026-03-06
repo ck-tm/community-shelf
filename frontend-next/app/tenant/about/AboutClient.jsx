@@ -1,187 +1,149 @@
 "use client";
 
-import { useMemo } from "react";
 import Link from "next/link";
-import { Clock, MapPin, Mail, Phone, ExternalLink } from "lucide-react";
+import { BookOpen, ArrowRight, Users, Heart, MapPin, ExternalLink } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useData } from "@/context/DataContext";
 import { useLocalize } from "@/hooks/useLocalize";
 import { pinFriendlyUrl } from "@/utils/maps";
 
 export default function About() {
-  const { descriptionPage, siteConfig } = useData();
+  const { siteConfig, descriptionPage } = useData();
   const { t } = useTranslation();
   const l = useLocalize();
 
-  const page = descriptionPage || {};
-  const libraryName = l(siteConfig, "title") || siteConfig.title || "Library";
+  // Use descriptionPage from admin if available, else fall back to i18n strings
+  const dp = descriptionPage;
 
   const hasLocation = siteConfig.address || siteConfig.city;
-  const locationParts = [siteConfig.address, siteConfig.city, siteConfig.country].filter(Boolean);
+
+  const steps = [
+    { icon: BookOpen, title: t("aboutPage.step1Title"), text: t("aboutPage.step1Text") },
+    { icon: ArrowRight, title: t("aboutPage.step2Title"), text: t("aboutPage.step2Text") },
+    { icon: Heart, title: t("aboutPage.step3Title"), text: t("aboutPage.step3Text") },
+  ];
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-      {/* Header */}
-      <div style={{ animation: "fade-up 0.6s ease-out both" }}>
-        <h1 className="font-heading text-4xl tracking-tight text-teal-900 sm:text-5xl dark:text-cream">
-          {l(page, "title") || t("aboutPage.aboutTitle", { name: libraryName })}
-        </h1>
-        {(l(page, "subtitle") || siteConfig.description) && (
-          <p className="mt-4 text-lg leading-relaxed text-sand-500 dark:text-night-400">
-            {l(page, "subtitle") || l(siteConfig, "description")}
-          </p>
-        )}
-      </div>
-
-      {/* Mission / Description */}
-      {l(page, "mission") && (
-        <div
-          className="mt-10 rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 sm:p-8 dark:bg-night-900 dark:ring-night-700/50"
-          style={{ animation: "fade-up 0.5s ease-out 0.1s both" }}
-        >
-          <h2 className="font-heading text-xl text-teal-900 dark:text-cream">
-            {t("aboutPage.mission")}
-          </h2>
-          <p className="mt-3 leading-relaxed text-sand-500 dark:text-night-400">
-            {l(page, "mission")}
-          </p>
-        </div>
-      )}
-
-      {/* Body content */}
-      {l(page, "body") && (
-        <div
-          className="prose prose-sand dark:prose-invert mt-10 max-w-none"
-          style={{ animation: "fade-up 0.5s ease-out 0.15s both" }}
-          dangerouslySetInnerHTML={{ __html: l(page, "body") }}
-        />
-      )}
-
-      {/* Info cards: Hours & Location */}
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+      {/* Hero */}
       <div
-        className="mt-12 grid gap-6 sm:grid-cols-2"
-        style={{ animation: "fade-up 0.5s ease-out 0.2s both" }}
+        className="mb-14 max-w-2xl"
+        style={{ animation: "fade-up 0.6s ease-out both" }}
       >
-        {/* Hours */}
-        {l(page, "hours") && (
-          <div className="rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50">
-            <div className="mb-4 flex items-center gap-2 text-teal-800 dark:text-teal-400">
-              <Clock className="size-5" />
-              <h2 className="font-heading text-lg">{t("aboutPage.howItWorks")}</h2>
-            </div>
-            <p className="whitespace-pre-line text-sm leading-relaxed text-sand-500 dark:text-night-400">
-              {l(page, "hours")}
-            </p>
-          </div>
-        )}
-
-        {/* Location */}
-        {hasLocation && (
-          <div className="rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50">
-            <div className="mb-4 flex items-center gap-2 text-teal-800 dark:text-teal-400">
-              <MapPin className="size-5" />
-              <h2 className="font-heading text-lg">{t("aboutPage.visitUs")}</h2>
-            </div>
-            <p className="text-sm leading-relaxed text-sand-500 dark:text-night-400">
-              {locationParts.join(", ")}
-            </p>
-            {siteConfig.googleMapsUrl && (
-              <a
-                href={pinFriendlyUrl(siteConfig.googleMapsUrl)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-teal-700 transition hover:text-teal-900 dark:text-teal-400 dark:hover:text-teal-300"
-              >
-                <ExternalLink className="size-3.5" />
-                {t("aboutPage.viewOnMap")}
-              </a>
-            )}
-          </div>
+        <h1 className="font-heading text-4xl tracking-tight text-teal-900 sm:text-5xl dark:text-cream">
+          {l(dp, "title") || t("aboutPage.aboutTitle", { name: l(siteConfig, "title") })}
+        </h1>
+        {l(dp, "body") ? (
+          <p className="mt-3 font-heading text-lg italic text-sand-500 dark:text-night-400">
+            {l(dp, "body")}
+          </p>
+        ) : (
+          <p className="mt-3 font-heading text-lg italic text-sand-500 dark:text-night-400">
+            {l(siteConfig, "description")}
+          </p>
         )}
       </div>
 
-      {/* Contact info */}
-      {(siteConfig.email || siteConfig.phone) && (
-        <div
-          className="mt-8 grid gap-6 sm:grid-cols-2"
-          style={{ animation: "fade-up 0.5s ease-out 0.25s both" }}
-        >
-          {siteConfig.email && (
-            <div className="rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50">
-              <div className="mb-3 flex items-center gap-2 text-teal-800 dark:text-teal-400">
-                <Mail className="size-5" />
-                <h2 className="font-heading text-lg">{t("tenantContact.email")}</h2>
-              </div>
-              <a
-                href={`mailto:${siteConfig.email}`}
-                className="text-sm text-sand-500 transition hover:text-teal-700 dark:text-night-400 dark:hover:text-teal-400"
-              >
-                {siteConfig.email}
-              </a>
-            </div>
-          )}
-          {siteConfig.phone && (
-            <div className="rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50">
-              <div className="mb-3 flex items-center gap-2 text-teal-800 dark:text-teal-400">
-                <Phone className="size-5" />
-                <h2 className="font-heading text-lg">{siteConfig.phone}</h2>
-              </div>
-              <a
-                href={`tel:${siteConfig.phone}`}
-                className="text-sm text-sand-500 transition hover:text-teal-700 dark:text-night-400 dark:hover:text-teal-400"
-              >
-                {siteConfig.phone}
-              </a>
-            </div>
-          )}
+      {/* Mission */}
+      <div
+        className="mb-14 rounded-2xl bg-warm p-8 ring-1 ring-sand-200/50 sm:p-10 dark:bg-night-900 dark:ring-night-700/50"
+        style={{ animation: "fade-up 0.6s ease-out 0.1s both" }}
+      >
+        <div className="flex items-start gap-4">
+          <Users className="mt-1 size-6 shrink-0 text-teal-700 dark:text-teal-400" />
+          <div>
+            <h2 className="font-heading text-2xl text-teal-900 dark:text-cream">
+              {l(dp, "missionTitle") || t("aboutPage.mission")}
+            </h2>
+            <p className="mt-3 leading-relaxed text-sand-500 dark:text-night-400">
+              {l(dp, "missionText") || t("aboutPage.missionText", { name: l(siteConfig, "title") })}
+            </p>
+          </div>
         </div>
-      )}
+      </div>
 
-      {/* Visit Us CTA */}
+      {/* Visit Us */}
       {hasLocation && (
         <div
-          className="mt-14 text-center"
-          style={{ animation: "fade-up 0.5s ease-out 0.3s both" }}
+          className="mb-14 rounded-2xl bg-warm p-8 ring-1 ring-sand-200/50 sm:p-10 dark:bg-night-900 dark:ring-night-700/50"
+          style={{ animation: "fade-up 0.6s ease-out 0.15s both" }}
         >
-          <h2 className="font-heading text-2xl text-teal-900 dark:text-cream">
-            {t("aboutPage.visitUs")}
-          </h2>
-          <p className="mx-auto mt-3 max-w-md text-sand-500 dark:text-night-400">
-            {t("aboutPage.browseOffer")}
-          </p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
-            {siteConfig.googleMapsUrl && (
-              <a
-                href={pinFriendlyUrl(siteConfig.googleMapsUrl)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl bg-teal-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700"
-              >
-                <MapPin className="size-4" />
-                {t("aboutPage.viewOnMap")}
-              </a>
-            )}
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 rounded-xl border border-sand-200 px-6 py-3 text-sm font-semibold text-sand-500 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-700"
-            >
-              <Mail className="size-4" />
-              {t("tenantContact.title")}
-            </Link>
+          <div className="flex items-start gap-4">
+            <MapPin className="mt-1 size-6 shrink-0 text-teal-700 dark:text-teal-400" />
+            <div>
+              <h2 className="font-heading text-2xl text-teal-900 dark:text-cream">
+                {t("aboutPage.visitUs")}
+              </h2>
+              <div className="mt-3 space-y-1 leading-relaxed text-sand-500 dark:text-night-400">
+                {siteConfig.address && <p>{siteConfig.address}</p>}
+                {(siteConfig.city || siteConfig.country) && (
+                  <p>
+                    {[siteConfig.city, siteConfig.country].filter(Boolean).join(", ")}
+                  </p>
+                )}
+              </div>
+              {siteConfig.googleMapsUrl && (
+                <a
+                  href={pinFriendlyUrl(siteConfig.googleMapsUrl)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-teal-700 transition hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300"
+                >
+                  {t("aboutPage.viewOnMap")}
+                  <ExternalLink className="size-3.5" />
+                </a>
+              )}
+            </div>
           </div>
         </div>
       )}
 
-      {/* Back link */}
+      {/* How it works */}
+      <div style={{ animation: "fade-up 0.6s ease-out 0.2s both" }}>
+        <h2 className="mb-8 font-heading text-2xl text-teal-900 dark:text-cream">
+          {t("aboutPage.howItWorks")}
+        </h2>
+        <div className="grid gap-6 sm:grid-cols-3">
+          {steps.map((step, i) => (
+            <div
+              key={step.title}
+              className="rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50"
+              style={{
+                animation: "fade-up 0.5s ease-out both",
+                animationDelay: `${0.3 + i * 0.08}s`,
+              }}
+            >
+              <div className="mb-4 flex size-10 items-center justify-center rounded-xl bg-teal-700/10 dark:bg-teal-400/10">
+                <step.icon className="size-5 text-teal-700 dark:text-teal-400" />
+              </div>
+              <h3 className="font-semibold text-teal-900 dark:text-cream">
+                {step.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-sand-500 dark:text-night-400">
+                {step.text}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* CTA */}
       <div
-        className="mt-14 border-t border-sand-200/60 pt-8 dark:border-night-800"
-        style={{ animation: "fade-up 0.5s ease-out 0.35s both" }}
+        className="mt-14 text-center"
+        style={{ animation: "fade-up 0.6s ease-out 0.5s both" }}
       >
+        <h2 className="font-heading text-2xl text-teal-900 dark:text-cream">
+          {t("aboutPage.readyToExplore")}
+        </h2>
+        <p className="mt-2 text-sand-500 dark:text-night-400">
+          {t("aboutPage.browseOffer")}
+        </p>
         <Link
           href="/"
-          className="text-sm font-medium text-teal-700 transition hover:text-teal-900 dark:text-teal-400 dark:hover:text-teal-300"
+          className="mt-5 inline-flex items-center gap-2 rounded-full bg-teal-800 px-6 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-teal-900 dark:bg-teal-700 dark:hover:bg-teal-600"
         >
-          &larr; {t("aboutPage.browseCollection")}
+          {t("aboutPage.browseCollection")}
+          <ArrowRight className="size-4" />
         </Link>
       </div>
     </div>

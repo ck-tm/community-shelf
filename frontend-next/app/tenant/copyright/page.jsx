@@ -3,20 +3,20 @@
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { useData } from "@/context/DataContext";
-import { useLocalize } from "@/hooks/useLocalize";
+
+const LAST_UPDATED = "March 6, 2026";
+const PLATFORM_URL = process.env.NEXT_PUBLIC_PLATFORM_URL || "http://localhost:3001";
+
+const SECTIONS = [
+  { key: "section1", paragraphs: ["p1"] },
+  { key: "section2", paragraphs: ["p1"] },
+  { key: "section3", paragraphs: ["p1"], list: "reportSteps" },
+];
 
 export default function TenantCopyright() {
-  const { siteConfig } = useData();
   const { t } = useTranslation();
-  const l = useLocalize();
-
-  const libraryName = l(siteConfig, "title") || siteConfig.title || "Library";
-
-  const SECTIONS = [
-    { key: "section1", paragraphs: ["p1"] },
-    { key: "section2", paragraphs: ["p1"], list: "reportList" },
-    { key: "section3", paragraphs: ["p1"], list: "responseList" },
-  ];
+  const { siteConfig } = useData();
+  const libraryName = siteConfig.title || "this library";
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
@@ -25,7 +25,7 @@ export default function TenantCopyright() {
           {t("tenantCopyright.title")}
         </h1>
         <p className="mt-3 text-sm text-sand-500 dark:text-night-400">
-          {t("tenantCopyright.lastUpdated", { date: "March 6, 2026" })}
+          {t("tenantCopyright.lastUpdated", { date: LAST_UPDATED })}
         </p>
         <p className="mt-6 leading-relaxed text-sand-500 dark:text-night-400">
           {t("tenantCopyright.intro", { name: libraryName })}
@@ -53,18 +53,32 @@ export default function TenantCopyright() {
               </p>
             ))}
             {s.list && (
-              <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sand-500 dark:text-night-400">
-                {(t(`tenantCopyright.${s.key}${s.list}`, { returnObjects: true }) || []).map(
-                  (item, idx) => (
-                    <li key={idx} className="leading-relaxed">
-                      {item}
-                    </li>
-                  )
-                )}
+              <ul className="mt-3 list-disc space-y-1 pl-5 text-sand-500 dark:text-night-400">
+                {t(`tenantCopyright.${s.list}`, { returnObjects: true }).map((item, j) => (
+                  <li key={j}>{item}</li>
+                ))}
               </ul>
             )}
           </section>
         ))}
+      </div>
+
+      {/* Platform policy reference */}
+      <div
+        className="mt-10 rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50"
+        style={{ animation: "fade-up 0.5s ease-out 0.3s both" }}
+      >
+        <p className="text-sm leading-relaxed text-sand-500 dark:text-night-400">
+          {t("tenantCopyright.platformNote")}{" "}
+          <a
+            href={`${PLATFORM_URL}/copyright`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-teal-700 underline decoration-teal-700/30 transition hover:text-teal-900 hover:decoration-teal-900/50 dark:text-teal-400 dark:decoration-teal-400/30 dark:hover:text-teal-300"
+          >
+            {t("tenantCopyright.platformLink")}
+          </a>
+        </p>
       </div>
 
       <div

@@ -1,5 +1,7 @@
 import "./globals.css";
 import { headers } from "next/headers";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import { I18nProvider } from "@/context/I18nProvider";
 import { AuthProvider } from "@/context/AuthContext";
@@ -21,6 +23,8 @@ export default async function RootLayout({ children }) {
           <I18nProvider initialLocale={locale}>
             <AuthProvider>
               {children}
+              <Analytics />
+              <SpeedInsights />
             </AuthProvider>
           </I18nProvider>
         </ThemeProvider>

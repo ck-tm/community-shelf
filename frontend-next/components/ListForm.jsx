@@ -2,323 +2,370 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Plus, Trash2, GripVertical, ArrowLeft, Loader2, ChevronUp, ChevronDown } from "lucide-react";
+import {
+  ArrowLeft,
+  Plus,
+  Trash2,
+  ChevronUp,
+  ChevronDown,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useData } from "@/context/DataContext";
 import TitlePicker from "@/components/TitlePicker";
-import ConfirmDialog from "@/components/ConfirmDialog";
+import TypeIcon from "@/components/TypeIcon";
 
 export default function ListForm({ initialList = null }) {
-  const router = useRouter();
   const { t } = useTranslation();
-  const { titles, addList, updateList, deleteList } = useData();
+  const { titles, addList, updateList } = useData();
+  const router = useRouter();
+  const existing = initialList || null;
 
-  const isEditing = !!initialList;
-
-  const [form, setForm] = useState(() => ({
-    title: initialList?.title || "",
-    titleRo: initialList?.titleRo || "",
-    description: initialList?.description || "",
-    descriptionRo: initialList?.descriptionRo || "",
-    coverColor: initialList?.coverColor || "#0D7377",
-  }));
-
-  const [sections, setSections] = useState(() => {
-    if (initialList?.sections?.length) {
-      return initialList.sections.map((s, idx) => ({
-        id: s.id || `section-${idx}`,
-        heading: s.heading || "",
-        headingRo: s.headingRo || "",
-        titleIds: s.titles?.map((ti) => (typeof ti === "object" ? ti.id : ti)) || [],
-      }));
-    }
-    return [];
+  const [form, setForm] = useState({
+    title: existing?.title || "",
+    titleRo: existing?.titleRo || "",
+    description: existing?.description || "",
+    descriptionRo: existing?.descriptionRo || "",
+    coverColor: existing?.coverColor || "#0D7377",
+    sections: existing?.sections || [],
   });
+  const [pickerFor, setPickerFor] = useState(null); // section index
 
-  const [saving, setSaving] = useState(false);
-  const [pickerOpen, setPickerOpen] = useState(null); // section index
-  const [confirmDeleteList, setConfirmDeleteList] = useState(false);
+  const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
 
-  const set = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
-
-  // Section management
   const addSection = () => {
-    setSections((prev) => [
-      ...prev,
-      { id: `section-${Date.now()}`, heading: "", headingRo: "", titleIds: [] },
-    ]);
-  };
-
-  const removeSection = (index) => {
-    setSections((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const updateSection = (index, key, value) => {
-    setSections((prev) =>
-      prev.map((s, i) => (i === index ? { ...s, [key]: value } : s))
-    );
-  };
-
-  const moveSection = (index, direction) => {
-    const newIndex = index + direction;
-    if (newIndex < 0 || newIndex >= sections.length) return;
-    setSections((prev) => {
-      const next = [...prev];
-      [next[index], next[newIndex]] = [next[newIndex], next[index]];
-      return next;
+    setForm({
+      ...form,
+      sections: [
+        ...form.sections,
+        { id: `temp-${Date.now()}`, heading: "", headingRo: "", body: "", bodyRo: "", titleIds: [] },
+      ],
     });
   };
 
-  // Title picker
-  const openPicker = (sectionIndex) => setPickerOpen(sectionIndex);
+  const updateSection = (idx, updates) => {
+    const next = [...form.sections];
+    next[idx] = { ...next[idx], ...updates };
+    setForm({ ...form, sections: next });
+  };
 
-  const handlePickerDone = (selectedIds) => {
-    if (pickerOpen !== null) {
-      updateSection(pickerOpen, "titleIds", selectedIds);
+  const removeSection = (idx) => {
+    setForm({ ...form, sections: form.sections.filter((_, i) => i !== idx) });
+  };
+
+  const moveSection = (idx, dir) => {
+    const next = [...form.sections];
+    const target = idx + dir;
+    if (target < 0 || target >= next.length) return;
+    [next[idx], next[target]] = [next[target], next[idx]];
+    setForm({ ...form, sections: next });
+  };
+
+  const handlePickerDone = (titleIds) => {
+    if (pickerFor !== null) {
+      updateSection(pickerFor, { titleIds });
     }
-    setPickerOpen(null);
+    setPickerFor(null);
   };
 
-  const removeTitleFromSection = (sectionIndex, titleId) => {
-    updateSection(
-      sectionIndex,
-      "titleIds",
-      sections[sectionIndex].titleIds.filter((id) => id !== titleId)
-    );
+  const removeTitleFromSection = (sectionIdx, titleId) => {
+    const section = form.sections[sectionIdx];
+    updateSection(sectionIdx, {
+      titleIds: section.titleIds.filter((id) => id !== titleId),
+    });
   };
 
-  const getTitleById = (id) => titles.find((t) => t.id === id);
+  const [saving, setSaving] = useState(false);
 
-  // Save
-  const handleSave = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.title.trim() || saving) return;
     setSaving(true);
     try {
       const payload = {
         ...form,
-        sections: sections.map((s, i) => ({
+        sections: form.sections.map((s, idx) => ({
           heading: s.heading,
-          headingRo: s.headingRo,
-          order: i,
-          titles: s.titleIds,
+          headingRo: s.headingRo || "",
+          body: s.body,
+          bodyRo: s.bodyRo || "",
+          titleIds: s.titleIds,
+          order: idx,
         })),
       };
-
-      if (isEditing) {
-        await updateList(initialList.id, payload);
+      if (existing) {
+        await updateList(existing.id, payload);
       } else {
         await addList(payload);
       }
       router.push("/admin/lists");
-    } catch {
-      // error handled by context
+    } catch (err) {
+      console.error("Failed to save list:", err);
     } finally {
       setSaving(false);
     }
   };
 
-  // Delete
-  const handleDeleteList = async () => {
-    try {
-      await deleteList(initialList.id);
-      router.push("/admin/lists");
-    } catch {}
-    setConfirmDeleteList(false);
-  };
-
-  const inputClass = "w-full rounded-xl border-0 bg-cream px-4 py-3 text-sm ring-1 ring-sand-200/70 outline-none transition focus:ring-2 focus:ring-teal-600/30 dark:bg-night-800 dark:text-cream dark:ring-night-700";
-  const labelClass = "block text-sm font-medium text-teal-900 dark:text-cream mb-1.5";
+  const inputClass =
+    "w-full rounded-xl border-0 bg-cream px-3 py-2.5 text-sm ring-1 ring-sand-200/70 outline-none transition focus:ring-2 focus:ring-teal-600/30 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-400";
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Link href="/admin/lists" className="rounded-lg p-2 text-sand-500 transition hover:bg-sand-100 dark:text-night-400 dark:hover:bg-night-800">
-            <ArrowLeft className="size-5" />
-          </Link>
-          <h1 className="font-heading text-2xl text-teal-900 dark:text-cream">
-            {isEditing ? t("listForm.editList") : t("listForm.newList")}
-          </h1>
-        </div>
-        {isEditing && (
-          <button
-            onClick={() => setConfirmDeleteList(true)}
-            className="flex items-center gap-1.5 rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
-          >
-            <Trash2 className="size-4" /> {t("confirm.delete")}
-          </button>
-        )}
-      </div>
+      <button
+        onClick={() => router.push("/admin/lists")}
+        className="mb-6 flex items-center gap-1.5 text-sm font-medium text-sand-500 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
+      >
+        <ArrowLeft className="size-4" /> {t("listForm.backToLists")}
+      </button>
 
-      {/* List Details */}
-      <div className="rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50">
-        <div className="grid gap-4 sm:grid-cols-2">
+      <h1
+        className="mb-8 font-heading text-3xl text-teal-900 dark:text-cream"
+        style={{ animation: "fade-up 0.6s ease-out both" }}
+      >
+        {existing ? t("listForm.editList") : t("listForm.newList")}
+      </h1>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Meta */}
+        <div
+          className="space-y-5 rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50"
+          style={{ animation: "fade-up 0.6s ease-out 0.1s both" }}
+        >
           <div>
-            <label className={labelClass}>{t("listForm.title")}</label>
-            <input value={form.title} onChange={(e) => set("title", e.target.value)} className={inputClass} />
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+              {t("listForm.title")} *
+            </label>
+            <input
+              type="text"
+              value={form.title}
+              onChange={set("title")}
+              required
+              placeholder={t("listForm.titlePlaceholder")}
+              className={inputClass}
+            />
           </div>
           <div>
-            <label className={labelClass}>{t("listForm.titleRo")}</label>
-            <input value={form.titleRo} onChange={(e) => set("titleRo", e.target.value)} className={inputClass} />
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+              {t("listForm.titleRo")}
+            </label>
+            <input
+              type="text"
+              value={form.titleRo}
+              onChange={set("titleRo")}
+              placeholder={t("listForm.roPlaceholder")}
+              className={inputClass}
+            />
           </div>
           <div>
-            <label className={labelClass}>{t("listForm.description")}</label>
-            <textarea value={form.description} onChange={(e) => set("description", e.target.value)} rows={3} className={inputClass} />
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+              {t("listForm.description")}
+            </label>
+            <textarea
+              value={form.description}
+              onChange={set("description")}
+              rows={3}
+              className={`${inputClass} resize-none`}
+            />
           </div>
           <div>
-            <label className={labelClass}>{t("listForm.descriptionRo")}</label>
-            <textarea value={form.descriptionRo} onChange={(e) => set("descriptionRo", e.target.value)} rows={3} className={inputClass} />
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+              {t("listForm.descriptionRo")}
+            </label>
+            <textarea
+              value={form.descriptionRo}
+              onChange={set("descriptionRo")}
+              rows={3}
+              placeholder={t("listForm.roPlaceholder")}
+              className={`${inputClass} resize-none`}
+            />
           </div>
           <div>
-            <label className={labelClass}>{t("listForm.coverColor")}</label>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+              {t("listForm.coverColor")}
+            </label>
             <div className="flex items-center gap-3">
               <input
                 type="color"
                 value={form.coverColor}
-                onChange={(e) => set("coverColor", e.target.value)}
-                className="size-10 cursor-pointer rounded-lg border-0"
+                onChange={set("coverColor")}
+                className="size-10 cursor-pointer rounded-lg border-0 bg-transparent"
               />
-              <span className="text-sm text-sand-500 dark:text-night-400">{form.coverColor}</span>
+              <span className="text-sm text-sand-500 dark:text-night-400">
+                {form.coverColor}
+              </span>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Sections */}
-      <div className="mt-4">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-teal-900 dark:text-cream">{t("listForm.sections")}</h2>
-          <button
-            onClick={addSection}
-            className="flex items-center gap-1.5 rounded-xl bg-teal-700 px-3 py-2 text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600"
-          >
-            <Plus className="size-4" /> {t("listForm.addSection")}
-          </button>
-        </div>
-
-        <div className="space-y-4">
-          {sections.map((section, idx) => (
-            <div
-              key={section.id}
-              className="rounded-2xl bg-warm p-5 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50"
+        {/* Sections */}
+        <div style={{ animation: "fade-up 0.6s ease-out 0.2s both" }}>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="font-heading text-xl text-teal-900 dark:text-cream">
+              {t("listForm.sections")}
+            </h2>
+            <button
+              type="button"
+              onClick={addSection}
+              className="flex items-center gap-1.5 rounded-xl bg-teal-700 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600"
             >
-              <div className="mb-4 flex items-start justify-between gap-3">
-                <div className="grid flex-1 gap-3 sm:grid-cols-2">
+              <Plus className="size-3.5" /> {t("listForm.addSection")}
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            {form.sections.map((section, idx) => (
+              <div
+                key={section.id}
+                className="rounded-2xl bg-warm p-5 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50"
+              >
+                <div className="mb-4 flex items-center justify-between">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-sand-300 dark:text-night-400">
+                    {t("listForm.sectionN", { n: idx + 1 })}
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => moveSection(idx, -1)}
+                      disabled={idx === 0}
+                      className="rounded-lg p-1 text-sand-500 transition hover:bg-sand-100 disabled:opacity-30 dark:text-night-400 dark:hover:bg-night-800"
+                    >
+                      <ChevronUp className="size-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => moveSection(idx, 1)}
+                      disabled={idx === form.sections.length - 1}
+                      className="rounded-lg p-1 text-sand-500 transition hover:bg-sand-100 disabled:opacity-30 dark:text-night-400 dark:hover:bg-night-800"
+                    >
+                      <ChevronDown className="size-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => removeSection(idx)}
+                      className="rounded-lg p-1 text-sand-500 transition hover:bg-red-50 hover:text-red-600 dark:text-night-400 dark:hover:bg-red-900/20"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
                   <input
+                    type="text"
                     value={section.heading}
-                    onChange={(e) => updateSection(idx, "heading", e.target.value)}
+                    onChange={(e) =>
+                      updateSection(idx, { heading: e.target.value })
+                    }
                     placeholder={t("listForm.sectionHeading")}
                     className={inputClass}
                   />
                   <input
-                    value={section.headingRo}
-                    onChange={(e) => updateSection(idx, "headingRo", e.target.value)}
+                    type="text"
+                    value={section.headingRo || ""}
+                    onChange={(e) =>
+                      updateSection(idx, { headingRo: e.target.value })
+                    }
                     placeholder={t("listForm.sectionHeadingRo")}
                     className={inputClass}
                   />
-                </div>
-                <div className="flex shrink-0 gap-1">
-                  <button
-                    onClick={() => moveSection(idx, -1)}
-                    disabled={idx === 0}
-                    className="rounded-lg p-1.5 text-sand-500 transition hover:bg-sand-100 disabled:opacity-30 dark:text-night-400 dark:hover:bg-night-800"
-                  >
-                    <ChevronUp className="size-4" />
-                  </button>
-                  <button
-                    onClick={() => moveSection(idx, 1)}
-                    disabled={idx === sections.length - 1}
-                    className="rounded-lg p-1.5 text-sand-500 transition hover:bg-sand-100 disabled:opacity-30 dark:text-night-400 dark:hover:bg-night-800"
-                  >
-                    <ChevronDown className="size-4" />
-                  </button>
-                  <button
-                    onClick={() => removeSection(idx)}
-                    className="rounded-lg p-1.5 text-red-500 transition hover:bg-red-50 dark:hover:bg-red-900/20"
-                  >
-                    <Trash2 className="size-4" />
-                  </button>
-                </div>
-              </div>
+                  <textarea
+                    value={section.body}
+                    onChange={(e) =>
+                      updateSection(idx, { body: e.target.value })
+                    }
+                    placeholder={t("listForm.sectionText")}
+                    rows={3}
+                    className={`${inputClass} resize-none`}
+                  />
+                  <textarea
+                    value={section.bodyRo || ""}
+                    onChange={(e) =>
+                      updateSection(idx, { bodyRo: e.target.value })
+                    }
+                    placeholder={t("listForm.sectionTextRo")}
+                    rows={3}
+                    className={`${inputClass} resize-none`}
+                  />
 
-              {/* Titles in section */}
-              <div className="space-y-1.5">
-                {section.titleIds.map((titleId) => {
-                  const ti = getTitleById(titleId);
-                  if (!ti) return null;
-                  return (
-                    <div
-                      key={titleId}
-                      className="flex items-center gap-3 rounded-xl bg-cream p-2.5 dark:bg-night-800"
-                    >
-                      <GripVertical className="size-4 shrink-0 text-sand-300 dark:text-night-600" />
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-teal-900 dark:text-cream">{ti.title}</p>
-                        <p className="truncate text-xs text-sand-500 dark:text-night-400">{ti.author}</p>
-                      </div>
+                  {/* Linked titles */}
+                  <div>
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-sand-300 dark:text-night-400">
+                        {t("listForm.linkedTitles", { count: section.titleIds.length })}
+                      </span>
                       <button
-                        onClick={() => removeTitleFromSection(idx, titleId)}
-                        className="shrink-0 rounded-lg p-1.5 text-red-500 transition hover:bg-red-50 dark:hover:bg-red-900/20"
+                        type="button"
+                        onClick={() => setPickerFor(idx)}
+                        className="text-xs font-medium text-teal-700 transition hover:text-teal-900 dark:text-teal-400 dark:hover:text-teal-300"
                       >
-                        <Trash2 className="size-3.5" />
+                        {t("listForm.pickTitles")}
                       </button>
                     </div>
-                  );
-                })}
+                    {section.titleIds.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {section.titleIds.map((tid) => {
+                          const ti = titles.find((tt) => tt.id === tid);
+                          if (!ti) return null;
+                          return (
+                            <span
+                              key={tid}
+                              className="flex items-center gap-1.5 rounded-lg bg-cream px-2.5 py-1 text-xs font-medium text-teal-900 ring-1 ring-sand-200/60 dark:bg-night-800 dark:text-cream dark:ring-night-700"
+                            >
+                              <TypeIcon type={ti.type} className="size-3" />
+                              {ti.title}
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  removeTitleFromSection(idx, tid)
+                                }
+                                className="ml-0.5 text-sand-300 transition hover:text-red-500 dark:text-night-400"
+                              >
+                                &times;
+                              </button>
+                            </span>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-sand-300 dark:text-night-500">
+                        {t("listForm.noTitlesLinked")}
+                      </p>
+                    )}
+                  </div>
+                </div>
               </div>
+            ))}
 
-              <button
-                onClick={() => openPicker(idx)}
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-sand-200 py-3 text-sm font-medium text-sand-400 transition hover:border-teal-600 hover:text-teal-700 dark:border-night-700 dark:text-night-500 dark:hover:border-teal-500 dark:hover:text-teal-400"
-              >
-                <Plus className="size-4" /> {t("listForm.pickTitles")}
-              </button>
-            </div>
-          ))}
-
-          {sections.length === 0 && (
-            <p className="rounded-2xl bg-warm py-8 text-center text-sm text-sand-400 ring-1 ring-sand-200/50 dark:bg-night-900 dark:text-night-500 dark:ring-night-700/50">
-              {t("listForm.noSections")}
-            </p>
-          )}
+            {form.sections.length === 0 && (
+              <p className="py-8 text-center text-sm text-sand-300 dark:text-night-400">
+                {t("listForm.noSections")}
+              </p>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Save */}
-      <div className="mt-6 flex justify-end gap-3">
-        <Link
-          href="/admin/lists"
-          className="rounded-xl border border-sand-200 px-6 py-3 text-sm font-medium text-sand-500 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-800"
-        >
-          {t("listForm.cancel")}
-        </Link>
-        <button
-          onClick={handleSave}
-          disabled={saving || !form.title}
-          className="flex items-center gap-2 rounded-xl bg-teal-700 px-6 py-3 text-sm font-medium text-white transition hover:bg-teal-800 disabled:opacity-50 dark:bg-teal-600"
-        >
-          {saving && <Loader2 className="size-4 animate-spin" />}
-          {isEditing ? t("listForm.saveChanges") : t("listForm.createList")}
-        </button>
-      </div>
+        {/* Actions */}
+        <div className="flex gap-3 pt-2">
+          <button
+            type="button"
+            onClick={() => router.push("/admin/lists")}
+            className="rounded-xl border border-sand-200 px-5 py-2.5 text-sm font-medium text-sand-500 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-800"
+          >
+            {t("listForm.cancel")}
+          </button>
+          <button
+            type="submit"
+            className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700"
+          >
+            {existing ? t("listForm.saveChanges") : t("listForm.createList")}
+          </button>
+        </div>
+      </form>
 
-      {/* Title Picker Modal */}
-      {pickerOpen !== null && (
+      {pickerFor !== null && (
         <TitlePicker
-          selected={sections[pickerOpen]?.titleIds || []}
+          selected={form.sections[pickerFor]?.titleIds || []}
           onDone={handlePickerDone}
-          onCancel={() => setPickerOpen(null)}
-        />
-      )}
-
-      {/* Delete Confirm */}
-      {confirmDeleteList && (
-        <ConfirmDialog
-          title={t("confirm.delete")}
-          message={"Remove this section?"}
-          onConfirm={handleDeleteList}
-          onCancel={() => setConfirmDeleteList(false)}
+          onCancel={() => setPickerFor(null)}
         />
       )}
     </div>
