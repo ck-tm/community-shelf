@@ -2,8 +2,10 @@ import { BookOpen, Clock, XCircle } from "lucide-react";
 import { useData } from "../../context/DataContext";
 import TypeIcon from "../../components/TypeIcon";
 import StatusBadge from "../../components/StatusBadge";
+import { useTranslation } from "react-i18next";
 
 export default function MyRentals() {
+  const { t } = useTranslation();
   const { inquiries, cancelInquiry } = useData();
 
   const stats = {
@@ -25,10 +27,10 @@ export default function MyRentals() {
       {/* Header */}
       <div className="mb-8" style={{ animation: "fade-up 0.6s ease-out both" }}>
         <h1 className="font-heading text-3xl text-teal-900 dark:text-cream">
-          My Rentals
+          {t("rentals.title")}
         </h1>
         <p className="mt-1 text-sand-500 dark:text-night-400">
-          Track your active loans and request history.
+          {t("rentals.subtitle")}
         </p>
       </div>
 
@@ -39,21 +41,21 @@ export default function MyRentals() {
       >
         {[
           {
-            label: "Active Loans",
+            label: t("rentals.activeLoans"),
             value: stats.active,
             icon: BookOpen,
             iconColor: "text-teal-700/20 dark:text-teal-400/20",
             accent: "border-l-teal-700 dark:border-l-teal-500",
           },
           {
-            label: "Pending Requests",
+            label: t("rentals.pendingRequests"),
             value: stats.pending,
             icon: Clock,
             iconColor: "text-amber-500/20 dark:text-amber-400/20",
             accent: "border-l-amber-500 dark:border-l-amber-400",
           },
           {
-            label: "Overdue Items",
+            label: t("rentals.overdueItems"),
             value: stats.overdue,
             icon: XCircle,
             iconColor: "text-red-500/20 dark:text-red-400/20",
@@ -83,7 +85,7 @@ export default function MyRentals() {
         style={{ animation: "fade-up 0.5s ease-out 0.14s both" }}
       >
         <h2 className="mb-4 font-heading text-lg text-teal-900 dark:text-cream">
-          Loan History
+          {t("rentals.loanHistory")}
         </h2>
 
         {inquiries.map((inq) => (
@@ -106,7 +108,7 @@ export default function MyRentals() {
                   {inq.dueDate && (
                     <>
                       <span className="text-sand-200 dark:text-night-600">·</span>
-                      <span>Due: {inq.dueDate}</span>
+                      <span>{t("rentals.due", { date: inq.dueDate })}</span>
                     </>
                   )}
                 </div>
@@ -120,7 +122,7 @@ export default function MyRentals() {
                   onClick={() => cancel(inq.id)}
                   className="rounded-lg border border-red-200 bg-red-50 px-3 py-1 text-xs font-semibold text-red-600 transition-colors hover:bg-red-100 dark:border-red-800/50 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50"
                 >
-                  Cancel
+                  {t("rentals.cancel")}
                 </button>
               </div>
             )}
@@ -129,7 +131,7 @@ export default function MyRentals() {
 
         {inquiries.length === 0 && (
           <p className="py-12 text-center text-sand-300 dark:text-night-500">
-            No inquiries yet. Start browsing to request items!
+            {t("rentals.noInquiries")}
           </p>
         )}
       </div>

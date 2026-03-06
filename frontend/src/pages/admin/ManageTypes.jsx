@@ -1,29 +1,36 @@
 import { useState } from "react";
 import { Plus, Pencil, Trash2, X, Check } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useData } from "../../context/DataContext";
 import TypeIcon from "../../components/TypeIcon";
 import ConfirmDialog from "../../components/ConfirmDialog";
 
 export default function ManageTypes() {
+  const { t } = useTranslation();
   const { types, titles, addType, updateType, deleteType } = useData();
-  const [editing, setEditing] = useState(null); // { id, name, color, isNew }
+  const [editing, setEditing] = useState(null); // { id, name, nameRo, color, isNew }
   const [deleting, setDeleting] = useState(null); // type object
   const [saving, setSaving] = useState(false);
 
   const startAdd = () =>
-    setEditing({ id: null, name: "", color: "#0D7377", isNew: true });
-  const startEdit = (t) =>
-    setEditing({ id: t.id, name: t.name, color: t.color, isNew: false });
+    setEditing({ id: null, name: "", nameRo: "", color: "#0D7377", isNew: true });
+  const startEdit = (tp) =>
+    setEditing({ id: tp.id, name: tp.name, nameRo: tp.nameRo || "", color: tp.color, isNew: false });
 
   const save = async () => {
     if (!editing || !editing.name.trim()) return;
     setSaving(true);
     try {
       if (editing.isNew) {
-        await addType(editing.name.trim(), editing.color);
+        await addType({
+          name: editing.name.trim(),
+          nameRo: editing.nameRo.trim(),
+          color: editing.color,
+        });
       } else {
         await updateType(editing.id, {
           name: editing.name.trim(),
+          nameRo: editing.nameRo.trim(),
           color: editing.color,
         });
       }
@@ -46,7 +53,7 @@ export default function ManageTypes() {
   };
 
   const titlesOfType = (name) =>
-    titles.filter((t) => t.type === name).length;
+    titles.filter((ti) => ti.type === name).length;
 
   return (
     <div>
@@ -56,17 +63,17 @@ export default function ManageTypes() {
       >
         <div>
           <h1 className="font-heading text-3xl text-teal-900 dark:text-cream">
-            Types
+            {t("manageTypes.title")}
           </h1>
           <p className="mt-1 text-sm text-sand-500 dark:text-night-400">
-            Manage content categories.
+            {t("manageTypes.subtitle")}
           </p>
         </div>
         <button
           onClick={startAdd}
           className="flex items-center gap-1.5 rounded-xl bg-teal-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700"
         >
-          <Plus className="size-4" /> Add Type
+          <Plus className="size-4" /> {t("manageTypes.addType")}
         </button>
       </div>
 
@@ -86,8 +93,15 @@ export default function ManageTypes() {
             type="text"
             value={editing.name}
             onChange={(e) => setEditing({ ...editing, name: e.target.value })}
-            placeholder="Type name..."
+            placeholder={t("manageTypes.namePlaceholder")}
             autoFocus
+            className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-600/10 dark:border-night-600 dark:bg-night-800 dark:text-cream"
+          />
+          <input
+            type="text"
+            value={editing.nameRo}
+            onChange={(e) => setEditing({ ...editing, nameRo: e.target.value })}
+            placeholder={t("manageTypes.nameRoPlaceholder")}
             className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-600/10 dark:border-night-600 dark:bg-night-800 dark:text-cream"
           />
           <button
@@ -108,9 +122,9 @@ export default function ManageTypes() {
 
       {/* List */}
       <div className="space-y-2">
-        {types.map((t, i) => (
+        {types.map((tp, i) => (
           <div
-            key={t.id}
+            key={tp.id}
             className="flex items-center justify-between rounded-2xl bg-warm p-4 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50"
             style={{
               animation: "fade-up 0.4s ease-out both",
@@ -120,28 +134,33 @@ export default function ManageTypes() {
             <div className="flex items-center gap-3">
               <div
                 className="flex size-9 items-center justify-center rounded-lg text-white"
-                style={{ backgroundColor: t.color || "#888" }}
+                style={{ backgroundColor: tp.color || "#888" }}
               >
-                <TypeIcon type={t.name} className="size-4" />
+                <TypeIcon type={tp.name} className="size-4" />
               </div>
               <div>
                 <span className="font-medium text-teal-900 dark:text-cream">
-                  {t.name}
+                  {tp.name}
                 </span>
+                {tp.nameRo && (
+                  <span className="ml-2 text-sm text-sand-400 dark:text-night-500">
+                    ({tp.nameRo})
+                  </span>
+                )}
                 <span className="ml-2 text-xs text-sand-300 dark:text-night-400">
-                  {titlesOfType(t.name)} titles
+                  {t("manageTypes.titleCount", { count: titlesOfType(tp.name) })}
                 </span>
               </div>
             </div>
             <div className="flex items-center gap-1">
               <button
-                onClick={() => startEdit(t)}
+                onClick={() => startEdit(tp)}
                 className="rounded-lg p-2 text-sand-500 transition hover:bg-sand-100 hover:text-teal-800 dark:text-night-400 dark:hover:bg-night-800 dark:hover:text-teal-400"
               >
                 <Pencil className="size-4" />
               </button>
               <button
-                onClick={() => setDeleting(t)}
+                onClick={() => setDeleting(tp)}
                 className="rounded-lg p-2 text-sand-500 transition hover:bg-red-50 hover:text-red-600 dark:text-night-400 dark:hover:bg-red-900/20 dark:hover:text-red-400"
               >
                 <Trash2 className="size-4" />
@@ -153,11 +172,14 @@ export default function ManageTypes() {
 
       {deleting && (
         <ConfirmDialog
-          title="Delete Type"
+          title={t("manageTypes.deleteTitle")}
           message={
             titlesOfType(deleting.name) > 0
-              ? `"${deleting.name}" has ${titlesOfType(deleting.name)} title(s). They will lose their type. Continue?`
-              : `Delete "${deleting.name}"? This cannot be undone.`
+              ? t("manageTypes.deleteHasTitles", {
+                  name: deleting.name,
+                  count: titlesOfType(deleting.name),
+                })
+              : t("manageTypes.deleteConfirm", { name: deleting.name })
           }
           onConfirm={confirmDelete}
           onCancel={() => setDeleting(null)}

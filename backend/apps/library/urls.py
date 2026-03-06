@@ -41,6 +41,7 @@ urlpatterns = [
     # Public
     path("", include(public_router.urls)),
     path("site-config/", views.PublicSiteConfigView.as_view(), name="site-config"),
+    path("description-page/", views.PublicDescriptionPageView.as_view(), name="description-page"),
     # User
     path("my/", include(user_router.urls)),
     path("my/profile/", views.UserProfileView.as_view(), name="my-profile"),
@@ -60,6 +61,11 @@ urlpatterns = [
         "admin/site-config/",
         views.AdminSiteConfigView.as_view(),
         name="admin-site-config",
+    ),
+    path(
+        "admin/description-page/",
+        views.AdminDescriptionPageView.as_view(),
+        name="admin-description-page",
     ),
     path("admin/stats/", views.AdminStatsView.as_view(), name="admin-stats"),
 ]

@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Library } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 
 export default function Register() {
   const { register, isAuthenticated, error, clearError } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
@@ -51,10 +53,10 @@ export default function Register() {
             <Library className="size-6" />
           </div>
           <h1 className="font-heading text-2xl text-teal-900 dark:text-cream">
-            Create an account
+            {t("auth.createAccount")}
           </h1>
           <p className="mt-1 text-sm text-sand-500 dark:text-night-400">
-            Join the community library
+            {t("auth.joinSubtitle")}
           </p>
         </div>
 
@@ -71,7 +73,7 @@ export default function Register() {
 
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-              Email
+              {t("auth.email")}
             </label>
             <input
               type="email"
@@ -92,7 +94,7 @@ export default function Register() {
 
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-              Password
+              {t("auth.password")}
             </label>
             <input
               type="password"
@@ -112,7 +114,7 @@ export default function Register() {
 
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-              Confirm Password
+              {t("auth.confirmPassword")}
             </label>
             <input
               type="password"
@@ -131,12 +133,12 @@ export default function Register() {
           </div>
 
           <p className="text-center text-xs leading-relaxed text-sand-500 dark:text-night-400">
-            By creating an account you agree to our{" "}
+            {t("auth.agreeTerms")}{" "}
             <Link
               to="/terms"
               className="font-medium text-teal-700 underline decoration-teal-700/30 hover:text-teal-800 dark:text-teal-400 dark:decoration-teal-400/30"
             >
-              Terms &amp; Conditions
+              {t("auth.termsLink")}
             </Link>
           </p>
 
@@ -145,17 +147,17 @@ export default function Register() {
             disabled={submitting}
             className="w-full rounded-xl bg-teal-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-teal-800 disabled:opacity-50 dark:bg-teal-600 dark:hover:bg-teal-700"
           >
-            {submitting ? "Creating account..." : "Create account"}
+            {submitting ? t("auth.creatingAccount") : t("auth.createAccountBtn")}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-sand-500 dark:text-night-400">
-          Already have an account?{" "}
+          {t("auth.hasAccount")}{" "}
           <Link
             to="/login"
             className="font-medium text-teal-700 hover:text-teal-800 dark:text-teal-400"
           >
-            Sign in
+            {t("auth.signInLink")}
           </Link>
         </p>
       </div>

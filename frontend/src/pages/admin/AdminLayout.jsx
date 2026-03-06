@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard,
   Tag,
@@ -6,18 +7,22 @@ import {
   Layers,
   ClipboardList,
   Wrench,
+  FileText,
 } from "lucide-react";
 
-const links = [
-  { to: "/admin", label: "Overview", icon: LayoutDashboard, end: true },
-  { to: "/admin/types", label: "Types", icon: Tag },
-  { to: "/admin/titles", label: "Titles", icon: BookOpen },
-  { to: "/admin/lists", label: "Curated Lists", icon: Layers },
-  { to: "/admin/inquiries", label: "Inquiries", icon: ClipboardList },
-  { to: "/admin/config", label: "Site Config", icon: Wrench },
-];
-
 export default function AdminLayout() {
+  const { t } = useTranslation();
+
+  const links = [
+    { to: "/admin", label: t("adminNav.overview"), icon: LayoutDashboard, end: true },
+    { to: "/admin/types", label: t("adminNav.types"), icon: Tag },
+    { to: "/admin/titles", label: t("adminNav.titles"), icon: BookOpen },
+    { to: "/admin/lists", label: t("adminNav.curatedLists"), icon: Layers },
+    { to: "/admin/inquiries", label: t("adminNav.inquiries"), icon: ClipboardList },
+    { to: "/admin/config", label: t("adminNav.siteConfig"), icon: Wrench },
+    { to: "/admin/description", label: t("adminNav.descriptionPage"), icon: FileText },
+  ];
+
   const linkClass = ({ isActive }) =>
     `flex flex-col items-center gap-1 rounded-xl px-2 py-2.5 text-[11px] font-medium transition-colors duration-150 lg:flex-row lg:gap-2.5 lg:px-3 lg:py-2 lg:text-sm ${
       isActive
@@ -31,7 +36,7 @@ export default function AdminLayout() {
         {/* Sidebar */}
         <aside className="shrink-0 lg:w-56">
           <h2 className="mb-3 font-heading text-lg text-teal-900 dark:text-cream">
-            Admin
+            {t("adminNav.admin")}
           </h2>
           <nav className="grid grid-cols-3 gap-1 lg:flex lg:flex-col">
             {links.map((link) => (

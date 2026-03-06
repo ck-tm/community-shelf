@@ -1,6 +1,8 @@
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Layers } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useData } from "../context/DataContext";
+import { useLocalize } from "../hooks/useLocalize";
 import TypeIcon from "../components/TypeIcon";
 
 function EmbeddedTitle({ title }) {
@@ -39,19 +41,21 @@ function EmbeddedTitle({ title }) {
 export default function ListDetail() {
   const { titles, curatedLists } = useData();
   const { id } = useParams();
+  const { t } = useTranslation();
+  const l = useLocalize();
   const list = curatedLists.find((l) => l.id === Number(id));
 
   if (!list) {
     return (
       <div className="py-20 text-center">
         <h2 className="text-xl font-bold text-gray-900 dark:text-cream">
-          List not found
+          {t("listDetail.notFound")}
         </h2>
         <Link
           to="/lists"
           className="mt-4 inline-block text-teal-700 hover:underline dark:text-teal-400"
         >
-          Back to lists
+          {t("listDetail.backToLists")}
         </Link>
       </div>
     );
@@ -65,7 +69,7 @@ export default function ListDetail() {
           to="/lists"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-white/80 transition hover:text-white"
         >
-          <ArrowLeft className="size-4" /> Back to Lists
+          <ArrowLeft className="size-4" /> {t("listDetail.backToLists")}
         </Link>
       </div>
 
@@ -87,10 +91,10 @@ export default function ListDetail() {
             </span>
           </div>
           <h1 className="font-heading text-3xl tracking-tight text-teal-900 sm:text-4xl dark:text-cream">
-            {list.title}
+            {l(list, "title")}
           </h1>
           <p className="mt-3 text-lg leading-relaxed text-sand-500 dark:text-night-400">
-            {list.description}
+            {l(list, "description")}
           </p>
         </div>
 
@@ -110,10 +114,10 @@ export default function ListDetail() {
                 }}
               >
                 <h2 className="mb-3 font-heading text-xl text-teal-900 dark:text-cream">
-                  {section.heading}
+                  {l(section, "heading")}
                 </h2>
                 <p className="mb-5 leading-relaxed text-sand-500 dark:text-night-400">
-                  {section.body}
+                  {l(section, "body")}
                 </p>
                 <div className="grid gap-3 sm:grid-cols-2">
                   {sectionTitles.map((t) => (

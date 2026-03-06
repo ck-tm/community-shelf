@@ -1,12 +1,15 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { BookOpen, UserCog } from "lucide-react";
-
-const links = [
-  { to: "/account", label: "My Rentals", icon: BookOpen, end: true },
-  { to: "/account/details", label: "My Details", icon: UserCog },
-];
+import { useTranslation } from "react-i18next";
 
 export default function AccountLayout() {
+  const { t } = useTranslation();
+
+  const links = [
+    { to: "/account", label: t("account.myRentals"), icon: BookOpen, end: true },
+    { to: "/account/details", label: t("account.myDetails"), icon: UserCog },
+  ];
+
   const linkClass = ({ isActive }) =>
     `flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium transition-colors duration-150 ${
       isActive
@@ -20,7 +23,7 @@ export default function AccountLayout() {
         {/* Sidebar */}
         <aside className="shrink-0 lg:w-56">
           <h2 className="mb-4 font-heading text-lg text-teal-900 dark:text-cream">
-            My Account
+            {t("account.myAccount")}
           </h2>
           <nav className="flex flex-row gap-1 overflow-x-auto lg:flex-col">
             {links.map((link) => (

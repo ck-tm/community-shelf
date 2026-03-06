@@ -14,6 +14,7 @@ import {
   AlertTriangle,
   MapPin,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useData } from "../../context/DataContext";
 import ISBNScanner from "../../components/ISBNScanner";
 import ConfirmDialog from "../../components/ConfirmDialog";
@@ -89,6 +90,7 @@ async function fetchDescription(isbn) {
 /* ── Component ──────────────────────────────────────────────────── */
 
 export default function TitleForm() {
+  const { t } = useTranslation();
   const {
     titles,
     types,
@@ -100,7 +102,7 @@ export default function TitleForm() {
   } = useData();
   const { id } = useParams();
   const navigate = useNavigate();
-  const existing = id ? titles.find((t) => t.id === Number(id)) : null;
+  const existing = id ? titles.find((ti) => ti.id === Number(id)) : null;
 
   const [form, setForm] = useState({
     title: existing?.title || "",
@@ -143,7 +145,7 @@ export default function TitleForm() {
 
       // Check for existing title with this ISBN
       const dup = titles.find(
-        (t) => t.isbn === cleaned && t.id !== existing?.id,
+        (ti) => ti.isbn === cleaned && ti.id !== existing?.id,
       );
       if (dup) {
         setDuplicateTitle(dup);
@@ -165,7 +167,7 @@ export default function TitleForm() {
           type: prev.type,
           cover: prev.cover,
         }));
-        setLookupMsg({ type: "success", text: "Book info loaded" });
+        setLookupMsg({ type: "success", text: t("titleForm.bookInfoLoaded") });
         setTimeout(() => setLookupMsg(null), 3000);
       } catch (err) {
         setLookupMsg({ type: "error", text: err.message });
@@ -270,14 +272,14 @@ export default function TitleForm() {
         onClick={() => navigate("/admin/titles")}
         className="mb-6 flex items-center gap-1.5 text-sm font-medium text-sand-500 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
       >
-        <ArrowLeft className="size-4" /> Back to Titles
+        <ArrowLeft className="size-4" /> {t("titleForm.backToTitles")}
       </button>
 
       <h1
         className="mb-8 font-heading text-3xl text-teal-900 dark:text-cream"
         style={{ animation: "fade-up 0.6s ease-out both" }}
       >
-        {existing ? "Edit Title" : "Add Title"}
+        {existing ? t("titleForm.editTitle") : t("titleForm.addTitle")}
       </h1>
 
       <form
@@ -287,14 +289,14 @@ export default function TitleForm() {
       >
         {/* ISBN Lookup Row */}
         <div>
-          <label className={labelClass}>ISBN Lookup</label>
+          <label className={labelClass}>{t("titleForm.isbnLookup")}</label>
           <div className="flex flex-col gap-2 sm:flex-row">
             <input
               type="text"
               value={form.isbn}
               onChange={set("isbn")}
               onKeyDown={handleISBNKeyDown}
-              placeholder="Enter ISBN or scan barcode..."
+              placeholder={t("titleForm.isbnPlaceholder")}
               className={inputClass}
             />
             <div className="flex gap-2">
@@ -309,7 +311,7 @@ export default function TitleForm() {
                 ) : (
                   <Search className="size-4" />
                 )}
-                Lookup
+                {t("titleForm.lookup")}
               </button>
               <button
                 type="button"
@@ -317,7 +319,7 @@ export default function TitleForm() {
                 className="flex shrink-0 items-center gap-1.5 rounded-xl border border-sand-200 px-4 py-2.5 text-sm font-medium text-sand-500 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-300 dark:hover:bg-night-800"
               >
                 <Camera className="size-4" />
-                <span className="hidden sm:inline">Scan</span>
+                <span className="hidden sm:inline">{t("titleForm.scan")}</span>
               </button>
             </div>
           </div>
@@ -343,14 +345,13 @@ export default function TitleForm() {
             <div className="mt-2 flex flex-wrap items-center gap-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
               <AlertTriangle className="size-4 shrink-0" />
               <span>
-                This ISBN already exists:{" "}
-                <strong>{duplicateTitle.title}</strong>
+                {t("titleForm.isbnDuplicate", { title: duplicateTitle.title })}
               </span>
               <Link
                 to={`/admin/titles/${duplicateTitle.id}/edit`}
                 className="ml-auto rounded-lg bg-amber-200 px-3 py-1 text-xs font-semibold text-amber-900 transition hover:bg-amber-300 dark:bg-amber-800 dark:text-amber-200"
               >
-                Open &amp; Add Copy
+                {t("titleForm.openAddCopy")}
               </Link>
             </div>
           )}
@@ -361,7 +362,7 @@ export default function TitleForm() {
         {/* Title & Author */}
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label className={labelClass}>Title *</label>
+            <label className={labelClass}>{t("titleForm.title")} *</label>
             <input
               type="text"
               value={form.title}
@@ -371,7 +372,7 @@ export default function TitleForm() {
             />
           </div>
           <div>
-            <label className={labelClass}>Author</label>
+            <label className={labelClass}>{t("titleForm.author")}</label>
             <input
               type="text"
               value={form.author}
@@ -384,21 +385,21 @@ export default function TitleForm() {
         {/* Type / Year / Language */}
         <div className="grid gap-5 sm:grid-cols-3">
           <div>
-            <label className={labelClass}>Type</label>
+            <label className={labelClass}>{t("titleForm.type")}</label>
             <select
               value={form.type}
               onChange={set("type")}
               className={inputClass}
             >
-              {types.map((t) => (
-                <option key={t.id} value={t.name}>
-                  {t.name}
+              {types.map((tp) => (
+                <option key={tp.id} value={tp.name}>
+                  {tp.name}
                 </option>
               ))}
             </select>
           </div>
           <div>
-            <label className={labelClass}>Year</label>
+            <label className={labelClass}>{t("titleForm.year")}</label>
             <input
               type="number"
               value={form.year}
@@ -407,7 +408,7 @@ export default function TitleForm() {
             />
           </div>
           <div>
-            <label className={labelClass}>Language</label>
+            <label className={labelClass}>{t("titleForm.language")}</label>
             <input
               type="text"
               value={form.language}
@@ -420,7 +421,7 @@ export default function TitleForm() {
         {/* Publisher / Pages */}
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label className={labelClass}>Publisher</label>
+            <label className={labelClass}>{t("titleForm.publisher")}</label>
             <input
               type="text"
               value={form.publisher}
@@ -429,7 +430,7 @@ export default function TitleForm() {
             />
           </div>
           <div>
-            <label className={labelClass}>Pages</label>
+            <label className={labelClass}>{t("titleForm.pages")}</label>
             <input
               type="number"
               value={form.pages}
@@ -441,7 +442,7 @@ export default function TitleForm() {
 
         {/* Description */}
         <div>
-          <label className={labelClass}>Description</label>
+          <label className={labelClass}>{t("titleForm.description")}</label>
           <textarea
             value={form.description}
             onChange={set("description")}
@@ -452,7 +453,7 @@ export default function TitleForm() {
 
         {/* Cover */}
         <div>
-          <label className={labelClass}>Cover</label>
+          <label className={labelClass}>{t("titleForm.cover")}</label>
           <div className="flex items-center gap-4">
             <div
               className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-lg shadow-sm ring-1 ring-sand-200/70 dark:ring-night-700"
@@ -466,7 +467,7 @@ export default function TitleForm() {
                 />
               ) : (
                 <span className="text-[10px] font-medium text-white/60">
-                  No image
+                  {t("titleForm.noImage")}
                 </span>
               )}
             </div>
@@ -479,7 +480,7 @@ export default function TitleForm() {
                   className="size-8 cursor-pointer rounded border-0 bg-transparent"
                 />
                 <span className="text-xs text-sand-500 dark:text-night-400">
-                  Fallback color
+                  {t("titleForm.fallbackColor")}
                 </span>
               </div>
               {form.cover_image && (
@@ -490,7 +491,7 @@ export default function TitleForm() {
                   }
                   className="text-xs text-red-500 transition hover:text-red-700 dark:text-red-400"
                 >
-                  Remove image
+                  {t("titleForm.removeImage")}
                 </button>
               )}
             </div>
@@ -502,29 +503,29 @@ export default function TitleForm() {
           <>
             <hr className="border-sand-200/60 dark:border-night-700/50" />
             <p className="text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-              First Copy
+              {t("titleForm.firstCopy")}
             </p>
             <div className="grid gap-5 sm:grid-cols-2">
               <div>
-                <label className={labelClass}>Location</label>
+                <label className={labelClass}>{t("titleForm.location")}</label>
                 <input
                   type="text"
                   value={copyForm.location}
                   onChange={setCopyField("location")}
-                  placeholder="e.g. Shelf A3, Room 2"
+                  placeholder={t("titleForm.locationPlaceholder")}
                   className={inputClass}
                 />
               </div>
               <div>
-                <label className={labelClass}>Condition</label>
+                <label className={labelClass}>{t("titleForm.condition")}</label>
                 <select
                   value={copyForm.condition}
                   onChange={setCopyField("condition")}
                   className={inputClass}
                 >
-                  <option value="Excellent">Excellent</option>
-                  <option value="Good">Good</option>
-                  <option value="Fair">Fair</option>
+                  <option value="Excellent">{t("titleForm.excellent")}</option>
+                  <option value="Good">{t("titleForm.good")}</option>
+                  <option value="Fair">{t("titleForm.fair")}</option>
                 </select>
               </div>
             </div>
@@ -538,7 +539,7 @@ export default function TitleForm() {
             onClick={() => navigate("/admin/titles")}
             className="rounded-xl border border-sand-200 px-5 py-2.5 text-sm font-medium text-sand-500 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-800"
           >
-            Cancel
+            {t("titleForm.cancel")}
           </button>
           <button
             type="submit"
@@ -546,10 +547,10 @@ export default function TitleForm() {
             className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-800 disabled:opacity-50 dark:bg-teal-600 dark:hover:bg-teal-700"
           >
             {saving
-              ? "Saving..."
+              ? t("titleForm.saving")
               : existing
-                ? "Save Changes"
-                : "Create Title"}
+                ? t("titleForm.saveChanges")
+                : t("titleForm.createTitle")}
           </button>
         </div>
       </form>
@@ -562,7 +563,7 @@ export default function TitleForm() {
         >
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-heading text-xl text-teal-900 dark:text-cream">
-              Copies
+              {t("titleForm.copies")}
               <span className="ml-2 text-sm font-normal text-sand-500 dark:text-night-400">
                 ({existing.copies.length})
               </span>
@@ -572,7 +573,7 @@ export default function TitleForm() {
               onClick={startAddCopy}
               className="flex items-center gap-1.5 rounded-xl bg-teal-700 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700"
             >
-              <Plus className="size-3.5" /> Add
+              <Plus className="size-3.5" /> {t("titleForm.add")}
             </button>
           </div>
 
@@ -581,7 +582,7 @@ export default function TitleForm() {
             <div className="mb-4 flex flex-col gap-3 rounded-xl bg-cream p-3 ring-2 ring-teal-600/30 sm:flex-row sm:flex-wrap sm:items-end dark:bg-night-800">
               <div className="sm:w-28">
                 <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-                  Condition
+                  {t("titleForm.condition")}
                 </label>
                 <select
                   value={editingCopy.condition}
@@ -593,14 +594,14 @@ export default function TitleForm() {
                   }
                   className={inputClass}
                 >
-                  <option>Excellent</option>
-                  <option>Good</option>
-                  <option>Fair</option>
+                  <option value="Excellent">{t("titleForm.excellent")}</option>
+                  <option value="Good">{t("titleForm.good")}</option>
+                  <option value="Fair">{t("titleForm.fair")}</option>
                 </select>
               </div>
               <div className="flex-1">
                 <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-                  Location
+                  {t("titleForm.location")}
                 </label>
                 <input
                   type="text"
@@ -611,14 +612,14 @@ export default function TitleForm() {
                       location: e.target.value,
                     })
                   }
-                  placeholder="e.g. Main Shelf"
+                  placeholder={t("titleForm.locationPlaceholderShort")}
                   autoFocus
                   className={inputClass}
                 />
               </div>
               <div className="sm:w-32">
                 <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-                  Status
+                  {t("titleForm.status")}
                 </label>
                 <select
                   value={editingCopy.status}
@@ -630,8 +631,8 @@ export default function TitleForm() {
                   }
                   className={inputClass}
                 >
-                  <option value="available">Available</option>
-                  <option value="reserved">Reserved</option>
+                  <option value="available">{t("titleForm.statusAvailable")}</option>
+                  <option value="reserved">{t("titleForm.statusReserved")}</option>
                 </select>
               </div>
               <div className="flex gap-2">
@@ -671,7 +672,7 @@ export default function TitleForm() {
                           : "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
                       }`}
                     >
-                      {isAvail ? "Available" : "Reserved"}
+                      {isAvail ? t("titleForm.statusAvailable") : t("titleForm.statusReserved")}
                     </span>
                     <span className="text-sm font-medium text-teal-900 dark:text-cream">
                       {copy.condition}
@@ -702,7 +703,7 @@ export default function TitleForm() {
             })}
             {existing.copies.length === 0 && !editingCopy && (
               <p className="py-8 text-center text-sm text-sand-300 dark:text-night-400">
-                No copies yet. Add one above.
+                {t("titleForm.noCopiesYet")}
               </p>
             )}
           </div>
@@ -720,8 +721,8 @@ export default function TitleForm() {
       {/* Delete copy confirm */}
       {deletingCopy && existing && (
         <ConfirmDialog
-          title="Delete Copy"
-          message="Delete this copy? This cannot be undone."
+          title={t("titleForm.deleteCopy")}
+          message={t("titleForm.deleteCopyConfirm")}
           onConfirm={async () => {
             await deleteCopy(existing.id, deletingCopy);
             setDeletingCopy(null);

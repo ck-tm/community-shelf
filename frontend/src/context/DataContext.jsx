@@ -24,6 +24,7 @@ export function DataProvider({ children }) {
     description: "",
     themeColors: {},
   });
+  const [descriptionPage, setDescriptionPage] = useState(null);
 
   // ── Auth-dependent data ─────────────────────────────────────────
   const [inquiries, setInquiries] = useState([]);
@@ -36,17 +37,19 @@ export function DataProvider({ children }) {
   useEffect(() => {
     (async () => {
       try {
-        const [titlesRes, typesRes, listsRes, configRes] =
+        const [titlesRes, typesRes, listsRes, configRes, descPageRes] =
           await Promise.all([
             publicApi.getTitles(),
             publicApi.getTypes(),
             publicApi.getLists(),
             publicApi.getSiteConfig(),
+            publicApi.getDescriptionPage(),
           ]);
         setTitles(titlesRes.results || titlesRes);
         setTypes(typesRes.results || typesRes);
         setCuratedLists(listsRes.results || listsRes);
         setSiteConfig(configRes);
+        setDescriptionPage(descPageRes);
       } catch (err) {
         console.error("Failed to load public data:", err);
       } finally {
@@ -82,8 +85,8 @@ export function DataProvider({ children }) {
   );
 
   // ── Types CRUD ──────────────────────────────────────────────────
-  const addType = useCallback(async (name, color) => {
-    const created = await adminApi.createType({ name, color });
+  const addType = useCallback(async (data) => {
+    const created = await adminApi.createType(data);
     setTypes((prev) => [...prev, created]);
   }, []);
 
@@ -200,6 +203,12 @@ export function DataProvider({ children }) {
     setSiteConfig(updated);
   }, []);
 
+  // ── Description Page ──────────────────────────────────────────
+  const updateDescriptionPage = useCallback(async (data) => {
+    const updated = await adminApi.updateDescriptionPage(data);
+    setDescriptionPage(updated);
+  }, []);
+
   // ── Stats ───────────────────────────────────────────────────────
   const fetchStats = useCallback(async () => {
     const data = await adminApi.getStats();
@@ -227,6 +236,7 @@ export function DataProvider({ children }) {
         curatedLists,
         inquiries,
         siteConfig,
+        descriptionPage,
         stats,
         loading,
         // Types CRUD
@@ -255,6 +265,8 @@ export function DataProvider({ children }) {
         extendInquiry,
         // SiteConfig
         updateSiteConfig,
+        // DescriptionPage
+        updateDescriptionPage,
         // Stats
         fetchStats,
       }}

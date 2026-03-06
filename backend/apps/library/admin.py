@@ -5,6 +5,7 @@ from unfold.admin import ModelAdmin, StackedInline, TabularInline
 from .models import (
     Copy,
     CuratedList,
+    DescriptionPage,
     Inquiry,
     Section,
     SiteConfig,
@@ -78,8 +79,8 @@ class SectionInline(StackedInline):
 
 @admin.register(Type)
 class TypeAdmin(TenantOnlyMixin, ModelAdmin):
-    list_display = ("name", "color")
-    search_fields = ("name",)
+    list_display = ("name", "name_ro", "color")
+    search_fields = ("name", "name_ro")
 
 
 @admin.register(Title)
@@ -135,3 +136,14 @@ class SiteConfigAdmin(TenantOnlyMixin, ModelAdmin):
             return False
         # Singleton — only allow add if none exist
         return not SiteConfig.objects.exists()
+
+
+@admin.register(DescriptionPage)
+class DescriptionPageAdmin(TenantOnlyMixin, ModelAdmin):
+    list_display = ("title",)
+
+    def has_add_permission(self, request):
+        if self._is_public_schema():
+            return False
+        # Singleton — only allow add if none exist
+        return not DescriptionPage.objects.exists()

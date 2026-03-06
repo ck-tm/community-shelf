@@ -129,6 +129,11 @@ def sidebar_navigation(request):
                     "link": "/library/siteconfig/",
                 },
                 {
+                    "title": "Description Page",
+                    "icon": "description",
+                    "link": "/library/descriptionpage/",
+                },
+                {
                     "title": "Memberships",
                     "icon": "badge",
                     "link": "/library/tenantmembership/",

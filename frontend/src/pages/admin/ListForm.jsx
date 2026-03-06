@@ -8,11 +8,13 @@ import {
   ChevronDown,
   BookOpen,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useData } from "../../context/DataContext";
 import TitlePicker from "../../components/TitlePicker";
 import TypeIcon from "../../components/TypeIcon";
 
 export default function ListForm() {
+  const { t } = useTranslation();
   const { titles, curatedLists, addList, updateList } = useData();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -20,7 +22,9 @@ export default function ListForm() {
 
   const [form, setForm] = useState({
     title: existing?.title || "",
+    titleRo: existing?.titleRo || "",
     description: existing?.description || "",
+    descriptionRo: existing?.descriptionRo || "",
     coverColor: existing?.coverColor || "#0D7377",
     sections: existing?.sections || [],
   });
@@ -33,7 +37,7 @@ export default function ListForm() {
       ...form,
       sections: [
         ...form.sections,
-        { id: `temp-${Date.now()}`, heading: "", body: "", titleIds: [] },
+        { id: `temp-${Date.now()}`, heading: "", headingRo: "", body: "", bodyRo: "", titleIds: [] },
       ],
     });
   };
@@ -81,7 +85,9 @@ export default function ListForm() {
         ...form,
         sections: form.sections.map((s, idx) => ({
           heading: s.heading,
+          headingRo: s.headingRo || "",
           body: s.body,
+          bodyRo: s.bodyRo || "",
           titleIds: s.titleIds,
           order: idx,
         })),
@@ -108,14 +114,14 @@ export default function ListForm() {
         onClick={() => navigate("/admin/lists")}
         className="mb-6 flex items-center gap-1.5 text-sm font-medium text-sand-500 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
       >
-        <ArrowLeft className="size-4" /> Back to Lists
+        <ArrowLeft className="size-4" /> {t("listForm.backToLists")}
       </button>
 
       <h1
         className="mb-8 font-heading text-3xl text-teal-900 dark:text-cream"
         style={{ animation: "fade-up 0.6s ease-out both" }}
       >
-        {existing ? "Edit List" : "New Curated List"}
+        {existing ? t("listForm.editList") : t("listForm.newList")}
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -126,20 +132,32 @@ export default function ListForm() {
         >
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-              Title *
+              {t("listForm.title")} *
             </label>
             <input
               type="text"
               value={form.title}
               onChange={set("title")}
               required
-              placeholder="e.g. Summer Reading Picks"
+              placeholder={t("listForm.titlePlaceholder")}
               className={inputClass}
             />
           </div>
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-              Description
+              {t("listForm.titleRo")}
+            </label>
+            <input
+              type="text"
+              value={form.titleRo}
+              onChange={set("titleRo")}
+              placeholder={t("listForm.roPlaceholder")}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+              {t("listForm.description")}
             </label>
             <textarea
               value={form.description}
@@ -150,7 +168,19 @@ export default function ListForm() {
           </div>
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-              Cover Color
+              {t("listForm.descriptionRo")}
+            </label>
+            <textarea
+              value={form.descriptionRo}
+              onChange={set("descriptionRo")}
+              rows={3}
+              placeholder={t("listForm.roPlaceholder")}
+              className={`${inputClass} resize-none`}
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+              {t("listForm.coverColor")}
             </label>
             <div className="flex items-center gap-3">
               <input
@@ -170,14 +200,14 @@ export default function ListForm() {
         <div style={{ animation: "fade-up 0.6s ease-out 0.2s both" }}>
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-heading text-xl text-teal-900 dark:text-cream">
-              Sections
+              {t("listForm.sections")}
             </h2>
             <button
               type="button"
               onClick={addSection}
               className="flex items-center gap-1.5 rounded-xl bg-teal-700 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600"
             >
-              <Plus className="size-3.5" /> Add Section
+              <Plus className="size-3.5" /> {t("listForm.addSection")}
             </button>
           </div>
 
@@ -189,7 +219,7 @@ export default function ListForm() {
               >
                 <div className="mb-4 flex items-center justify-between">
                   <span className="text-xs font-semibold uppercase tracking-wider text-sand-300 dark:text-night-400">
-                    Section {idx + 1}
+                    {t("listForm.sectionN", { n: idx + 1 })}
                   </span>
                   <div className="flex items-center gap-1">
                     <button
@@ -225,7 +255,16 @@ export default function ListForm() {
                     onChange={(e) =>
                       updateSection(idx, { heading: e.target.value })
                     }
-                    placeholder="Section heading"
+                    placeholder={t("listForm.sectionHeading")}
+                    className={inputClass}
+                  />
+                  <input
+                    type="text"
+                    value={section.headingRo || ""}
+                    onChange={(e) =>
+                      updateSection(idx, { headingRo: e.target.value })
+                    }
+                    placeholder={t("listForm.sectionHeadingRo")}
                     className={inputClass}
                   />
                   <textarea
@@ -233,7 +272,16 @@ export default function ListForm() {
                     onChange={(e) =>
                       updateSection(idx, { body: e.target.value })
                     }
-                    placeholder="Section text..."
+                    placeholder={t("listForm.sectionText")}
+                    rows={3}
+                    className={`${inputClass} resize-none`}
+                  />
+                  <textarea
+                    value={section.bodyRo || ""}
+                    onChange={(e) =>
+                      updateSection(idx, { bodyRo: e.target.value })
+                    }
+                    placeholder={t("listForm.sectionTextRo")}
                     rows={3}
                     className={`${inputClass} resize-none`}
                   />
@@ -242,28 +290,28 @@ export default function ListForm() {
                   <div>
                     <div className="mb-2 flex items-center justify-between">
                       <span className="text-xs font-semibold uppercase tracking-wider text-sand-300 dark:text-night-400">
-                        Linked Titles ({section.titleIds.length})
+                        {t("listForm.linkedTitles", { count: section.titleIds.length })}
                       </span>
                       <button
                         type="button"
                         onClick={() => setPickerFor(idx)}
                         className="text-xs font-medium text-teal-700 transition hover:text-teal-900 dark:text-teal-400 dark:hover:text-teal-300"
                       >
-                        + Pick titles
+                        {t("listForm.pickTitles")}
                       </button>
                     </div>
                     {section.titleIds.length > 0 ? (
                       <div className="flex flex-wrap gap-2">
                         {section.titleIds.map((tid) => {
-                          const t = titles.find((tt) => tt.id === tid);
-                          if (!t) return null;
+                          const ti = titles.find((tt) => tt.id === tid);
+                          if (!ti) return null;
                           return (
                             <span
                               key={tid}
                               className="flex items-center gap-1.5 rounded-lg bg-cream px-2.5 py-1 text-xs font-medium text-teal-900 ring-1 ring-sand-200/60 dark:bg-night-800 dark:text-cream dark:ring-night-700"
                             >
-                              <TypeIcon type={t.type} className="size-3" />
-                              {t.title}
+                              <TypeIcon type={ti.type} className="size-3" />
+                              {ti.title}
                               <button
                                 type="button"
                                 onClick={() =>
@@ -279,7 +327,7 @@ export default function ListForm() {
                       </div>
                     ) : (
                       <p className="text-xs text-sand-300 dark:text-night-500">
-                        No titles linked yet.
+                        {t("listForm.noTitlesLinked")}
                       </p>
                     )}
                   </div>
@@ -289,7 +337,7 @@ export default function ListForm() {
 
             {form.sections.length === 0 && (
               <p className="py-8 text-center text-sm text-sand-300 dark:text-night-400">
-                No sections yet. Click "Add Section" to get started.
+                {t("listForm.noSections")}
               </p>
             )}
           </div>
@@ -302,13 +350,13 @@ export default function ListForm() {
             onClick={() => navigate("/admin/lists")}
             className="rounded-xl border border-sand-200 px-5 py-2.5 text-sm font-medium text-sand-500 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-800"
           >
-            Cancel
+            {t("listForm.cancel")}
           </button>
           <button
             type="submit"
             className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700"
           >
-            {existing ? "Save Changes" : "Create List"}
+            {existing ? t("listForm.saveChanges") : t("listForm.createList")}
           </button>
         </div>
       </form>

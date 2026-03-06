@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { Check, X, RotateCcw, CalendarPlus, User } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useData } from "../../context/DataContext";
 import TypeIcon from "../../components/TypeIcon";
 import StatusBadge from "../../components/StatusBadge";
 import ConfirmDialog from "../../components/ConfirmDialog";
 
 export default function ManageInquiries() {
+  const { t } = useTranslation();
   const { inquiries, fetchAdminInquiries, acceptInquiry, returnInquiry, extendInquiry } =
     useData();
   const [accepting, setAccepting] = useState(null);
@@ -27,9 +29,9 @@ export default function ManageInquiries() {
     .sort((a, b) => (b.returnDate || "").localeCompare(a.returnDate || ""));
 
   const tabs = [
-    { key: "pending", label: "Pending", count: pending.length },
-    { key: "active", label: "Active", count: rented.length },
-    { key: "history", label: "History", count: returned.length },
+    { key: "pending", label: t("manageInquiries.pending"), count: pending.length },
+    { key: "active", label: t("manageInquiries.active"), count: rented.length },
+    { key: "history", label: t("manageInquiries.history"), count: returned.length },
   ];
 
   const handleAccept = async () => {
@@ -85,10 +87,10 @@ export default function ManageInquiries() {
       {/* Header */}
       <div className="mb-8" style={{ animation: "fade-up 0.6s ease-out both" }}>
         <h1 className="font-heading text-3xl text-teal-900 dark:text-cream">
-          Inquiries
+          {t("manageInquiries.title")}
         </h1>
         <p className="mt-1 text-sand-500 dark:text-night-400">
-          Manage loan requests, active rentals, and returns.
+          {t("manageInquiries.subtitle")}
         </p>
       </div>
 
@@ -153,7 +155,7 @@ export default function ManageInquiries() {
                 >
                   <div>
                     <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-                      Period (days)
+                      {t("manageInquiries.periodDays")}
                     </label>
                     <input
                       type="number"
@@ -185,7 +187,7 @@ export default function ManageInquiries() {
                     onClick={() => setAccepting({ id: inq.id, rentalPeriod: 14 })}
                     className="rounded-lg bg-teal-700 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700"
                   >
-                    Accept
+                    {t("manageInquiries.accept")}
                   </button>
                 </div>
               )}
@@ -193,7 +195,7 @@ export default function ManageInquiries() {
           ))}
           {pending.length === 0 && (
             <p className="py-12 text-center text-sand-300 dark:text-night-400">
-              No pending requests.
+              {t("manageInquiries.noPending")}
             </p>
           )}
         </div>
@@ -224,13 +226,13 @@ export default function ManageInquiries() {
                     {inq.dueDate && (
                       <>
                         <span className="text-sand-200 dark:text-night-600">·</span>
-                        <span>Due: {inq.dueDate}</span>
+                        <span>{t("manageInquiries.due", { date: inq.dueDate })}</span>
                       </>
                     )}
                     {inq.rentalPeriod && (
                       <>
                         <span className="text-sand-200 dark:text-night-600">·</span>
-                        <span>{inq.rentalPeriod}d</span>
+                        <span>{t("manageInquiries.days", { count: inq.rentalPeriod })}</span>
                       </>
                     )}
                   </div>
@@ -251,13 +253,13 @@ export default function ManageInquiries() {
                   onClick={() => setReturning(inq)}
                   className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
                 >
-                  <RotateCcw className="size-3.5" /> Returned
+                  <RotateCcw className="size-3.5" /> {t("manageInquiries.returned")}
                 </button>
                 <button
                   onClick={() => setExtending({ inq, days: 7 })}
                   className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-sand-500 transition hover:bg-sand-100 dark:text-night-400 dark:hover:bg-night-800"
                 >
-                  <CalendarPlus className="size-3.5" /> Extend
+                  <CalendarPlus className="size-3.5" /> {t("manageInquiries.extend")}
                 </button>
 
                 {/* Extend inline form */}
@@ -298,7 +300,7 @@ export default function ManageInquiries() {
           ))}
           {rented.length === 0 && (
             <p className="py-12 text-center text-sand-300 dark:text-night-400">
-              No active rentals.
+              {t("manageInquiries.noActive")}
             </p>
           )}
         </div>
@@ -323,7 +325,7 @@ export default function ManageInquiries() {
                       {inq.type}
                     </span>
                     <span className="text-sand-200 dark:text-night-600">·</span>
-                    <span>Requested: {inq.requestDate}</span>
+                    <span>{t("manageInquiries.requested", { date: inq.requestDate })}</span>
                   </div>
                   <div className="mt-1 flex items-center gap-1 text-xs text-sand-500 dark:text-night-400">
                     <User className="size-3" />
@@ -334,11 +336,11 @@ export default function ManageInquiries() {
                   </div>
                   {(inq.returnDate || inq.rentalPeriod) && (
                     <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-sand-500 dark:text-night-400">
-                      {inq.returnDate && <span>Returned: {inq.returnDate}</span>}
+                      {inq.returnDate && <span>{t("manageInquiries.returnedDate", { date: inq.returnDate })}</span>}
                       {inq.returnDate && inq.rentalPeriod && (
                         <span className="text-sand-200 dark:text-night-600">·</span>
                       )}
-                      {inq.rentalPeriod && <span>{inq.rentalPeriod}d</span>}
+                      {inq.rentalPeriod && <span>{t("manageInquiries.days", { count: inq.rentalPeriod })}</span>}
                     </div>
                   )}
                   {inq.notes && (
@@ -353,7 +355,7 @@ export default function ManageInquiries() {
           ))}
           {returned.length === 0 && (
             <p className="py-12 text-center text-sand-300 dark:text-night-400">
-              No returned items yet.
+              {t("manageInquiries.noHistory")}
             </p>
           )}
         </div>
@@ -362,8 +364,8 @@ export default function ManageInquiries() {
       {/* Return confirmation */}
       {returning && (
         <ConfirmDialog
-          title="Mark as Returned"
-          message={`Mark "${returning.title}" as returned? This will record today's date as the return date.`}
+          title={t("manageInquiries.markReturned")}
+          message={t("manageInquiries.markReturnedConfirm", { title: returning.title })}
           onConfirm={handleReturn}
           onCancel={() => setReturning(null)}
         />

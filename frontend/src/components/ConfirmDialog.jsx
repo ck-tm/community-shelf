@@ -1,6 +1,9 @@
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function ConfirmDialog({ title, message, onConfirm, onCancel }) {
+  const { t } = useTranslation();
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4">
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl dark:bg-night-800">
@@ -23,13 +26,13 @@ export default function ConfirmDialog({ title, message, onConfirm, onCancel }) {
             onClick={onCancel}
             className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-night-600 dark:text-sand-300 dark:hover:bg-night-700"
           >
-            Cancel
+            {t("confirm.cancel")}
           </button>
           <button
             onClick={onConfirm}
             className="flex-1 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
           >
-            Delete
+            {t("confirm.delete")}
           </button>
         </div>
       </div>

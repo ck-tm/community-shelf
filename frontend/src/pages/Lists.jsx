@@ -1,9 +1,11 @@
 import { Layers } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useData } from "../context/DataContext";
 import ListCard from "../components/ListCard";
 
 export default function Lists() {
   const { curatedLists } = useData();
+  const { t } = useTranslation();
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
@@ -13,10 +15,10 @@ export default function Lists() {
         style={{ animation: "fade-up 0.6s ease-out both" }}
       >
         <h1 className="font-heading text-4xl tracking-tight text-teal-900 sm:text-5xl dark:text-cream">
-          Curated Lists
+          {t("listsPage.title")}
         </h1>
         <p className="mt-3 font-heading text-lg italic text-sand-500 dark:text-night-400">
-          Hand-picked collections and reading guides from our community.
+          {t("listsPage.subtitle")}
         </p>
       </div>
 
@@ -43,10 +45,10 @@ export default function Lists() {
             <Layers className="size-7 text-sand-300 dark:text-night-400" />
           </div>
           <h3 className="font-heading text-xl text-teal-900 dark:text-cream">
-            No lists yet
+            {t("listsPage.noLists")}
           </h3>
           <p className="mt-2 text-sm text-sand-500 dark:text-night-400">
-            Check back soon for curated collections.
+            {t("listsPage.noListsHint")}
           </p>
         </div>
       )}

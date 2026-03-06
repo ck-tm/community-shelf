@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import (
     Copy,
     CuratedList,
+    DescriptionPage,
     Inquiry,
     Section,
     SiteConfig,
@@ -16,9 +17,13 @@ from .models import (
 
 
 class TypeSerializer(serializers.ModelSerializer):
+    nameRo = serializers.CharField(
+        source="name_ro", required=False, allow_blank=True
+    )
+
     class Meta:
         model = Type
-        fields = ["id", "name", "color"]
+        fields = ["id", "name", "nameRo", "color"]
 
 
 # ── Copy (nested inside Title) ────────────────────────────────────
@@ -116,10 +121,12 @@ class SectionSerializer(serializers.ModelSerializer):
     titleIds = serializers.PrimaryKeyRelatedField(
         source="titles", many=True, read_only=True
     )
+    headingRo = serializers.CharField(source="heading_ro", read_only=True)
+    bodyRo = serializers.CharField(source="body_ro", read_only=True)
 
     class Meta:
         model = Section
-        fields = ["id", "heading", "body", "titleIds", "order"]
+        fields = ["id", "heading", "headingRo", "body", "bodyRo", "titleIds", "order"]
 
 
 class SectionWriteSerializer(serializers.ModelSerializer):
@@ -131,10 +138,16 @@ class SectionWriteSerializer(serializers.ModelSerializer):
         queryset=Title.objects.all(),
         required=False,
     )
+    headingRo = serializers.CharField(
+        source="heading_ro", required=False, allow_blank=True
+    )
+    bodyRo = serializers.CharField(
+        source="body_ro", required=False, allow_blank=True
+    )
 
     class Meta:
         model = Section
-        fields = ["id", "heading", "body", "titleIds", "order"]
+        fields = ["id", "heading", "headingRo", "body", "bodyRo", "titleIds", "order"]
 
 
 class CuratedListSerializer(serializers.ModelSerializer):
@@ -143,10 +156,15 @@ class CuratedListSerializer(serializers.ModelSerializer):
     coverColor = serializers.CharField(source="cover_color")
     createdAt = serializers.DateField(source="created_at", read_only=True)
     sections = SectionSerializer(many=True, read_only=True)
+    titleRo = serializers.CharField(source="title_ro", read_only=True)
+    descriptionRo = serializers.CharField(source="description_ro", read_only=True)
 
     class Meta:
         model = CuratedList
-        fields = ["id", "title", "description", "coverColor", "createdAt", "sections"]
+        fields = [
+            "id", "title", "titleRo", "description", "descriptionRo",
+            "coverColor", "createdAt", "sections",
+        ]
 
 
 class CuratedListWriteSerializer(serializers.ModelSerializer):
@@ -154,10 +172,19 @@ class CuratedListWriteSerializer(serializers.ModelSerializer):
 
     coverColor = serializers.CharField(source="cover_color")
     sections = SectionWriteSerializer(many=True, required=False)
+    titleRo = serializers.CharField(
+        source="title_ro", required=False, allow_blank=True
+    )
+    descriptionRo = serializers.CharField(
+        source="description_ro", required=False, allow_blank=True
+    )
 
     class Meta:
         model = CuratedList
-        fields = ["id", "title", "description", "coverColor", "sections"]
+        fields = [
+            "id", "title", "titleRo", "description", "descriptionRo",
+            "coverColor", "sections",
+        ]
 
     def create(self, validated_data):
         sections_data = validated_data.pop("sections", [])
@@ -276,16 +303,24 @@ class InquiryAdminUpdateSerializer(serializers.ModelSerializer):
 class SiteConfigSerializer(serializers.ModelSerializer):
     """Matches frontend siteConfig shape.
 
-    Frontend expects: { logo, title, description, themeColors }
+    Frontend expects: { logo, title, titleRo, description, descriptionRo, themeColors }
     Model field is site_title → serialized as "title".
     """
 
     title = serializers.CharField(source="site_title")
+    titleRo = serializers.CharField(
+        source="site_title_ro", required=False, allow_blank=True
+    )
+    descriptionRo = serializers.CharField(
+        source="description_ro", required=False, allow_blank=True
+    )
     themeColors = serializers.JSONField(source="theme_colors")
 
     class Meta:
         model = SiteConfig
-        fields = ["logo", "title", "description", "themeColors"]
+        fields = [
+            "logo", "title", "titleRo", "description", "descriptionRo", "themeColors",
+        ]
 
 
 # ── TenantMembership ──────────────────────────────────────────────
@@ -301,6 +336,44 @@ class TenantMembershipSerializer(serializers.ModelSerializer):
     class Meta:
         model = TenantMembership
         fields = ["id", "email", "firstName", "lastName", "role", "joined_at"]
+
+
+# ── Stats (admin dashboard) ──────────────────────────────────────
+
+
+# ── DescriptionPage ──────────────────────────────────────────────
+
+
+class DescriptionPageSerializer(serializers.ModelSerializer):
+    """Matches frontend descriptionPage shape — camelCase with _ro variants."""
+
+    titleRo = serializers.CharField(
+        source="title_ro", required=False, allow_blank=True
+    )
+    bodyRo = serializers.CharField(
+        source="body_ro", required=False, allow_blank=True
+    )
+    missionTitle = serializers.CharField(
+        source="mission_title", required=False, allow_blank=True
+    )
+    missionTitleRo = serializers.CharField(
+        source="mission_title_ro", required=False, allow_blank=True
+    )
+    missionText = serializers.CharField(
+        source="mission_text", required=False, allow_blank=True
+    )
+    missionTextRo = serializers.CharField(
+        source="mission_text_ro", required=False, allow_blank=True
+    )
+
+    class Meta:
+        model = DescriptionPage
+        fields = [
+            "title", "titleRo",
+            "body", "bodyRo",
+            "missionTitle", "missionTitleRo",
+            "missionText", "missionTextRo",
+        ]
 
 
 # ── Stats (admin dashboard) ──────────────────────────────────────

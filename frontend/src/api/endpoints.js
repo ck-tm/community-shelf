@@ -14,6 +14,7 @@ export const publicApi = {
   getLists: () => api.get("/lists/"),
   getList: (id) => api.get(`/lists/${id}/`),
   getSiteConfig: () => api.get("/site-config/"),
+  getDescriptionPage: () => api.get("/description-page/"),
 };
 
 // ── Auth ─────────────────────────────────────────────────────────
@@ -93,6 +94,10 @@ export const adminApi = {
   // Site Config
   getSiteConfig: () => api.get("/admin/site-config/"),
   updateSiteConfig: (data) => api.put("/admin/site-config/", data),
+
+  // Description Page
+  getDescriptionPage: () => api.get("/admin/description-page/"),
+  updateDescriptionPage: (data) => api.put("/admin/description-page/", data),
 };
 
 // ── Platform (public schema, no tenant required) ──────────────

@@ -2,10 +2,12 @@ import { useState } from "react";
 import { X, BookOpen, CheckCircle, Loader2, AlertCircle } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useData } from "../context/DataContext";
+import { useTranslation } from "react-i18next";
 
 export default function RequestModal({ title, copy, onClose }) {
   const { isAuthenticated } = useAuth();
   const { createInquiry } = useData();
+  const { t } = useTranslation();
   const [notes, setNotes] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -40,23 +42,23 @@ export default function RequestModal({ title, copy, onClose }) {
           <div className="py-6 text-center">
             <AlertCircle className="mx-auto mb-4 size-14 text-amber-500 dark:text-amber-400" />
             <h3 className="text-xl font-bold text-teal-900 dark:text-cream">
-              Login Required
+              {t("modal.loginRequired")}
             </h3>
             <p className="mt-2 text-sm text-sand-500 dark:text-night-400">
-              Please log in to request items.
+              {t("modal.loginMessage")}
             </p>
             <div className="mt-5 flex justify-center gap-3">
               <button
                 onClick={onClose}
                 className="rounded-xl border border-sand-200 px-4 py-2 text-sm font-semibold text-sand-500 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-700"
               >
-                Close
+                {t("modal.close")}
               </button>
               <a
                 href="/login"
                 className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700"
               >
-                Log In
+                {t("modal.logIn")}
               </a>
             </div>
           </div>
@@ -64,11 +66,12 @@ export default function RequestModal({ title, copy, onClose }) {
           <div className="py-6 text-center">
             <CheckCircle className="mx-auto mb-4 size-14 text-emerald-500 dark:text-emerald-400" />
             <h3 className="text-xl font-bold text-teal-900 dark:text-cream">
-              Request Submitted!
+              {t("modal.requestSubmitted")}
             </h3>
             <p className="mt-2 text-sm text-sand-500 dark:text-night-400">
-              Your request for <strong>{title.title}</strong> has been
-              submitted. You'll be notified when it's approved.
+              {t("modal.requestSubmittedMsg", { title: title.title }).split(/<\/?1>/g).map((part, i) =>
+                i === 1 ? <strong key={i}>{part}</strong> : part
+              )}
             </p>
           </div>
         ) : (
@@ -76,7 +79,7 @@ export default function RequestModal({ title, copy, onClose }) {
             {/* Header */}
             <div className="mb-5 flex items-start justify-between">
               <h2 className="text-xl font-bold text-teal-900 dark:text-cream">
-                Request Item
+                {t("modal.requestItem")}
               </h2>
               <button
                 onClick={onClose}
@@ -114,12 +117,12 @@ export default function RequestModal({ title, copy, onClose }) {
             <div className="space-y-4">
               <div>
                 <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-                  Notes (Optional)
+                  {t("modal.notesLabel")}
                 </label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Any special requests or notes..."
+                  placeholder={t("modal.notesPlaceholder")}
                   rows={3}
                   className={`${inputClass} resize-none`}
                 />
@@ -138,7 +141,7 @@ export default function RequestModal({ title, copy, onClose }) {
                 onClick={onClose}
                 className="flex-1 rounded-xl border border-sand-200 px-4 py-2.5 text-sm font-semibold text-sand-500 transition hover:bg-sand-100 dark:border-night-700 dark:text-night-400 dark:hover:bg-night-700"
               >
-                Cancel
+                {t("modal.cancel")}
               </button>
               <button
                 onClick={handleSubmit}
@@ -146,7 +149,7 @@ export default function RequestModal({ title, copy, onClose }) {
                 className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-teal-600 dark:hover:bg-teal-700"
               >
                 {submitting && <Loader2 className="size-4 animate-spin" />}
-                Confirm Request
+                {t("modal.confirmRequest")}
               </button>
             </div>
           </>

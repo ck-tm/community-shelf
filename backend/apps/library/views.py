@@ -25,6 +25,7 @@ from .filters import InquiryFilter, TitleFilter
 from .models import (
     Copy,
     CuratedList,
+    DescriptionPage,
     Inquiry,
     SiteConfig,
     TenantMembership,
@@ -37,6 +38,7 @@ from .serializers import (
     CopyWriteSerializer,
     CuratedListSerializer,
     CuratedListWriteSerializer,
+    DescriptionPageSerializer,
     InquiryAdminUpdateSerializer,
     InquiryCreateSerializer,
     InquirySerializer,
@@ -134,6 +136,17 @@ class PublicSiteConfigView(generics.RetrieveAPIView):
             }
         )
         return config
+
+
+class PublicDescriptionPageView(generics.RetrieveAPIView):
+    """GET /api/v1/description-page/ — returns singleton DescriptionPage."""
+
+    permission_classes = [AllowAny]
+    serializer_class = DescriptionPageSerializer
+
+    def get_object(self):
+        page, _ = DescriptionPage.objects.get_or_create()
+        return page
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -370,6 +383,17 @@ class AdminSiteConfigView(generics.RetrieveUpdateAPIView):
             }
         )
         return config
+
+
+class AdminDescriptionPageView(generics.RetrieveUpdateAPIView):
+    """GET/PUT /api/v1/admin/description-page/"""
+
+    permission_classes = [IsAuthenticated, IsTenantAdmin]
+    serializer_class = DescriptionPageSerializer
+
+    def get_object(self):
+        page, _ = DescriptionPage.objects.get_or_create()
+        return page
 
 
 class AdminStatsView(generics.GenericAPIView):

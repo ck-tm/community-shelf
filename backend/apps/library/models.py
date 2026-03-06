@@ -28,6 +28,7 @@ class TenantMembership(models.Model):
 
 class Type(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    name_ro = models.CharField(max_length=100, blank=True)
     color = models.CharField(
         max_length=7, default="#0D7377", help_text="Hex color code"
     )
@@ -101,7 +102,9 @@ class Copy(models.Model):
 
 class CuratedList(models.Model):
     title = models.CharField(max_length=500)
+    title_ro = models.CharField(max_length=500, blank=True)
     description = models.TextField(blank=True)
+    description_ro = models.TextField(blank=True)
     cover_color = models.CharField(max_length=7, default="#0D7377")
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -118,7 +121,9 @@ class Section(models.Model):
         CuratedList, on_delete=models.CASCADE, related_name="sections"
     )
     heading = models.CharField(max_length=300)
+    heading_ro = models.CharField(max_length=300, blank=True)
     body = models.TextField(blank=True)
+    body_ro = models.TextField(blank=True)
     titles = models.ManyToManyField(Title, blank=True, related_name="sections")
     order = models.PositiveIntegerField(default=0)
 
@@ -178,10 +183,12 @@ class SiteConfig(models.Model):
 
     logo = models.ImageField(upload_to="logos/", blank=True, null=True)
     site_title = models.CharField(max_length=200, default="CommunityShelf")
+    site_title_ro = models.CharField(max_length=200, blank=True)
     description = models.TextField(
         blank=True,
         default="A community library for things worth sharing.",
     )
+    description_ro = models.TextField(blank=True)
     theme_colors = models.JSONField(default=dict, blank=True)
 
     class Meta:
@@ -210,3 +217,29 @@ class SiteConfig(models.Model):
             "warm": "#f3ede4",
             "amber-500": "#f5a623",
         }
+
+
+class DescriptionPage(models.Model):
+    """Singleton per tenant — admin-editable About page content."""
+
+    title = models.CharField(max_length=200, default="About Us")
+    title_ro = models.CharField(max_length=200, blank=True)
+    body = models.TextField(blank=True)
+    body_ro = models.TextField(blank=True)
+    mission_title = models.CharField(max_length=200, blank=True, default="Our Mission")
+    mission_title_ro = models.CharField(max_length=200, blank=True)
+    mission_text = models.TextField(blank=True)
+    mission_text_ro = models.TextField(blank=True)
+
+    class Meta:
+        verbose_name = "Description Page"
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        # Enforce singleton: only one DescriptionPage per tenant schema
+        if not self.pk and DescriptionPage.objects.exists():
+            existing = DescriptionPage.objects.first()
+            self.pk = existing.pk
+        super().save(*args, **kwargs)

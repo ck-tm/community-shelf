@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Library } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const { login, isAuthenticated, error, clearError } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const from = location.state?.from?.pathname || "/";
 
   const [email, setEmail] = useState("");
@@ -50,10 +52,10 @@ export default function Login() {
             <Library className="size-6" />
           </div>
           <h1 className="font-heading text-2xl text-teal-900 dark:text-cream">
-            Welcome back
+            {t("auth.welcomeBack")}
           </h1>
           <p className="mt-1 text-sm text-sand-500 dark:text-night-400">
-            Sign in to your account
+            {t("auth.signInSubtitle")}
           </p>
         </div>
 
@@ -70,7 +72,7 @@ export default function Login() {
 
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-              Email
+              {t("auth.email")}
             </label>
             <input
               type="email"
@@ -86,7 +88,7 @@ export default function Login() {
 
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-              Password
+              {t("auth.password")}
             </label>
             <input
               type="password"
@@ -104,17 +106,17 @@ export default function Login() {
             disabled={submitting}
             className="w-full rounded-xl bg-teal-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-teal-800 disabled:opacity-50 dark:bg-teal-600 dark:hover:bg-teal-700"
           >
-            {submitting ? "Signing in..." : "Sign in"}
+            {submitting ? t("auth.signingIn") : t("auth.signIn")}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-sand-500 dark:text-night-400">
-          Don&apos;t have an account?{" "}
+          {t("auth.noAccount")}{" "}
           <Link
             to="/register"
             className="font-medium text-teal-700 hover:text-teal-800 dark:text-teal-400"
           >
-            Create one
+            {t("auth.createOne")}
           </Link>
         </p>
       </div>

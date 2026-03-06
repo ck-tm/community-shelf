@@ -23,6 +23,7 @@ import ManageLists from "./pages/admin/ManageLists";
 import ListForm from "./pages/admin/ListForm";
 import ManageInquiries from "./pages/admin/ManageInquiries";
 import SiteConfig from "./pages/admin/SiteConfig";
+import DescriptionPageAdmin from "./pages/admin/DescriptionPageAdmin";
 import PlatformNavbar from "./components/PlatformNavbar";
 import Landing from "./pages/platform/Landing";
 import Dashboard from "./pages/platform/Dashboard";
@@ -79,6 +80,7 @@ function TenantApp() {
               <Route path="lists/:id/edit" element={<ListForm />} />
               <Route path="inquiries" element={<ManageInquiries />} />
               <Route path="config" element={<SiteConfig />} />
+              <Route path="description" element={<DescriptionPageAdmin />} />
             </Route>
           </Routes>
         </div>

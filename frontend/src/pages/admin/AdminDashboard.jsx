@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Tag, BookOpen, Layers, Copy, ClipboardList, Wrench } from "lucide-react";
 import { useData } from "../../context/DataContext";
 
 export default function AdminDashboard() {
+  const { t } = useTranslation();
   const { stats, fetchStats } = useData();
 
   useEffect(() => {
@@ -12,7 +14,7 @@ export default function AdminDashboard() {
 
   const cards = [
     {
-      label: "Content Types",
+      label: t("adminDashboard.contentTypes"),
       value: stats?.totalTypes ?? "—",
       icon: Tag,
       color: "text-amber-600 dark:text-amber-400",
@@ -20,7 +22,7 @@ export default function AdminDashboard() {
       to: "/admin/types",
     },
     {
-      label: "Titles",
+      label: t("adminDashboard.titles"),
       value: stats?.totalTitles ?? "—",
       icon: BookOpen,
       color: "text-teal-700 dark:text-teal-400",
@@ -28,7 +30,7 @@ export default function AdminDashboard() {
       to: "/admin/titles",
     },
     {
-      label: "Total Copies",
+      label: t("adminDashboard.totalCopies"),
       value: stats?.totalCopies ?? "—",
       icon: Copy,
       color: "text-blue-600 dark:text-blue-400",
@@ -36,7 +38,7 @@ export default function AdminDashboard() {
       to: "/admin/titles",
     },
     {
-      label: "Curated Lists",
+      label: t("adminDashboard.curatedLists"),
       value: stats?.totalLists ?? "—",
       icon: Layers,
       color: "text-purple-600 dark:text-purple-400",
@@ -44,7 +46,7 @@ export default function AdminDashboard() {
       to: "/admin/lists",
     },
     {
-      label: "Pending Inquiries",
+      label: t("adminDashboard.pendingInquiries"),
       value: stats?.pendingInquiries ?? "—",
       icon: ClipboardList,
       color: "text-orange-600 dark:text-orange-400",
@@ -52,7 +54,7 @@ export default function AdminDashboard() {
       to: "/admin/inquiries",
     },
     {
-      label: "Site Config",
+      label: t("adminDashboard.siteConfig"),
       value: "",
       icon: Wrench,
       color: "text-slate-600 dark:text-slate-400",
@@ -68,10 +70,10 @@ export default function AdminDashboard() {
         style={{ animation: "fade-up 0.6s ease-out both" }}
       >
         <h1 className="font-heading text-3xl text-teal-900 dark:text-cream">
-          Overview
+          {t("adminDashboard.title")}
         </h1>
         <p className="mt-1 text-sand-500 dark:text-night-400">
-          Manage your community library.
+          {t("adminDashboard.subtitle")}
         </p>
       </div>
 

@@ -1,9 +1,18 @@
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import TypeIcon from "./TypeIcon";
 import { useData } from "../context/DataContext";
+import { useLocalize } from "../hooks/useLocalize";
 
 export default function TitleCard({ title }) {
-  const { typeColors } = useData();
+  const { types, typeColors } = useData();
+  const { t } = useTranslation();
+  const l = useLocalize();
+  const typeMap = useMemo(
+    () => Object.fromEntries(types.map((tp) => [tp.name, tp])),
+    [types],
+  );
   const available = title.copies.filter((c) => c.status === "available").length;
   const color = typeColors[title.type] || "#0D7377";
 
@@ -46,7 +55,7 @@ export default function TitleCard({ title }) {
             style={{ backgroundColor: color }}
           >
             <TypeIcon type={title.type} className="size-3" />
-            {title.type}
+            {l(typeMap[title.type], "name") || title.type}
           </span>
 
           <h3 className="line-clamp-2 font-semibold leading-snug text-teal-900 transition-colors duration-200 group-hover:text-teal-700 dark:text-cream dark:group-hover:text-teal-400">
@@ -61,11 +70,11 @@ export default function TitleCard({ title }) {
           {available > 0 ? (
             <span className="flex items-center gap-1.5 text-sm font-medium text-teal-700 dark:text-teal-400">
               <span className="inline-block size-1.5 rounded-full bg-teal-500 dark:bg-teal-400" />
-              {available} available
+              {t("titleCard.available", { count: available })}
             </span>
           ) : (
             <span className="text-sm font-medium text-sand-300 dark:text-night-400">
-              Unavailable
+              {t("titleCard.unavailable")}
             </span>
           )}
           <span className="text-xs tabular-nums text-sand-300 dark:text-night-500">

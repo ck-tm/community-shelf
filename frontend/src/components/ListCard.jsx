@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import { BookOpen, Layers } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { useLocalize } from "../hooks/useLocalize";
 
 export default function ListCard({ list }) {
+  const { t } = useTranslation();
+  const l = useLocalize();
   const totalTitles = list.sections.reduce(
     (sum, s) => sum + s.titleIds.length,
     0
@@ -22,17 +26,16 @@ export default function ListCard({ list }) {
       </div>
       <div className="p-4">
         <h3 className="font-semibold text-teal-900 transition-colors duration-200 group-hover:text-teal-700 dark:text-cream dark:group-hover:text-teal-400">
-          {list.title}
+          {l(list, "title")}
         </h3>
         <p className="mt-1 line-clamp-2 text-sm text-sand-500 dark:text-night-400">
-          {list.description}
+          {l(list, "description")}
         </p>
         <div className="mt-3 flex items-center justify-between">
           <span className="flex items-center gap-1.5 text-xs text-sand-300 dark:text-night-400">
             <BookOpen className="size-3" />
-            {totalTitles} {totalTitles === 1 ? "title" : "titles"} &middot;{" "}
-            {list.sections.length}{" "}
-            {list.sections.length === 1 ? "section" : "sections"}
+            {t("listCard.title", { count: totalTitles })} &middot;{" "}
+            {t("listCard.section", { count: list.sections.length })}
           </span>
           <span className="text-xs tabular-nums text-sand-300 dark:text-night-500">
             {list.createdAt}

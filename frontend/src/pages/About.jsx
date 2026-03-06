@@ -1,27 +1,22 @@
 import { BookOpen, ArrowRight, Users, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useData } from "../context/DataContext";
-
-const steps = [
-  {
-    icon: BookOpen,
-    title: "Browse the collection",
-    text: "Explore what your community has to share — books, films, music, games, and more.",
-  },
-  {
-    icon: ArrowRight,
-    title: "Request an item",
-    text: "Found something you like? Submit a request and we'll hold it for you.",
-  },
-  {
-    icon: Heart,
-    title: "Pick up & enjoy",
-    text: "Collect your item, enjoy it at your own pace, and return it when you're done.",
-  },
-];
+import { useLocalize } from "../hooks/useLocalize";
 
 export default function About() {
-  const { siteConfig } = useData();
+  const { siteConfig, descriptionPage } = useData();
+  const { t } = useTranslation();
+  const l = useLocalize();
+
+  // Use descriptionPage from admin if available, else fall back to i18n strings
+  const dp = descriptionPage;
+
+  const steps = [
+    { icon: BookOpen, title: t("aboutPage.step1Title"), text: t("aboutPage.step1Text") },
+    { icon: ArrowRight, title: t("aboutPage.step2Title"), text: t("aboutPage.step2Text") },
+    { icon: Heart, title: t("aboutPage.step3Title"), text: t("aboutPage.step3Text") },
+  ];
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
@@ -31,11 +26,17 @@ export default function About() {
         style={{ animation: "fade-up 0.6s ease-out both" }}
       >
         <h1 className="font-heading text-4xl tracking-tight text-teal-900 sm:text-5xl dark:text-cream">
-          About {siteConfig.title}
+          {l(dp, "title") || t("aboutPage.aboutTitle", { name: l(siteConfig, "title") })}
         </h1>
-        <p className="mt-3 font-heading text-lg italic text-sand-500 dark:text-night-400">
-          {siteConfig.description}
-        </p>
+        {l(dp, "body") ? (
+          <p className="mt-3 font-heading text-lg italic text-sand-500 dark:text-night-400">
+            {l(dp, "body")}
+          </p>
+        ) : (
+          <p className="mt-3 font-heading text-lg italic text-sand-500 dark:text-night-400">
+            {l(siteConfig, "description")}
+          </p>
+        )}
       </div>
 
       {/* Mission */}
@@ -47,14 +48,10 @@ export default function About() {
           <Users className="mt-1 size-6 shrink-0 text-teal-700 dark:text-teal-400" />
           <div>
             <h2 className="font-heading text-2xl text-teal-900 dark:text-cream">
-              Our Mission
+              {l(dp, "missionTitle") || t("aboutPage.mission")}
             </h2>
             <p className="mt-3 leading-relaxed text-sand-500 dark:text-night-400">
-              {siteConfig.title} connects people with the things their community
-              has to share. Instead of buying new, borrow from your neighbors.
-              Instead of collecting dust, let your books find new readers. We
-              believe that sharing builds stronger communities — and saves a few
-              trees along the way.
+              {l(dp, "missionText") || t("aboutPage.missionText", { name: l(siteConfig, "title") })}
             </p>
           </div>
         </div>
@@ -63,7 +60,7 @@ export default function About() {
       {/* How it works */}
       <div style={{ animation: "fade-up 0.6s ease-out 0.2s both" }}>
         <h2 className="mb-8 font-heading text-2xl text-teal-900 dark:text-cream">
-          How it works
+          {t("aboutPage.howItWorks")}
         </h2>
         <div className="grid gap-6 sm:grid-cols-3">
           {steps.map((step, i) => (
@@ -95,16 +92,16 @@ export default function About() {
         style={{ animation: "fade-up 0.6s ease-out 0.5s both" }}
       >
         <h2 className="font-heading text-2xl text-teal-900 dark:text-cream">
-          Ready to explore?
+          {t("aboutPage.readyToExplore")}
         </h2>
         <p className="mt-2 text-sand-500 dark:text-night-400">
-          Browse what your community has to offer.
+          {t("aboutPage.browseOffer")}
         </p>
         <Link
           to="/"
           className="mt-5 inline-flex items-center gap-2 rounded-full bg-teal-800 px-6 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-teal-900 dark:bg-teal-700 dark:hover:bg-teal-600"
         >
-          Browse the Collection
+          {t("aboutPage.browseCollection")}
           <ArrowRight className="size-4" />
         </Link>
       </div>

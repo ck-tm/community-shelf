@@ -1,27 +1,35 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ArrowLeft, MapPin } from "lucide-react";
 import { useData } from "../context/DataContext";
+import { useLocalize } from "../hooks/useLocalize";
 import TypeIcon from "../components/TypeIcon";
 import RequestModal from "../components/RequestModal";
 
 export default function TitleDetail() {
-  const { titles, typeColors } = useData();
+  const { titles, types, typeColors } = useData();
   const { id } = useParams();
-  const title = titles.find((t) => t.id === Number(id));
+  const { t } = useTranslation();
+  const l = useLocalize();
+  const typeMap = useMemo(
+    () => Object.fromEntries(types.map((tp) => [tp.name, tp])),
+    [types],
+  );
+  const title = titles.find((ti) => ti.id === Number(id));
   const [selectedCopy, setSelectedCopy] = useState(null);
 
   if (!title) {
     return (
       <div className="py-20 text-center">
         <h2 className="text-xl font-bold text-teal-900 dark:text-cream">
-          Title not found
+          {t("titleDetail.notFound")}
         </h2>
         <Link
           to="/"
           className="mt-4 inline-block text-teal-700 hover:underline dark:text-teal-400"
         >
-          Back to catalog
+          {t("titleDetail.backToCatalog")}
         </Link>
       </div>
     );
@@ -40,7 +48,7 @@ export default function TitleDetail() {
           to="/"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-white/80 transition hover:text-white"
         >
-          <ArrowLeft className="size-4" /> Back to Catalog
+          <ArrowLeft className="size-4" /> {t("titleDetail.backToCatalog")}
         </Link>
       </div>
 
@@ -64,7 +72,7 @@ export default function TitleDetail() {
                 style={{ backgroundColor: color }}
               >
                 <TypeIcon type={title.type} className="size-3.5" />
-                {title.type}
+                {l(typeMap[title.type], "name") || title.type}
               </div>
             </div>
           )}
@@ -106,10 +114,10 @@ export default function TitleDetail() {
 
             <div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-4">
               {[
-                ["Year", title.year],
-                ["Language", title.language],
-                ["ISBN / ID", title.isbn],
-                ["Publisher", title.publisher],
+                [t("titleDetail.year"), title.year],
+                [t("titleDetail.language"), title.language],
+                [t("titleDetail.isbn"), title.isbn],
+                [t("titleDetail.publisher"), title.publisher],
               ].map(([label, value]) => value ? (
                 <div key={label}>
                   <dt className="text-[11px] font-bold uppercase tracking-wider text-sand-300 dark:text-night-400">
@@ -130,9 +138,9 @@ export default function TitleDetail() {
           style={{ animation: "fade-up 0.5s ease-out 0.15s both" }}
         >
           <h2 className="font-heading text-xl text-teal-900 dark:text-cream">
-            Available Copies
+            {t("titleDetail.availableCopies")}
             <span className="ml-2 text-sm font-normal text-sand-500 dark:text-night-400">
-              ({available} of {title.copies.length} available)
+              ({t("titleDetail.availableOf", { available, total: title.copies.length })})
             </span>
           </h2>
 
@@ -151,7 +159,7 @@ export default function TitleDetail() {
                   <div>
                     <div className="flex items-center gap-2.5">
                       <span className="text-sm font-semibold text-teal-900 dark:text-cream">
-                        Condition: {copy.condition}
+                        {t("titleDetail.condition", { condition: copy.condition })}
                       </span>
                       <span
                         className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
@@ -160,7 +168,7 @@ export default function TitleDetail() {
                             : "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
                         }`}
                       >
-                        {isAvail ? "Available" : "Reserved"}
+                        {isAvail ? t("titleDetail.available") : t("titleDetail.reserved")}
                       </span>
                     </div>
                     <div className="mt-1 flex items-center gap-1 text-sm text-sand-500 dark:text-night-400">
@@ -173,7 +181,7 @@ export default function TitleDetail() {
                       onClick={() => setSelectedCopy(copy)}
                       className="rounded-xl bg-teal-700 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700"
                     >
-                      Request
+                      {t("titleDetail.request")}
                     </button>
                   )}
                 </div>

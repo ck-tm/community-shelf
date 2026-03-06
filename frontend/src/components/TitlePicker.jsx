@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { X, Search, Check } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useData } from "../context/DataContext";
 import TypeIcon from "./TypeIcon";
 
 export default function TitlePicker({ selected = [], onDone, onCancel }) {
+  const { t } = useTranslation();
   const { titles } = useData();
   const [search, setSearch] = useState("");
   const [picked, setPicked] = useState(new Set(selected));
 
-  const filtered = titles.filter((t) => {
+  const filtered = titles.filter((ti) => {
     if (!search) return true;
     const q = search.toLowerCase();
     return (
-      t.title.toLowerCase().includes(q) || t.author.toLowerCase().includes(q)
+      ti.title.toLowerCase().includes(q) || ti.author.toLowerCase().includes(q)
     );
   });
 
@@ -31,7 +33,7 @@ export default function TitlePicker({ selected = [], onDone, onCancel }) {
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 p-5 dark:border-night-700">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-cream">
-            Select Titles
+            {t("titlePicker.selectTitles")}
           </h3>
           <button
             onClick={onCancel}
@@ -48,19 +50,19 @@ export default function TitlePicker({ selected = [], onDone, onCancel }) {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search titles..."
+            placeholder={t("titlePicker.searchPlaceholder")}
             className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-600/10 dark:border-night-600 dark:bg-night-900 dark:text-cream dark:placeholder:text-night-400"
           />
         </div>
 
         {/* List */}
         <div className="flex-1 overflow-y-auto p-2">
-          {filtered.map((t) => {
-            const isSelected = picked.has(t.id);
+          {filtered.map((ti) => {
+            const isSelected = picked.has(ti.id);
             return (
               <button
-                key={t.id}
-                onClick={() => toggle(t.id)}
+                key={ti.id}
+                onClick={() => toggle(ti.id)}
                 className={`flex w-full items-center gap-3 rounded-xl p-3 text-left transition ${
                   isSelected
                     ? "bg-teal-50 dark:bg-teal-900/20"
@@ -69,16 +71,16 @@ export default function TitlePicker({ selected = [], onDone, onCancel }) {
               >
                 <div
                   className="flex size-10 shrink-0 items-center justify-center rounded-lg text-white"
-                  style={{ backgroundColor: t.cover }}
+                  style={{ backgroundColor: ti.cover }}
                 >
-                  <TypeIcon type={t.type} className="size-4" />
+                  <TypeIcon type={ti.type} className="size-4" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-gray-900 dark:text-cream">
-                    {t.title}
+                    {ti.title}
                   </p>
                   <p className="truncate text-xs text-gray-500 dark:text-night-400">
-                    {t.author} &middot; {t.type}
+                    {ti.author} &middot; {ti.type}
                   </p>
                 </div>
                 {isSelected && (
@@ -92,20 +94,20 @@ export default function TitlePicker({ selected = [], onDone, onCancel }) {
         {/* Footer */}
         <div className="flex items-center justify-between border-t border-gray-200 p-4 dark:border-night-700">
           <span className="text-sm text-gray-500 dark:text-night-400">
-            {picked.size} selected
+            {t("titlePicker.selected", { count: picked.size })}
           </span>
           <div className="flex gap-3">
             <button
               onClick={onCancel}
               className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-night-600 dark:text-sand-300 dark:hover:bg-night-700"
             >
-              Cancel
+              {t("titlePicker.cancel")}
             </button>
             <button
               onClick={() => onDone([...picked])}
               className="rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700"
             >
-              Done
+              {t("titlePicker.done")}
             </button>
           </div>
         </div>

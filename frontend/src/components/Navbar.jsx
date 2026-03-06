@@ -1,13 +1,18 @@
 import { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Library, Settings, Sun, Moon, User, LogOut, Menu, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useData } from "../context/DataContext";
 import { useAuth } from "../context/AuthContext";
+import { useLocalize } from "../hooks/useLocalize";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Navbar() {
   const { siteConfig } = useData();
   const { isAuthenticated, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const l = useLocalize();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -24,8 +29,8 @@ export default function Navbar() {
   }, [dark]);
 
   useEffect(() => {
-    document.title = `${siteConfig.title} — ${siteConfig.description}`;
-  }, [siteConfig.title]);
+    document.title = `${l(siteConfig, "title")} — ${l(siteConfig, "description")}`;
+  }, [siteConfig.title, l, siteConfig]);
 
   // Close menu on outside click
   useEffect(() => {
@@ -75,20 +80,20 @@ export default function Navbar() {
             )}
           </div>
           <span className=" font-heading text-xl text-teal-900 sm:inline dark:text-cream">
-            {siteConfig.title}
+            {l(siteConfig, "title")}
           </span>
         </NavLink>
 
         {/* Desktop links */}
         <div className="hidden items-center gap-5 sm:flex sm:gap-7">
-          <NavLink to="/" end className={linkClass}>Browse</NavLink>
-          <NavLink to="/lists" className={linkClass}>Lists</NavLink>
-          <NavLink to="/about" className={linkClass}>About</NavLink>
+          <NavLink to="/" end className={linkClass}>{t("tenantNav.browse")}</NavLink>
+          <NavLink to="/lists" className={linkClass}>{t("tenantNav.lists")}</NavLink>
+          <NavLink to="/about" className={linkClass}>{t("tenantNav.about")}</NavLink>
 
           <button
             onClick={() => setDark(!dark)}
             className="flex size-9 items-center justify-center rounded-full bg-sand-100 transition-all duration-200 hover:bg-sand-200 dark:bg-night-800 dark:hover:bg-night-700"
-            aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+            aria-label={dark ? t("tenantNav.lightMode") : t("tenantNav.darkMode")}
           >
             {dark ? (
               <Sun className="size-4 text-amber-400" />
@@ -96,6 +101,8 @@ export default function Navbar() {
               <Moon className="size-4 text-sand-500" />
             )}
           </button>
+
+          <LanguageSwitcher />
 
           {isAuthenticated ? (
             <>
@@ -108,7 +115,7 @@ export default function Navbar() {
                       : "bg-sand-100 text-sand-500 hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
                   }`
                 }
-                aria-label="My Account"
+                aria-label={t("tenantNav.myAccount")}
               >
                 <User className="size-4" />
               </NavLink>
@@ -122,7 +129,7 @@ export default function Navbar() {
                         : "bg-sand-100 text-sand-500 hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
                     }`
                   }
-                  aria-label="Admin"
+                  aria-label={t("tenantNav.admin")}
                 >
                   <Settings className="size-4" />
                 </NavLink>
@@ -130,7 +137,7 @@ export default function Navbar() {
               <button
                 onClick={handleLogout}
                 className="flex size-9 items-center justify-center rounded-full bg-sand-100 text-sand-500 transition-colors duration-200 hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
-                aria-label="Sign out"
+                aria-label={t("tenantNav.signOut")}
               >
                 <LogOut className="size-4" />
               </button>
@@ -140,7 +147,7 @@ export default function Navbar() {
               to="/login"
               className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700"
             >
-              Log in
+              {t("tenantNav.login")}
             </NavLink>
           )}
         </div>
@@ -150,7 +157,7 @@ export default function Navbar() {
           <button
             onClick={() => setDark(!dark)}
             className="flex size-9 items-center justify-center rounded-full bg-sand-100 transition-all duration-200 hover:bg-sand-200 dark:bg-night-800 dark:hover:bg-night-700"
-            aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+            aria-label={dark ? t("tenantNav.lightMode") : t("tenantNav.darkMode")}
           >
             {dark ? (
               <Sun className="size-4 text-amber-400" />
@@ -158,6 +165,7 @@ export default function Navbar() {
               <Moon className="size-4 text-sand-500" />
             )}
           </button>
+          <LanguageSwitcher />
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="flex size-9 items-center justify-center rounded-full bg-sand-100 text-sand-500 transition hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
@@ -172,25 +180,25 @@ export default function Navbar() {
       {menuOpen && (
         <div className="border-t border-sand-200/60 bg-cream/95 px-4 pb-4 pt-2 backdrop-blur-xl dark:border-white/5 dark:bg-night-950/95 sm:hidden">
           <div className="space-y-1">
-            <NavLink to="/" end className={mobileLinkClass} onClick={() => setMenuOpen(false)}>Browse</NavLink>
-            <NavLink to="/lists" className={mobileLinkClass} onClick={() => setMenuOpen(false)}>Lists</NavLink>
-            <NavLink to="/about" className={mobileLinkClass} onClick={() => setMenuOpen(false)}>About</NavLink>
+            <NavLink to="/" end className={mobileLinkClass} onClick={() => setMenuOpen(false)}>{t("tenantNav.browse")}</NavLink>
+            <NavLink to="/lists" className={mobileLinkClass} onClick={() => setMenuOpen(false)}>{t("tenantNav.lists")}</NavLink>
+            <NavLink to="/about" className={mobileLinkClass} onClick={() => setMenuOpen(false)}>{t("tenantNav.about")}</NavLink>
 
             {isAuthenticated ? (
               <>
                 <NavLink to="/account" className={mobileLinkClass} onClick={() => setMenuOpen(false)}>
-                  My Account
+                  {t("tenantNav.myAccount")}
                 </NavLink>
                 {isAdmin && (
                   <NavLink to="/admin" className={mobileLinkClass} onClick={() => setMenuOpen(false)}>
-                    Admin Panel
+                    {t("tenantNav.adminPanel")}
                   </NavLink>
                 )}
                 <button
                   onClick={handleLogout}
                   className="flex w-full items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
                 >
-                  <LogOut className="size-4" /> Sign out
+                  <LogOut className="size-4" /> {t("tenantNav.signOut")}
                 </button>
               </>
             ) : (
@@ -199,7 +207,7 @@ export default function Navbar() {
                 className="block rounded-xl bg-teal-700 px-4 py-2.5 text-center text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600"
                 onClick={() => setMenuOpen(false)}
               >
-                Log in
+                {t("tenantNav.login")}
               </NavLink>
             )}
           </div>

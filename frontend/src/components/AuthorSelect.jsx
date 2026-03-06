@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown, Search, X, User } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function AuthorSelect({ authors, value, onChange }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [dropdownStyle, setDropdownStyle] = useState({});
@@ -93,7 +95,7 @@ export default function AuthorSelect({ authors, value, onChange }) {
           }`}
         >
           <span className={`truncate ${value ? "text-teal-900 dark:text-cream" : "text-sand-500 dark:text-night-400"}`}>
-            {value || "Filter by author…"}
+            {value || t("authorSelect.placeholder")}
           </span>
           {value ? (
             <X
@@ -122,7 +124,7 @@ export default function AuthorSelect({ authors, value, onChange }) {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search authors…"
+                placeholder={t("authorSelect.search")}
                 className="w-full rounded-xl border-0 bg-sand-50 py-2 pl-9 pr-3 text-sm outline-none ring-1 ring-sand-200/60 focus:ring-teal-700/30 dark:bg-night-900 dark:text-cream dark:placeholder:text-night-400 dark:ring-night-700"
               />
             </div>
@@ -132,7 +134,7 @@ export default function AuthorSelect({ authors, value, onChange }) {
           <div className="max-h-64 overflow-y-auto py-1">
             {filtered.length === 0 ? (
               <p className="py-6 text-center text-sm text-sand-300 dark:text-night-500">
-                No authors found
+                {t("authorSelect.noResults")}
               </p>
             ) : (
               filtered.map((a) => (

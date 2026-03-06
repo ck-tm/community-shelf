@@ -1,7 +1,9 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { Search, BookOpen, ChevronDown, LayoutGrid, List, ChevronLeft, ChevronRight, ArrowRight, Layers, Library } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useData } from "../context/DataContext";
+import { useLocalize } from "../hooks/useLocalize";
 import { publicApi } from "../api/endpoints";
 import TitleCard from "../components/TitleCard";
 import ShelfView from "../components/ShelfView";
@@ -18,7 +20,15 @@ const SORT_MAP = {
 };
 
 export default function Browse() {
-  const { browseTypes, typeColors, siteConfig, curatedLists } = useData();
+  const { t } = useTranslation();
+  const { types, browseTypes, typeColors, siteConfig, curatedLists } = useData();
+  const l = useLocalize();
+
+  // Type name lookup for localized display
+  const typeMap = useMemo(
+    () => Object.fromEntries(types.map((tp) => [tp.name, tp])),
+    [types],
+  );
 
   const [search, setSearch] = useState("");
   const [authorSearch, setAuthorSearch] = useState("");
@@ -42,8 +52,8 @@ export default function Browse() {
   // Debounce only the free-text search
   const [debouncedSearch, setDebouncedSearch] = useState("");
   useEffect(() => {
-    const t = setTimeout(() => setDebouncedSearch(search), 300);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(timer);
   }, [search]);
 
   // Reset to page 1 on filter changes
@@ -129,10 +139,10 @@ export default function Browse() {
         style={{ animation: "fade-up 0.6s ease-out both" }}
       >
         <h1 className="font-heading text-4xl tracking-tight text-teal-900 sm:text-5xl dark:text-cream">
-          Browse the Collection
+          {t("browse.title")}
         </h1>
         <p className="mt-3 font-heading text-lg italic text-sand-500 dark:text-night-400">
-          {siteConfig.description}
+          {l(siteConfig, "description")}
         </p>
       </div>
 
@@ -147,7 +157,7 @@ export default function Browse() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="What are you looking for?"
+            placeholder={t("browse.searchPlaceholder")}
             className="w-full rounded-2xl border-0 bg-warm py-4 pl-12 pr-5 text-base ring-1 ring-sand-300/60 outline-none transition placeholder:text-sand-500 focus:bg-white focus:ring-2 focus:ring-teal-700/30 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-400 dark:focus:bg-night-800"
           />
         </div>
@@ -165,18 +175,18 @@ export default function Browse() {
       >
         {/* Type chips */}
         <div className="flex flex-wrap gap-2">
-          {browseTypes.map((t) => (
+          {browseTypes.map((tp) => (
             <button
-              key={t}
-              onClick={() => setType(t)}
+              key={tp}
+              onClick={() => setType(tp)}
               className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
-                type === t
+                type === tp
                   ? "bg-teal-800 text-white shadow-sm shadow-teal-900/20 dark:bg-teal-700"
                   : "bg-warm text-sand-500 ring-1 ring-sand-200/60 hover:text-teal-800 hover:ring-sand-300 dark:bg-night-800 dark:text-night-400 dark:ring-night-700 dark:hover:text-teal-400"
               }`}
             >
-              {t !== "All" && <TypeIcon type={t} className="size-3.5" />}
-              {t}
+              {tp !== "All" && <TypeIcon type={tp} className="size-3.5" />}
+              {tp === "All" ? t("browse.all") : l(typeMap[tp], "name") || tp}
             </button>
           ))}
         </div>
@@ -184,7 +194,7 @@ export default function Browse() {
         {/* Sort + count + view toggle */}
         <div className="flex items-center gap-3">
           <span className="text-sm tabular-nums text-sand-300 dark:text-night-400">
-            {loading ? "…" : `${totalCount} ${totalCount === 1 ? "title" : "titles"}`}
+            {loading ? "…" : t("browse.titleCount", { count: totalCount })}
           </span>
 
           {/* Sort */}
@@ -194,9 +204,9 @@ export default function Browse() {
               onChange={(e) => setSort(e.target.value)}
               className="appearance-none cursor-pointer rounded-xl border-0 bg-warm py-2 pl-3 pr-9 text-sm font-medium text-sand-500 ring-1 ring-sand-200/60 outline-none transition hover:text-teal-800 focus:ring-2 focus:ring-teal-700/30 dark:bg-night-800 dark:text-night-400 dark:ring-night-700 dark:hover:text-teal-400"
             >
-              <option value="newest">Newest</option>
-              <option value="title-asc">A–Z</option>
-              <option value="available">Available</option>
+              <option value="newest">{t("browse.newest")}</option>
+              <option value="title-asc">{t("browse.titleAsc")}</option>
+              <option value="available">{t("browse.available")}</option>
             </select>
             <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-sand-300 dark:text-night-400" />
           </div>
@@ -210,7 +220,7 @@ export default function Browse() {
                   ? "bg-teal-800 text-white dark:bg-teal-700"
                   : "text-sand-500 hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
               }`}
-              aria-label="Grid view"
+              aria-label={t("browse.gridView")}
             >
               <LayoutGrid className="size-4" />
             </button>
@@ -221,7 +231,7 @@ export default function Browse() {
                   ? "bg-teal-800 text-white dark:bg-teal-700"
                   : "text-sand-500 hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
               }`}
-              aria-label="Table view"
+              aria-label={t("browse.tableView")}
             >
               <List className="size-4" />
             </button>
@@ -232,7 +242,7 @@ export default function Browse() {
                   ? "bg-teal-800 text-white dark:bg-teal-700"
                   : "text-sand-500 hover:text-teal-800 dark:text-night-400 dark:hover:text-teal-400"
               }`}
-              aria-label="Shelf view"
+              aria-label={t("browse.shelfView")}
             >
               <Library className="size-4" />
             </button>
@@ -272,10 +282,10 @@ export default function Browse() {
             <BookOpen className="size-7 text-sand-300 dark:text-night-400" />
           </div>
           <h3 className="font-heading text-xl text-teal-900 dark:text-cream">
-            Nothing found
+            {t("browse.nothingFound")}
           </h3>
           <p className="mt-2 text-sm text-sand-500 dark:text-night-400">
-            Try a different search term or filter.
+            {t("browse.nothingFoundHint")}
           </p>
         </div>
       )}
@@ -299,10 +309,10 @@ export default function Browse() {
             <BookOpen className="size-7 text-sand-300 dark:text-night-400" />
           </div>
           <h3 className="font-heading text-xl text-teal-900 dark:text-cream">
-            Nothing found
+            {t("browse.nothingFound")}
           </h3>
           <p className="mt-2 text-sm text-sand-500 dark:text-night-400">
-            Try a different search term or filter.
+            {t("browse.nothingFoundHint")}
           </p>
         </div>
       )}
@@ -313,15 +323,15 @@ export default function Browse() {
           {/* ── Grid view ── */}
           {view === "grid" && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {titles.map((t, i) => (
+              {titles.map((title, i) => (
                 <div
-                  key={t.id}
+                  key={title.id}
                   style={{
                     animation: "fade-up 0.5s ease-out both",
                     animationDelay: `${i * 0.04}s`,
                   }}
                 >
-                  <TitleCard title={t} />
+                  <TitleCard title={title} />
                 </div>
               ))}
             </div>
@@ -337,7 +347,7 @@ export default function Browse() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-sand-200/60 bg-sand-100/50 dark:border-night-700/50 dark:bg-night-800/50">
-                      {["", "Title", "Author", "Type", "Year", "Copies"].map((h) => (
+                      {["", t("browse.thTitle"), t("browse.thAuthor"), t("browse.thType"), t("browse.thYear"), t("browse.thCopies")].map((h) => (
                         <th
                           key={h}
                           className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-sand-300 dark:text-night-400"
@@ -348,29 +358,29 @@ export default function Browse() {
                     </tr>
                   </thead>
                   <tbody>
-                    {titles.map((t) => {
-                      const available = t.copies.filter((c) => c.status === "available").length;
-                      const color = typeColors[t.type] || "#0D7377";
+                    {titles.map((title) => {
+                      const available = title.copies.filter((c) => c.status === "available").length;
+                      const color = typeColors[title.type] || "#0D7377";
                       return (
                         <tr
-                          key={t.id}
+                          key={title.id}
                           className="border-b border-sand-100/80 transition-colors hover:bg-sand-100/40 dark:border-night-800/60 dark:hover:bg-night-800/40"
                         >
                           <td className="w-10 px-3 py-2">
-                            <Link to={`/title/${t.id}`}>
+                            <Link to={`/title/${title.id}`}>
                               <div
                                 className="size-10 overflow-hidden rounded-lg"
-                                style={{ backgroundColor: t.cover }}
+                                style={{ backgroundColor: title.cover }}
                               >
-                                {t.cover_image ? (
+                                {title.cover_image ? (
                                   <img
-                                    src={t.cover_image}
+                                    src={title.cover_image}
                                     alt=""
                                     className="size-full object-cover"
                                   />
                                 ) : (
                                   <div className="flex size-full items-center justify-center">
-                                    <TypeIcon type={t.type} className="size-4 text-white/50" />
+                                    <TypeIcon type={title.type} className="size-4 text-white/50" />
                                   </div>
                                 )}
                               </div>
@@ -378,36 +388,36 @@ export default function Browse() {
                           </td>
                           <td className="px-4 py-3">
                             <Link
-                              to={`/title/${t.id}`}
+                              to={`/title/${title.id}`}
                               className="font-semibold text-teal-900 hover:text-teal-700 dark:text-cream dark:hover:text-teal-400"
                             >
-                              {t.title}
+                              {title.title}
                             </Link>
                           </td>
                           <td className="px-4 py-3 text-sand-500 dark:text-night-400">
-                            {t.author || "—"}
+                            {title.author || "—"}
                           </td>
                           <td className="px-4 py-3">
                             <span
                               className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-semibold text-white"
                               style={{ backgroundColor: color }}
                             >
-                              <TypeIcon type={t.type} className="size-3" />
-                              {t.type}
+                              <TypeIcon type={title.type} className="size-3" />
+                              {l(typeMap[title.type], "name") || title.type}
                             </span>
                           </td>
                           <td className="px-4 py-3 tabular-nums text-sand-500 dark:text-night-400">
-                            {t.year ?? "—"}
+                            {title.year ?? "—"}
                           </td>
                           <td className="px-4 py-3">
                             {available > 0 ? (
                               <span className="flex items-center gap-1.5 font-medium text-teal-700 dark:text-teal-400">
                                 <span className="size-1.5 rounded-full bg-teal-500" />
-                                {available}/{t.copies.length}
+                                {available}/{title.copies.length}
                               </span>
                             ) : (
                               <span className="text-sand-300 dark:text-night-500">
-                                {t.copies.length === 0 ? "No copies" : "Unavailable"}
+                                {title.copies.length === 0 ? t("browse.noCopies") : t("browse.unavailable")}
                               </span>
                             )}
                           </td>
@@ -467,7 +477,7 @@ export default function Browse() {
               </button>
 
               <span className="ml-2 text-xs text-sand-300 dark:text-night-500">
-                {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, totalCount)} of {totalCount}
+                {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, totalCount)} {t("browse.of")} {totalCount}
               </span>
             </div>
           )}
@@ -484,14 +494,14 @@ export default function Browse() {
               <div className="mb-2 flex items-center gap-2">
                 <Layers className="size-5 text-teal-700 dark:text-teal-400" />
                 <span className="text-xs font-bold uppercase tracking-wider text-sand-300 dark:text-night-400">
-                  Curated Lists
+                  {t("browse.curatedLists")}
                 </span>
               </div>
               <h2 className="font-heading text-2xl tracking-tight text-teal-900 sm:text-3xl dark:text-cream">
-                Hand-picked Collections
+                {t("browse.handPicked")}
               </h2>
               <p className="mt-1 text-sm text-sand-500 dark:text-night-400">
-                Explore themed reading guides curated by our community.
+                {t("browse.curatedDesc")}
               </p>
             </div>
             {curatedLists.length > 2 && (
@@ -499,7 +509,7 @@ export default function Browse() {
                 to="/lists"
                 className="hidden items-center gap-1.5 rounded-xl bg-teal-800 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-teal-700 sm:inline-flex dark:bg-teal-700 dark:hover:bg-teal-600"
               >
-                View all lists
+                {t("browse.viewAllLists")}
                 <ArrowRight className="size-4" />
               </Link>
             )}
@@ -525,7 +535,7 @@ export default function Browse() {
                 to="/lists"
                 className="inline-flex items-center gap-1.5 rounded-xl bg-teal-800 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-teal-700 dark:bg-teal-700 dark:hover:bg-teal-600"
               >
-                View all lists
+                {t("browse.viewAllLists")}
                 <ArrowRight className="size-4" />
               </Link>
             </div>

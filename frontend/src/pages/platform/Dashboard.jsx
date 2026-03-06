@@ -9,6 +9,7 @@ import {
   Plus,
   Loader2,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { platformApi } from "../../api/endpoints";
 import { useAuth } from "../../context/AuthContext";
 
@@ -22,6 +23,7 @@ function getTenantUrl(slug) {
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -73,11 +75,11 @@ export default function Dashboard() {
           style={{ animation: "fade-up 0.6s ease-out both" }}
         >
           <h1 className="font-heading text-4xl text-teal-900 dark:text-cream">
-            Dashboard
+            {t("dashboard.title")}
           </h1>
           <p className="mt-2 text-sand-500 dark:text-night-400">
-            Welcome back, {user?.first_name || user?.username || user?.email}.
-            Manage your library requests below.
+            {t("dashboard.welcome", { name: user?.first_name || user?.username || user?.email })}
+            {" "}{t("dashboard.subtitle")}
           </p>
         </div>
 
@@ -97,7 +99,7 @@ export default function Dashboard() {
               <div style={{ animation: "fade-up 0.6s ease-out 0.1s both" }}>
                 <h2 className="mb-4 flex items-center gap-2 font-heading text-xl text-teal-900 dark:text-cream">
                   <CheckCircle2 className="size-5 text-teal-700 dark:text-teal-400" />
-                  Your Libraries
+                  {t("dashboard.yourLibraries")}
                 </h2>
                 <div className="space-y-3">
                   {approved.map((req) => (
@@ -125,7 +127,7 @@ export default function Dashboard() {
                           href={getTenantUrl(req.tenant_slug)}
                           className="inline-flex items-center gap-1.5 rounded-xl bg-teal-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700"
                         >
-                          Open
+                          {t("dashboard.open")}
                           <ExternalLink className="size-3.5" />
                         </a>
                       )}
@@ -140,7 +142,7 @@ export default function Dashboard() {
               <div style={{ animation: "fade-up 0.6s ease-out 0.15s both" }}>
                 <h2 className="mb-4 flex items-center gap-2 font-heading text-xl text-teal-900 dark:text-cream">
                   <Clock className="size-5 text-amber-500" />
-                  Pending Requests
+                  {t("dashboard.pendingRequests")}
                 </h2>
                 <div className="space-y-3">
                   {pending.map((req) => (
@@ -161,7 +163,7 @@ export default function Dashboard() {
                         </div>
                         <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-600 dark:text-amber-400">
                           <Clock className="size-3" />
-                          Under Review
+                          {t("dashboard.underReview")}
                         </span>
                       </div>
                     </div>
@@ -175,7 +177,7 @@ export default function Dashboard() {
               <div style={{ animation: "fade-up 0.6s ease-out 0.2s both" }}>
                 <h2 className="mb-4 flex items-center gap-2 font-heading text-xl text-teal-900 dark:text-cream">
                   <XCircle className="size-5 text-red-500" />
-                  Declined
+                  {t("dashboard.declined")}
                 </h2>
                 <div className="space-y-3">
                   {rejected.map((req) => (
@@ -205,7 +207,7 @@ export default function Dashboard() {
                   className="rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 dark:bg-night-900 dark:ring-night-700/50"
                 >
                   <h2 className="mb-5 font-heading text-xl text-teal-900 dark:text-cream">
-                    Request a New Library
+                    {t("dashboard.requestNew")}
                   </h2>
 
                   {error && (
@@ -217,7 +219,7 @@ export default function Dashboard() {
                   <div className="space-y-4">
                     <div>
                       <label className="mb-1.5 block text-sm font-medium text-teal-900 dark:text-cream">
-                        Organization Name
+                        {t("dashboard.orgName")}
                       </label>
                       <input
                         type="text"
@@ -229,7 +231,7 @@ export default function Dashboard() {
                             organization_name: e.target.value,
                           }))
                         }
-                        placeholder="e.g. Greenwood Neighborhood Library"
+                        placeholder={t("dashboard.orgPlaceholder")}
                         className="w-full rounded-xl border-0 bg-cream px-4 py-3 text-sm text-teal-900 ring-1 ring-sand-200 placeholder:text-sand-300 focus:outline-none focus:ring-2 focus:ring-teal-700/50 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-500 dark:focus:ring-teal-400/50"
                       />
                     </div>
@@ -237,9 +239,9 @@ export default function Dashboard() {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="mb-1.5 block text-sm font-medium text-teal-900 dark:text-cream">
-                          Country{" "}
+                          {t("dashboard.country")}{" "}
                           <span className="font-normal text-sand-300 dark:text-night-500">
-                            (optional)
+                            ({t("dashboard.optional")})
                           </span>
                         </label>
                         <input
@@ -248,15 +250,15 @@ export default function Dashboard() {
                           onChange={(e) =>
                             setForm((f) => ({ ...f, country: e.target.value }))
                           }
-                          placeholder="e.g. Romania"
+                          placeholder={t("dashboard.countryPlaceholder")}
                           className="w-full rounded-xl border-0 bg-cream px-4 py-3 text-sm text-teal-900 ring-1 ring-sand-200 placeholder:text-sand-300 focus:outline-none focus:ring-2 focus:ring-teal-700/50 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-500 dark:focus:ring-teal-400/50"
                         />
                       </div>
                       <div>
                         <label className="mb-1.5 block text-sm font-medium text-teal-900 dark:text-cream">
-                          City{" "}
+                          {t("dashboard.city")}{" "}
                           <span className="font-normal text-sand-300 dark:text-night-500">
-                            (optional)
+                            ({t("dashboard.optional")})
                           </span>
                         </label>
                         <input
@@ -265,7 +267,7 @@ export default function Dashboard() {
                           onChange={(e) =>
                             setForm((f) => ({ ...f, city: e.target.value }))
                           }
-                          placeholder="e.g. Timișoara"
+                          placeholder={t("dashboard.cityPlaceholder")}
                           className="w-full rounded-xl border-0 bg-cream px-4 py-3 text-sm text-teal-900 ring-1 ring-sand-200 placeholder:text-sand-300 focus:outline-none focus:ring-2 focus:ring-teal-700/50 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-500 dark:focus:ring-teal-400/50"
                         />
                       </div>
@@ -273,9 +275,9 @@ export default function Dashboard() {
 
                     <div>
                       <label className="mb-1.5 block text-sm font-medium text-teal-900 dark:text-cream">
-                        Description{" "}
+                        {t("dashboard.description")}{" "}
                         <span className="font-normal text-sand-300 dark:text-night-500">
-                          (optional)
+                          ({t("dashboard.optional")})
                         </span>
                       </label>
                       <textarea
@@ -284,7 +286,7 @@ export default function Dashboard() {
                         onChange={(e) =>
                           setForm((f) => ({ ...f, description: e.target.value }))
                         }
-                        placeholder="Tell us about your community and what you'd like to share..."
+                        placeholder={t("dashboard.descPlaceholder")}
                         className="w-full resize-none rounded-xl border-0 bg-cream px-4 py-3 text-sm text-teal-900 ring-1 ring-sand-200 placeholder:text-sand-300 focus:outline-none focus:ring-2 focus:ring-teal-700/50 dark:bg-night-800 dark:text-cream dark:ring-night-700 dark:placeholder:text-night-500 dark:focus:ring-teal-400/50"
                       />
                     </div>
@@ -301,7 +303,7 @@ export default function Dashboard() {
                       ) : (
                         <Send className="size-4" />
                       )}
-                      Submit Request
+                      {t("dashboard.submit")}
                     </button>
                     <button
                       type="button"
@@ -311,7 +313,7 @@ export default function Dashboard() {
                       }}
                       className="rounded-xl px-5 py-2.5 text-sm font-medium text-sand-500 transition hover:text-teal-800 dark:text-night-400 dark:hover:text-cream"
                     >
-                      Cancel
+                      {t("dashboard.cancel")}
                     </button>
                   </div>
                 </form>
@@ -321,7 +323,7 @@ export default function Dashboard() {
                   className="group flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-sand-200 py-6 text-sm font-semibold text-sand-500 transition hover:border-teal-700/30 hover:text-teal-700 dark:border-night-700 dark:text-night-400 dark:hover:border-teal-400/30 dark:hover:text-teal-400"
                 >
                   <Plus className="size-4" />
-                  Request a New Library
+                  {t("dashboard.requestNew")}
                 </button>
               )}
             </div>

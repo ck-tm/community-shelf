@@ -13,54 +13,20 @@ import {
   ChevronRight,
   Sparkles,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { platformApi } from "../../api/endpoints";
 import { useAuth } from "../../context/AuthContext";
 
 const BASE_DOMAIN = import.meta.env.VITE_BASE_DOMAIN || "localhost";
 
-const FEATURES = [
-  {
-    icon: BookOpen,
-    title: "Catalog Management",
-    desc: "Add books, games, music, and more — complete with cover art and details, auto-filled for you.",
-    accent: "#0d7377",
-  },
-  {
-    icon: ScanBarcode,
-    title: "ISBN Scanner",
-    desc: "Point your phone at a barcode to add a book in seconds. Got a big collection? Bulk-import it.",
-    accent: "#0a5c5f",
-  },
-  {
-    icon: Eye,
-    title: "Availability Tracking",
-    desc: "See which items are available, who has what, and where each copy lives — all in real time.",
-    accent: "#074e52",
-  },
-  {
-    icon: HandHelping,
-    title: "Lending & Returns",
-    desc: "Members request a borrow, you approve it, they return it. Due date reminders happen automatically.",
-    accent: "#f5a623",
-  },
-  {
-    icon: Layers,
-    title: "Curated Lists",
-    desc: "Build reading lists, seasonal picks, or \"staff favorites\" to help members find their next read.",
-    accent: "#0d9488",
-  },
-  {
-    icon: Palette,
-    title: "Custom Branding",
-    desc: "Add your logo, pick your colors, and make the library feel like it belongs to your community.",
-    accent: "#074e52",
-  },
-  {
-    icon: Globe,
-    title: "Your Own Space",
-    desc: "Your library is completely yours — your own catalog, members, and settings, separate from everyone else.",
-    accent: "#0d7377",
-  },
+const FEATURE_KEYS = [
+  { icon: BookOpen, key: "Catalog", accent: "#0d7377" },
+  { icon: ScanBarcode, key: "Isbn", accent: "#0a5c5f" },
+  { icon: Eye, key: "Tracking", accent: "#074e52" },
+  { icon: HandHelping, key: "Lending", accent: "#f5a623" },
+  { icon: Layers, key: "Lists", accent: "#0d9488" },
+  { icon: Palette, key: "Branding", accent: "#074e52" },
+  { icon: Globe, key: "Space", accent: "#0d7377" },
 ];
 
 function getTenantUrl(slug) {
@@ -71,6 +37,7 @@ function getTenantUrl(slug) {
 
 export default function Landing() {
   const { isAuthenticated } = useAuth();
+  const { t } = useTranslation();
   const [tenants, setTenants] = useState([]);
   const [tenantsLoading, setTenantsLoading] = useState(true);
 
@@ -99,7 +66,7 @@ export default function Landing() {
             style={{ animation: "fade-up 0.6s ease-out both" }}
           >
             <Sparkles className="size-3.5" />
-            Free for every community
+            {t("landing.badge")}
           </div>
 
           {/* Headline */}
@@ -107,10 +74,13 @@ export default function Landing() {
             className="font-heading text-5xl leading-[1.1] text-teal-900 sm:text-6xl lg:text-7xl dark:text-cream"
             style={{ animation: "fade-up 0.6s ease-out 0.1s both" }}
           >
-            Your Neighborhood
+            {t("landing.heroTitle1")}
             <br />
-            <span className="text-teal-700 dark:text-teal-400">Library</span>,
-            Online
+            <span className="text-teal-700 dark:text-teal-400">
+              {t("landing.heroTitleHighlight")}
+            </span>
+            {", "}
+            {t("landing.heroTitle2")}
           </h1>
 
           {/* Subtitle */}
@@ -118,9 +88,7 @@ export default function Landing() {
             className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-sand-500 sm:text-xl dark:text-night-400"
             style={{ animation: "fade-up 0.6s ease-out 0.2s both" }}
           >
-            Share books, games, music, and more with your neighbors. Everything
-            you need to run a beautiful lending library — no tech skills
-            required.
+            {t("landing.subtitle")}
           </p>
 
           {/* CTAs */}
@@ -132,14 +100,16 @@ export default function Landing() {
               to={isAuthenticated ? "/dashboard" : "/register"}
               className="group inline-flex items-center gap-2 rounded-xl bg-teal-700 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-teal-700/20 transition hover:bg-teal-800 hover:shadow-xl hover:shadow-teal-700/25 dark:bg-teal-600 dark:shadow-teal-600/15 dark:hover:bg-teal-700"
             >
-              {isAuthenticated ? "Go to Dashboard" : "Create Your Library"}
+              {isAuthenticated
+                ? t("landing.ctaDashboard")
+                : t("landing.ctaCreate")}
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <a
               href="#libraries"
               className="inline-flex items-center gap-2 rounded-xl bg-warm px-7 py-3.5 text-sm font-semibold text-teal-800 ring-1 ring-sand-200/60 transition hover:bg-sand-100 hover:text-teal-900 dark:bg-night-900 dark:text-night-300 dark:ring-night-600 dark:hover:bg-night-800 dark:hover:text-cream"
             >
-              See It in Action
+              {t("landing.ctaExplore")}
             </a>
           </div>
         </div>
@@ -153,21 +123,20 @@ export default function Landing() {
             style={{ animation: "fade-up 0.6s ease-out both" }}
           >
             <h2 className="font-heading text-4xl text-teal-900 sm:text-5xl dark:text-cream">
-              Built for Community Librarians
+              {t("landing.featuresTitle")}
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-sand-500 dark:text-night-400">
-              Catalog your collection, manage lending, and make your library
-              feel like home.
+              {t("landing.featuresSubtitle")}
             </p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {FEATURES.map((feature, i) => {
-              const isLast = i === FEATURES.length - 1;
-              const isOrphan = FEATURES.length % 3 === 1 && isLast;
+            {FEATURE_KEYS.map((feature, i) => {
+              const isLast = i === FEATURE_KEYS.length - 1;
+              const isOrphan = FEATURE_KEYS.length % 3 === 1 && isLast;
               return (
                 <div
-                  key={feature.title}
+                  key={feature.key}
                   className={`group rounded-2xl bg-warm p-6 ring-1 ring-sand-200/50 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:ring-sand-200 dark:bg-night-900 dark:ring-night-700/50 dark:hover:ring-night-600${
                     isOrphan ? " sm:col-span-2 lg:col-span-3" : ""
                   }`}
@@ -182,10 +151,10 @@ export default function Landing() {
                     <feature.icon className="size-5" />
                   </div>
                   <h3 className="mb-2 font-heading text-xl text-teal-900 dark:text-cream">
-                    {feature.title}
+                    {t(`landing.feature${feature.key}Title`)}
                   </h3>
                   <p className="text-sm leading-relaxed text-sand-500 dark:text-night-400">
-                    {feature.desc}
+                    {t(`landing.feature${feature.key}Desc`)}
                   </p>
                 </div>
               );
@@ -208,10 +177,10 @@ export default function Landing() {
             style={{ animation: "fade-up 0.6s ease-out both" }}
           >
             <h2 className="font-heading text-4xl text-teal-900 sm:text-5xl dark:text-cream">
-              Libraries Already Using Community Shelf
+              {t("landing.directoryTitle")}
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-sand-500 dark:text-night-400">
-              See what other communities have built.
+              {t("landing.directorySubtitle")}
             </p>
           </div>
 
@@ -231,12 +200,12 @@ export default function Landing() {
             >
               <Library className="mx-auto mb-4 size-10 text-sand-300 dark:text-night-500" />
               <p className="text-sand-500 dark:text-night-400">
-                No public libraries yet. Be the first to{" "}
+                {t("landing.directoryEmpty")}{" "}
                 <Link
                   to="/register"
                   className="font-semibold text-teal-700 underline decoration-teal-700/30 transition hover:decoration-teal-700 dark:text-teal-400"
                 >
-                  create one
+                  {t("landing.directoryEmptyLink")}
                 </Link>
                 .
               </p>
@@ -286,22 +255,22 @@ export default function Landing() {
           style={{ animation: "fade-up 0.6s ease-out both" }}
         >
           <h2 className="font-heading text-3xl text-white sm:text-4xl">
-            Ready to Share?
+            {t("landing.ctaBottomTitle")}
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-teal-100/80">
-            Create a free account and we'll have your library up and running
-            in minutes.
+            {t("landing.ctaBottomSubtitle")}
           </p>
           <Link
             to={isAuthenticated ? "/dashboard" : "/register"}
             className="group mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3.5 text-sm font-semibold text-teal-800 shadow-lg transition hover:bg-cream hover:shadow-xl"
           >
-            {isAuthenticated ? "Go to Dashboard" : "Create Your Free Library"}
+            {isAuthenticated
+              ? t("landing.ctaDashboard")
+              : t("landing.ctaBottomButton")}
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
       </section>
-
     </div>
   );
 }

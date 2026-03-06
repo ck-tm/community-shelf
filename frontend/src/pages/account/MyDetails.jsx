@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { Check, Loader2 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 export default function MyDetails() {
+  const { t } = useTranslation();
   const { user, updateProfile } = useAuth();
   const [account, setAccount] = useState({
     first_name: "",
@@ -63,10 +65,10 @@ export default function MyDetails() {
         style={{ animation: "fade-up 0.6s ease-out both" }}
       >
         <h1 className="font-heading text-3xl text-teal-900 dark:text-cream">
-          My Details
+          {t("details.title")}
         </h1>
         <p className="mt-1 text-sand-500 dark:text-night-400">
-          Update your personal information.
+          {t("details.subtitle")}
         </p>
       </div>
 
@@ -77,14 +79,14 @@ export default function MyDetails() {
       >
         <div className="border-b border-sand-200/60 px-6 py-4 dark:border-night-700/50">
           <h2 className="font-heading text-lg text-teal-900 dark:text-cream">
-            Personal Information
+            {t("details.personalInfo")}
           </h2>
         </div>
         <form onSubmit={handleSave} className="space-y-5 p-6">
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-                First Name
+                {t("details.firstName")}
               </label>
               <input
                 type="text"
@@ -95,7 +97,7 @@ export default function MyDetails() {
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-                Last Name
+                {t("details.lastName")}
               </label>
               <input
                 type="text"
@@ -107,7 +109,7 @@ export default function MyDetails() {
           </div>
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-              Email
+              {t("details.email")}
             </label>
             <input
               type="email"
@@ -116,13 +118,13 @@ export default function MyDetails() {
               className={`${inputClass} opacity-60 cursor-not-allowed`}
             />
             <p className="mt-1 text-xs text-sand-300 dark:text-night-500">
-              Email cannot be changed.
+              {t("details.emailHint")}
             </p>
           </div>
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-                Phone
+                {t("details.phone")}
               </label>
               <input
                 type="tel"
@@ -133,7 +135,7 @@ export default function MyDetails() {
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-                Address
+                {t("details.address")}
               </label>
               <input
                 type="text"
@@ -155,11 +157,11 @@ export default function MyDetails() {
               className="flex items-center gap-2 rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-800 disabled:opacity-50 dark:bg-teal-600 dark:hover:bg-teal-700"
             >
               {saving && <Loader2 className="size-4 animate-spin" />}
-              Save Changes
+              {t("details.saveChanges")}
             </button>
             {saved && (
               <span className="flex items-center gap-1.5 text-sm font-medium text-teal-700 dark:text-teal-400">
-                <Check className="size-4" /> Saved!
+                <Check className="size-4" /> {t("details.saved")}
               </span>
             )}
           </div>

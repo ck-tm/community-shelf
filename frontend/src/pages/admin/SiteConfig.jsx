@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Check, Library, Upload, X, RotateCcw, Palette } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useData } from "../../context/DataContext";
 
 const DEFAULT_THEME_COLORS = {
@@ -14,8 +15,7 @@ const DEFAULT_THEME_COLORS = {
 
 const PRESET_THEMES = [
   {
-    name: "Classic Teal",
-    description: "The original warm teal palette with amber accents",
+    key: "Teal",
     colors: {
       "teal-600": "#0d9488",
       "teal-700": "#0d7377",
@@ -27,8 +27,7 @@ const PRESET_THEMES = [
     },
   },
   {
-    name: "Scholarly Indigo",
-    description: "Rich navy-indigo inspired by leather-bound books",
+    key: "Indigo",
     colors: {
       "teal-600": "#5b6db4",
       "teal-700": "#445299",
@@ -40,8 +39,7 @@ const PRESET_THEMES = [
     },
   },
   {
-    name: "Forest Sage",
-    description: "Muted forest green evoking nature and growth",
+    key: "Sage",
     colors: {
       "teal-600": "#5b8b6f",
       "teal-700": "#44705a",
@@ -53,8 +51,7 @@ const PRESET_THEMES = [
     },
   },
   {
-    name: "Burgundy Wine",
-    description: "Warm burgundy with earthy gold accents",
+    key: "Burgundy",
     colors: {
       "teal-600": "#a04857",
       "teal-700": "#843d47",
@@ -66,8 +63,7 @@ const PRESET_THEMES = [
     },
   },
   {
-    name: "Warm Terracotta",
-    description: "Earthy terracotta rooted in warmth and heritage",
+    key: "Terracotta",
     colors: {
       "teal-600": "#b87654",
       "teal-700": "#9b6341",
@@ -82,22 +78,23 @@ const PRESET_THEMES = [
 
 
 const THEME_COLOR_LABELS = [
-  { key: "teal-600", label: "Primary", group: "primary" },
-  { key: "teal-700", label: "Primary Dark", group: "primary" },
-  { key: "teal-800", label: "Primary Darker", group: "primary" },
-  { key: "teal-900", label: "Primary Darkest", group: "primary" },
-  { key: "cream", label: "Background", group: "surface" },
-  { key: "warm", label: "Surface", group: "surface" },
-  { key: "amber-500", label: "Accent", group: "accent" },
+  { key: "teal-600", tKey: "primary", group: "primary" },
+  { key: "teal-700", tKey: "primaryDark", group: "primary" },
+  { key: "teal-800", tKey: "primaryDarker", group: "primary" },
+  { key: "teal-900", tKey: "primaryDarkest", group: "primary" },
+  { key: "cream", tKey: "background", group: "surface" },
+  { key: "warm", tKey: "surface", group: "surface" },
+  { key: "amber-500", tKey: "accent", group: "accent" },
 ];
 
 const COLOR_GROUPS = [
-  { key: "primary", label: "Primary" },
-  { key: "surface", label: "Backgrounds" },
-  { key: "accent", label: "Accent" },
+  { key: "primary", tKey: "primary" },
+  { key: "surface", tKey: "backgrounds" },
+  { key: "accent", tKey: "accent" },
 ];
 
 export default function SiteConfig() {
+  const { t } = useTranslation();
   const { siteConfig, updateSiteConfig } = useData();
   const [form, setForm] = useState(null);
   const [dirty, setDirty] = useState(false);
@@ -158,10 +155,10 @@ export default function SiteConfig() {
         style={{ animation: "fade-up 0.6s ease-out both" }}
       >
         <h1 className="font-heading text-3xl text-teal-900 dark:text-cream">
-          Site Config
+          {t("siteConfig.title")}
         </h1>
         <p className="mt-1 text-sand-500 dark:text-night-400">
-          Customize your community library's identity and theme.
+          {t("siteConfig.subtitle")}
         </p>
       </div>
 
@@ -174,7 +171,7 @@ export default function SiteConfig() {
         {/* Logo Upload */}
         <div>
           <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-            Logo
+            {t("siteConfig.logo")}
           </label>
           <div className="flex items-center gap-4">
             {/* Preview thumbnail */}
@@ -196,7 +193,7 @@ export default function SiteConfig() {
                 className="inline-flex items-center gap-1.5 rounded-lg bg-sand-100 px-3 py-2 text-xs font-semibold text-sand-500 transition hover:bg-sand-200 dark:bg-night-800 dark:text-night-400 dark:hover:bg-night-700"
               >
                 <Upload className="size-3.5" />
-                Upload Image
+                {t("siteConfig.uploadImage")}
               </button>
               {form.logo && (
                 <button
@@ -205,7 +202,7 @@ export default function SiteConfig() {
                   className="inline-flex items-center gap-1 rounded-lg px-2.5 py-2 text-xs font-semibold text-red-500 transition hover:bg-red-50 dark:hover:bg-red-900/20"
                 >
                   <X className="size-3.5" />
-                  Remove
+                  {t("siteConfig.remove")}
                 </button>
               )}
               <input
@@ -218,15 +215,14 @@ export default function SiteConfig() {
             </div>
           </div>
           <p className="mt-2 text-xs text-sand-300 dark:text-night-500">
-            Upload a square image (PNG, SVG, or JPG). Leave empty for the
-            default library icon.
+            {t("siteConfig.logoHint")}
           </p>
         </div>
 
         {/* Site Title */}
         <div>
           <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-            Site Title <span className="text-red-400">*</span>
+            {t("siteConfig.siteTitle")} <span className="text-red-400">*</span>
           </label>
           <input
             type="text"
@@ -237,16 +233,44 @@ export default function SiteConfig() {
           />
         </div>
 
+        {/* Site Title (RO) */}
+        <div>
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+            {t("siteConfig.siteTitleRo")}
+          </label>
+          <input
+            type="text"
+            value={form.titleRo || ""}
+            onChange={set("titleRo")}
+            placeholder={t("siteConfig.roPlaceholder")}
+            className={inputClass}
+          />
+        </div>
+
         {/* Site Description */}
         <div>
           <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-            Site Description
+            {t("siteConfig.siteDescription")}
           </label>
           <textarea
             value={form.description}
             onChange={set("description")}
             rows={3}
-            placeholder="Describe your community library..."
+            placeholder={t("siteConfig.descPlaceholder")}
+            className={`${inputClass} resize-none`}
+          />
+        </div>
+
+        {/* Site Description (RO) */}
+        <div>
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
+            {t("siteConfig.siteDescriptionRo")}
+          </label>
+          <textarea
+            value={form.descriptionRo || ""}
+            onChange={set("descriptionRo")}
+            rows={3}
+            placeholder={t("siteConfig.roPlaceholder")}
             className={`${inputClass} resize-none`}
           />
         </div>
@@ -255,7 +279,7 @@ export default function SiteConfig() {
         <div className="border-t border-sand-200/60 pt-5 dark:border-night-700/50">
           <div className="mb-4 flex items-center justify-between">
             <label className="text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-              Theme Colors
+              {t("siteConfig.themeColors")}
             </label>
             <button
               type="button"
@@ -263,7 +287,7 @@ export default function SiteConfig() {
               className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-sand-500 transition hover:bg-sand-100 dark:text-night-400 dark:hover:bg-night-800"
             >
               <RotateCcw className="size-3" />
-              Reset
+              {t("siteConfig.reset")}
             </button>
           </div>
 
@@ -271,7 +295,7 @@ export default function SiteConfig() {
           <div className="mb-5">
             <p className="mb-2.5 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-sand-300 dark:text-night-500">
               <Palette className="size-3" />
-              Quick Start Presets
+              {t("siteConfig.quickPresets")}
             </p>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
               {PRESET_THEMES.map((preset) => {
@@ -280,7 +304,7 @@ export default function SiteConfig() {
                   form.themeColors["cream"] === preset.colors["cream"];
                 return (
                   <button
-                    key={preset.name}
+                    key={preset.key}
                     type="button"
                     onClick={() => update({ themeColors: { ...preset.colors } })}
                     className={`group relative rounded-xl p-2.5 text-left transition ring-1 ${
@@ -306,10 +330,10 @@ export default function SiteConfig() {
                       />
                     </div>
                     <p className="text-xs font-semibold text-teal-900 dark:text-cream">
-                      {preset.name}
+                      {t(`siteConfig.preset${preset.key}`)}
                     </p>
                     <p className="mt-0.5 text-[10px] leading-tight text-sand-500 dark:text-night-400">
-                      {preset.description}
+                      {t(`siteConfig.preset${preset.key}Desc`)}
                     </p>
                     {isActive && (
                       <div className="absolute right-1.5 top-1.5 flex size-4 items-center justify-center rounded-full bg-teal-600 text-white dark:bg-teal-400 dark:text-night-950">
@@ -326,7 +350,7 @@ export default function SiteConfig() {
             {COLOR_GROUPS.map((group) => (
               <div key={group.key}>
                 <p className="mb-2.5 text-[11px] font-bold uppercase tracking-wider text-sand-300 dark:text-night-500">
-                  {group.label}
+                  {t(`siteConfig.${group.tKey}`)}
                 </p>
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   {THEME_COLOR_LABELS.filter((c) => c.group === group.key).map(
@@ -346,7 +370,7 @@ export default function SiteConfig() {
                         </label>
                         <div className="min-w-0">
                           <p className="text-xs font-medium text-teal-900 dark:text-cream">
-                            {color.label}
+                            {t(`siteConfig.${color.tKey}`)}
                           </p>
                           <p className="text-[11px] uppercase tracking-wide text-sand-300 dark:text-night-500">
                             {form.themeColors[color.key]}
@@ -367,11 +391,11 @@ export default function SiteConfig() {
             type="submit"
             className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700"
           >
-            Save Config
+            {t("siteConfig.saveConfig")}
           </button>
           {saved && (
             <span className="flex items-center gap-1.5 text-sm font-medium text-teal-700 dark:text-teal-400">
-              <Check className="size-4" /> Saved!
+              <Check className="size-4" /> {t("siteConfig.saved")}
             </span>
           )}
         </div>
@@ -383,7 +407,7 @@ export default function SiteConfig() {
         style={{ animation: "fade-up 0.6s ease-out 0.2s both" }}
       >
         <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-sand-500 dark:text-night-400">
-          Preview
+          {t("siteConfig.preview")}
         </h2>
         <div className="flex items-center gap-2.5">
           <div className="flex size-9 items-center justify-center rounded-xl bg-teal-800 text-white shadow-sm dark:bg-teal-700">

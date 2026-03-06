@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Plus, Pencil, Trash2, Layers } from "lucide-react";
 import { useData } from "../../context/DataContext";
+import { useLocalize } from "../../hooks/useLocalize";
 import ConfirmDialog from "../../components/ConfirmDialog";
 
 export default function ManageLists() {
+  const { t } = useTranslation();
+  const l = useLocalize();
   const { curatedLists, deleteList } = useData();
   const [deleting, setDeleting] = useState(null);
 
@@ -16,17 +20,17 @@ export default function ManageLists() {
       >
         <div>
           <h1 className="font-heading text-3xl text-teal-900 dark:text-cream">
-            Curated Lists
+            {t("manageLists.title")}
           </h1>
           <p className="mt-1 text-sm text-sand-500 dark:text-night-400">
-            {curatedLists.length} lists published.
+            {t("manageLists.subtitle", { count: curatedLists.length })}
           </p>
         </div>
         <Link
           to="/admin/lists/new"
           className="flex items-center gap-1.5 rounded-xl bg-teal-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700"
         >
-          <Plus className="size-4" /> New List
+          <Plus className="size-4" /> {t("manageLists.newList")}
         </Link>
       </div>
 
@@ -54,11 +58,10 @@ export default function ManageLists() {
                 </div>
                 <div>
                   <p className="font-medium text-teal-900 dark:text-cream">
-                    {list.title}
+                    {l(list, "title")}
                   </p>
                   <p className="text-xs text-sand-300 dark:text-night-400">
-                    {list.sections.length} sections &middot; {totalTitles}{" "}
-                    titles &middot; {list.createdAt}
+                    {t("manageLists.sections", { count: list.sections.length })} &middot; {t("manageLists.titles", { count: totalTitles })} &middot; {list.createdAt}
                   </p>
                 </div>
               </div>
@@ -81,15 +84,15 @@ export default function ManageLists() {
         })}
         {curatedLists.length === 0 && (
           <p className="py-12 text-center text-sand-300 dark:text-night-400">
-            No curated lists yet.
+            {t("manageLists.noLists")}
           </p>
         )}
       </div>
 
       {deleting && (
         <ConfirmDialog
-          title="Delete List"
-          message={`Delete "${deleting.title}"? This cannot be undone.`}
+          title={t("manageLists.deleteList")}
+          message={t("manageLists.deleteConfirm", { title: deleting.title })}
           onConfirm={async () => {
             await deleteList(deleting.id);
             setDeleting(null);
