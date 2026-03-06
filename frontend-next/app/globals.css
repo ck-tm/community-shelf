@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Instrument+Serif:ital@0;1&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-teal-50: #f0fdfa;
+  --color-teal-100: #ccfbf1;
+  --color-teal-200: #99f6e4;
+  --color-teal-300: #5eead4;
+  --color-teal-400: #2dd4bf;
+  --color-teal-500: #14b8a6;
+  --color-teal-600: #0d9488;
+  --color-teal-700: #0d7377;
+  --color-teal-800: #0a5c5f;
+  --color-teal-900: #074e52;
+
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fef3c7;
+  --color-amber-200: #fde68a;
+  --color-amber-300: #fcd34d;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f5a623;
+  --color-amber-600: #e0951a;
+  --color-amber-700: #b45309;
+
+  --color-cream: #f8f4ed;
+  --color-warm: #f3ede4;
+  --color-sand-100: #ede6db;
+  --color-sand-200: #e0d5c7;
+  --color-sand-300: #cdbfad;
+  --color-sand-400: #b5a48f;
+  --color-sand-500: #6b5d4d;
+
+  --color-night-950: #0f0e0d;
+  --color-night-900: #1a1816;
+  --color-night-800: #242220;
+  --color-night-700: #302d2a;
+  --color-night-600: #3d3935;
+  --color-night-500: #78706a;
+  --color-night-400: #968d85;
+
+  --font-heading: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --font-body: "DM Sans", system-ui, -apple-system, sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-cream);
+}
+
+.dark body,
+body:where(.dark *) {
+  background-color: var(--color-night-950);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ── Shelf view: 3D book spine flip ────────────────────────── */
+
+@keyframes shelf-slide-in {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.perspective-shelf {
+  perspective: 1200px;
+}
+
+.book-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              z-index 0s 0.3s;
+  z-index: 1;
+}
+
+.book-3d.is-flipped {
+  transform: rotateY(-180deg);
+  z-index: 10;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              z-index 0s 0s;
+}
+
+.book-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.book-face-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: rotateY(180deg);
+}
+
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* ── Leaflet tooltip override ────────────────────────── */
+.library-tooltip {
+  background: white !important;
+  border: 1px solid var(--color-sand-200) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1) !important;
+  font-family: var(--font-heading) !important;
+  font-size: 13px !important;
+  color: var(--color-teal-900) !important;
+  padding: 4px 10px !important;
+}
+.library-tooltip::before {
+  border-top-color: var(--color-sand-200) !important;
+}
