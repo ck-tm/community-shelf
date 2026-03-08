@@ -5,7 +5,6 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import { I18nProvider } from "@/context/I18nProvider";
 import { AuthProvider } from "@/context/AuthContext";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata = {
   title: "Community Shelf",
@@ -29,7 +28,6 @@ export default async function RootLayout({ children }) {
             </AuthProvider>
           </I18nProvider>
         </ThemeProvider>
-        <SpeedInsights />
       </body>
     </html>
   );

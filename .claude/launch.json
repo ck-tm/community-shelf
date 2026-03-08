@@ -2,16 +2,49 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "dev",
+      "name": "next-dev",
       "runtimeExecutable": "/bin/sh",
-      "runtimeArgs": ["-c", "export PATH=/Users/costi/.nvm/versions/node/v22.17.0/bin:$PATH && cd frontend && node_modules/.bin/vite"],
+      "runtimeArgs": [
+        "-c",
+        "export PATH=/Users/costi/.nvm/versions/node/v22.17.0/bin:$PATH && cd frontend-next && npx next dev --turbopack -p 3000"
+      ],
+      "port": 3000
+    },
+    {
+      "name": "vite-dev",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": [
+        "-c",
+        "export PATH=/Users/costi/.nvm/versions/node/v22.17.0/bin:$PATH && cd frontend && npx vite"
+      ],
       "port": 5173
     },
     {
-      "name": "preview",
-      "runtimeExecutable": "/bin/sh",
-      "runtimeArgs": ["-c", "export PATH=/Users/costi/.nvm/versions/node/v22.17.0/bin:$PATH && cd frontend && node_modules/.bin/vite preview"],
-      "port": 4173
+      "name": "django-backend",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": [
+        "compose",
+        "-f",
+        "backend/docker-compose.yml",
+        "-f",
+        "backend/docker-compose.override.yml",
+        "up"
+      ],
+      "port": 8000
+    },
+    {
+      "name": "mailpit",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": [
+        "compose",
+        "-f",
+        "backend/docker-compose.yml",
+        "-f",
+        "backend/docker-compose.override.yml",
+        "up",
+        "mailpit"
+      ],
+      "port": 8025
     }
   ]
 }

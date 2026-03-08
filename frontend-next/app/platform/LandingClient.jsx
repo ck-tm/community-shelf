@@ -37,7 +37,7 @@ export default function LandingClient({ tenants, baseUrl }) {
   // Build tenant URLs from the server-provided baseUrl to avoid hydration mismatch
   function getTenantUrl(slug) {
     if (baseUrl) {
-      // Replace the hostname portion: http://localhost:3001 → http://slug.localhost:3001
+      // Replace the hostname portion: http://localhost:  3000 → http://slug.localhost:3000
       const url = new URL(baseUrl);
       url.hostname = `${slug}.${BASE_DOMAIN}`;
       return url.origin;

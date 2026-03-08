@@ -35,11 +35,9 @@ export function middleware(request) {
   // ── Theme from cookie ─────────────────────────────────────────
   const theme = request.cookies.get("theme")?.value || "light";
 
-  // ── Let /api requests pass through to Next.js rewrites (proxy) ──
+  // ── /api requests are handled by the route handler in app/api/[...path] ──
   if (pathname.startsWith("/api")) {
-    const response = NextResponse.next();
-    response.headers.set("x-tenant-slug", tenantSlug);
-    return response;
+    return NextResponse.next();
   }
 
   // ── Skip rewriting for root-level routes (SEO files etc.) ─────

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useData } from "@/context/DataContext";
 
 const LAST_UPDATED = "March 6, 2026";
-const PLATFORM_URL = process.env.NEXT_PUBLIC_PLATFORM_URL || "http://localhost:3001";
+const PLATFORM_URL = process.env.NEXT_PUBLIC_PLATFORM_URL || "http://localhost:3000";
 
 const SECTIONS = [
   { key: "section1", paragraphs: ["p1"] },
