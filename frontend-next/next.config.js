@@ -11,6 +11,10 @@ const nextConfig = {
         hostname: "**.library.costico.eu",
       },
       {
+        protocol: "https",
+        hostname: "covers.openlibrary.org",
+      },
+      {
         protocol: "http",
         hostname: "localhost",
       },

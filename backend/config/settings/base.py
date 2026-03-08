@@ -198,9 +198,10 @@ CORS_ALLOWED_ORIGINS = os.environ.get(
     "http://localhost:5173",
 ).split(",")
 
-# Allow any *.library.costico.eu subdomain in production
+# Allow any *.library.costico.eu and *.next-library.costico.eu subdomain in production
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https://.*\.library\.costico\.eu$",
+    r"^https://(.+\.)?next-library\.costico\.eu$",
 ]
 
 CORS_ALLOW_HEADERS = [

@@ -10,6 +10,7 @@
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const IS_DEV = process.env.NODE_ENV !== "production";
+const BASE_DOMAIN = process.env.NEXT_PUBLIC_BASE_DOMAIN || "localhost";
 
 // --- Tenant detection (mirrors middleware.js logic) ---
 
@@ -79,17 +80,26 @@ async function proxy(request) {
     resHeaders.append(key, value);
   }
 
-  // Rewrite cookies so they work on localhost
+  // Rewrite cookies so they work on the current frontend domain.
+  // Django sets Domain=.library.costico.eu which the browser rejects
+  // on next-library.costico.eu (different domain). We rewrite it.
   const cookies = upstream.headers.getSetCookie?.() || [];
   for (const cookie of cookies) {
     let fixed = cookie;
     if (IS_DEV) {
-      // Strip Domain (let browser default to current origin)
+      // Dev: strip Domain (let browser default to localhost)
       fixed = fixed.replace(/;\s*Domain=[^;]*/gi, "");
       // Strip Secure (localhost is HTTP)
       fixed = fixed.replace(/;\s*Secure/gi, "");
       // Downgrade SameSite=None to Lax (None requires Secure)
       fixed = fixed.replace(/;\s*SameSite=None/gi, "; SameSite=Lax");
+    } else {
+      // Production: rewrite Domain to the Next.js frontend base domain
+      // so cookies are shared across platform + tenant subdomains
+      fixed = fixed.replace(
+        /;\s*Domain=[^;]*/gi,
+        `; Domain=.${BASE_DOMAIN}`
+      );
     }
     resHeaders.append("set-cookie", fixed);
   }

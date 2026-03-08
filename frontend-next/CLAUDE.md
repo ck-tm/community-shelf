@@ -15,8 +15,6 @@ The backend is a black box. Its API is already built and stable. Your job is to 
 ```bash
 cd frontend-next
 cp .env.example .env.local
-# Edit .env.local — set NEXT_PUBLIC_API_URL to the production API:
-#   NEXT_PUBLIC_API_URL=https://api-library.costico.eu
 npm install
 npm run dev
 ```
@@ -83,7 +81,7 @@ app/
 All `/api/*` requests are proxied to Django via the route handler at `app/api/[...path]/route.js`. This:
 - Preserves trailing slashes (Django requires them)
 - Auto-injects `X-Tenant` header from the subdomain
-- Rewrites `Set-Cookie` domain in dev so auth works on localhost
+- Rewrites `Set-Cookie` domain so auth cookies work (strips Domain in dev, rewrites to `.next-library.costico.eu` in production)
 
 **Never call the Django API directly from client code.** Always use relative URLs (`/api/v1/...`).
 
@@ -150,4 +148,16 @@ See `.env.example`. Copy to `.env.local` and adjust:
 NEXT_PUBLIC_API_URL=https://api-library.costico.eu
 NEXT_PUBLIC_BASE_DOMAIN=localhost
 NEXT_PUBLIC_PLATFORM_URL=http://localhost:3000
+```
+
+## Production deployment (Vercel)
+
+Deployed at `next-library.costico.eu` with tenant subdomains at `<slug>.next-library.costico.eu`.
+The old Vite app still runs at `library.costico.eu`.
+
+Vercel env vars:
+```
+NEXT_PUBLIC_API_URL=https://api-library.costico.eu
+NEXT_PUBLIC_BASE_DOMAIN=next-library.costico.eu
+NEXT_PUBLIC_PLATFORM_URL=https://next-library.costico.eu
 ```
